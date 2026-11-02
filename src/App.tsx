@@ -503,12 +503,12 @@ export default function App() {
       {view === 'home' && (
         <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-16 sm:py-24 flex flex-col items-center justify-center text-center">
           
-          {/* Official Crest */}
-          <div className="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center mb-6">
+          {/* Official Crest - 4x size */}
+          <div className="w-80 h-80 sm:w-96 sm:h-96 md:w-[448px] md:h-[448px] max-w-full flex items-center justify-center mb-8">
             <img 
               src={SCHOOL_LOGO_URL} 
               alt="Dasinya Private School Logo" 
-              className="w-full h-full object-contain drop-shadow-xs" 
+              className="w-full h-full object-contain drop-shadow-md" 
             />
           </div>
 
