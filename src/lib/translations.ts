@@ -101,6 +101,8 @@ export interface TranslationDictionary {
   presence: string;
   conduct: string;
   standing: string;
+  guardianEmail: string;
+  guardianPassword: string;
 
   // Marksheet Table Headers
   rowNumber: string;
@@ -147,6 +149,25 @@ export interface TranslationDictionary {
   policyG1to3: string;
   policyG4to9: string;
   passingScoreNote: string;
+
+  // Guardian Portal
+  guardianLoginTitle: string;
+  guardianLoginSubtitle: string;
+  emailAddressLabel: string;
+  passwordLabel: string;
+  loginButtonLabel: string;
+  loggingInLabel: string;
+  logoutButtonLabel: string;
+  invalidCredentialsError: string;
+  guardianAccountTitle: string;
+  studentAccountDetails: string;
+  studentMarksheetTitle: string;
+  switchStudentLabel: string;
+  registeredChildrenLabel: string;
+  quickDemoTitle: string;
+  quickDemoHint: string;
+  staffBrowseOption: string;
+  backToGuardianLogin: string;
 
   // Footer
   footerCopyright: string;
@@ -211,6 +232,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     presence: 'Presence',
     conduct: 'Exemplary',
     standing: 'Standing',
+    guardianEmail: 'Guardian Email',
+    guardianPassword: 'Guardian Password',
 
     rowNumber: '#',
     subject: 'Subject',
@@ -253,6 +276,24 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'Grades 1–3: Term 1 marks are evaluated out of 25 per subject (25% weight)',
     policyG4to9: 'Grades 4–9: Term 1 marks are evaluated out of 20 per subject (20% weight)',
     passingScoreNote: 'Passing Mark: 50% • Distinction: 85%+',
+
+    guardianLoginTitle: 'Guardian Portal Login',
+    guardianLoginSubtitle: 'Sign in with your registered Guardian Email and Password to view your student\'s details and marksheets.',
+    emailAddressLabel: 'Guardian Email Address',
+    passwordLabel: 'Password',
+    loginButtonLabel: 'Sign In to Portal',
+    loggingInLabel: 'Authenticating...',
+    logoutButtonLabel: 'Sign Out',
+    invalidCredentialsError: 'Invalid guardian email or password. Please check your credentials.',
+    guardianAccountTitle: 'Guardian Account',
+    studentAccountDetails: 'Student Profile & Details',
+    studentMarksheetTitle: 'Official Term 1 Marksheet',
+    switchStudentLabel: 'Select Student / Child',
+    registeredChildrenLabel: 'Registered Children',
+    quickDemoTitle: 'Quick Demo / Test Accounts',
+    quickDemoHint: 'Click any sample account to populate credentials',
+    staffBrowseOption: 'School Administration View (Browse All)',
+    backToGuardianLogin: 'Return to Guardian Login',
 
     footerCopyright: 'Dasinya Private School • Academic Evaluation System',
   },
@@ -316,6 +357,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     presence: 'ئامادەبوون',
     conduct: 'رەوشت باش',
     standing: 'ئاست',
+    guardianEmail: 'ئیمەیڵێ بەخێوکەری',
+    guardianPassword: 'تێپەڕەواژەیا بەخێوکەری',
 
     rowNumber: '#',
     subject: 'بابەتێ خواندنێ',
@@ -358,6 +401,24 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'قۆناغێن ١ هەتا ٣: نمرەیێن وەرزێ ئێکێ ژ ٢٥ نمرانە بۆ هەر بابەتەکی (٢٥٪)',
     policyG4to9: 'قۆناغێن ٤ هەتا ٩: نمرەیێن وەرزێ ئێکێ ژ ٢٠ نمرانە بۆ هەر بابەتەکی (٢٠٪)',
     passingScoreNote: 'نمرەیا دەربازبوونێ: ٥٠٪ • پلەیا نایاب: ٨٥٪+',
+
+    guardianLoginTitle: 'چوونا ژوورێ یا بێخێڤی',
+    guardianLoginSubtitle: 'ب ئیمەیل و تێپەڕەواژەیا (پاسوۆردێ) بێخێڤێ قۆتابی بچە ژوور دا پێزانین و کارتا نمرەیێن قۆتابییێ خۆ ببینی.',
+    emailAddressLabel: 'ئیمەیڵێ بەخێوکەری',
+    passwordLabel: 'تێپەڕەواژە (پاسوۆرد)',
+    loginButtonLabel: 'چوونە ژوور بۆ پۆرتالێ',
+    loggingInLabel: 'پشکنینا پێزانینان...',
+    logoutButtonLabel: 'دەركەفتن',
+    invalidCredentialsError: 'ئیمەیل یان تێپەڕەواژە یا خەلەتە. هیڤیە پێزانینێن خۆ پشتڕاست بکە.',
+    guardianAccountTitle: 'هەژمارا بەخێوکەری',
+    studentAccountDetails: 'پێزانین و پڕۆفایلا قوتابی',
+    studentMarksheetTitle: 'کارتا فەرمی یا نمرەیێن وەرزێ ئێکێ',
+    switchStudentLabel: 'هەلبژارتنا قوتابی / زارۆکی',
+    registeredChildrenLabel: 'زارۆکێن تۆمارکری',
+    quickDemoTitle: 'هەژمارێن نموونەیی بۆ تاقیکردنێ',
+    quickDemoHint: 'کرتێ ل هەر هەژمارەکێ بکە دا ب ساناهی بچیە ژوور',
+    staffBrowseOption: 'دیتنا کارگێڕیا قوتابخانێ (پشکنینا گشتی)',
+    backToGuardianLogin: 'زڤڕین بۆ چوونا ژوورێ یا بێخێڤی',
 
     footerCopyright: 'قوتابخانەیا داسنیا یا تایبەت • سیستەمێ هەلسەنگاندنا ئەکادیمی',
   },
@@ -421,6 +482,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     presence: 'حضور',
     conduct: 'سلوك مثالي',
     standing: 'المرتبة',
+    guardianEmail: 'بريد ولي الأمر الإلكتروني',
+    guardianPassword: 'كلمة مرور ولي الأمر',
 
     rowNumber: '#',
     subject: 'المادة الدراسية',
@@ -463,6 +526,24 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'الصفوف ١ إلى ٣: درجات الفصل الأول من ٢٥ درجة لكل مادة (٢٥٪)',
     policyG4to9: 'الصفوف ٤ إلى ٩: درجات الفصل الأول من ٢٠ درجة لكل مادة (٢٠٪)',
     passingScoreNote: 'درجة النجاح: ٥٠٪ • الامتياز: ٨٥٪ فما فوق',
+
+    guardianLoginTitle: 'تسجيل دخول ولي الأمر',
+    guardianLoginSubtitle: 'سجل الدخول باستخدام البريد الإلكتروني وكلمة المرور لولي الأمر لعرض بيانات الطالب وكشوف الدرجات.',
+    emailAddressLabel: 'البريد الإلكتروني لولي الأمر',
+    passwordLabel: 'كلمة المرور',
+    loginButtonLabel: 'دخول إلى البوابة',
+    loggingInLabel: 'جاري التحقق...',
+    logoutButtonLabel: 'تسجيل الخروج',
+    invalidCredentialsError: 'البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى التأكد من البيانات والمحاولة مجدداً.',
+    guardianAccountTitle: 'حساب ولي الأمر',
+    studentAccountDetails: 'ملف وبيانات الطالب',
+    studentMarksheetTitle: 'كشف درجات الفصل الأول الرسمي',
+    switchStudentLabel: 'اختر الطالب / الابن',
+    registeredChildrenLabel: 'الطلاب المسجلون',
+    quickDemoTitle: 'حسابات تجريبية سريعة',
+    quickDemoHint: 'اضغط على أي حساب لتعبئة البيانات تلقائياً',
+    staffBrowseOption: 'عرض إدارة المدرسة (تصفح جميع الصفوف)',
+    backToGuardianLogin: 'العودة لتسجيل دخول ولي الأمر',
 
     footerCopyright: 'مدرسة داسنيا الأهلية • نظام التقييم الأكاديمي',
   },
