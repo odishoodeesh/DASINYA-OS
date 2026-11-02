@@ -56,6 +56,11 @@ export interface TranslationDictionary {
   // Search
   globalSearchPlaceholder: string;
   studentSearchPlaceholder: string;
+  selectStudentPromptTitle: string;
+  selectStudentPromptDesc: string;
+  selectStudentPlaceholder: string;
+  selectStudentToView: string;
+  studentsAvailable: string;
   searchNoStudent: string;
   foundInOtherClasses: string;
 
@@ -165,6 +170,11 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     globalSearchPlaceholder: 'Search all students...',
     studentSearchPlaceholder: 'Search student name or roll...',
+    selectStudentPromptTitle: 'Select a Student to View Marksheet',
+    selectStudentPromptDesc: 'Please choose a student name from Step 3 above or use the search box to view their official Term 1 evaluation.',
+    selectStudentPlaceholder: 'Click to select or search student name...',
+    selectStudentToView: 'Select student from list above to display marksheet',
+    studentsAvailable: 'students registered',
     searchNoStudent: 'No student matching',
     foundInOtherClasses: 'Found in other classes',
 
@@ -265,6 +275,11 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     globalSearchPlaceholder: 'لێگەڕیان ل دووڤ قوتابیان...',
     studentSearchPlaceholder: 'ناڤێ قوتابی یان ژمارا تۆمارێ بنڤیسە...',
+    selectStudentPromptTitle: 'هیڤیە ناڤێ قوتابیەکێ هەلبژێرە ژ بۆ دیتنا کەشفا نمران',
+    selectStudentPromptDesc: 'ژ بۆ دیتنا کارتا فەرمی یا نمرەیێن وەرزێ ئێکێ، ناڤێ قوتابی ژ قۆناغ ٣ یا سەری هەلبژێرە یان ل دووڤ ناڤێ وی بگەڕە.',
+    selectStudentPlaceholder: 'کرتێ بکە بۆ هەلبژارتن یان لێگەڕیانا ناڤێ قوتابی...',
+    selectStudentToView: 'قوتابیەکێ ژ لیستا سەری هەلبژێرە دا کارتا نمران دەربکەڤیت',
+    studentsAvailable: 'قوتابیێن تۆمارکری',
     searchNoStudent: 'چ قوتابی نەهاتە دیتن ل ژێر ناڤێ',
     foundInOtherClasses: 'هاتە دیتن د هۆبێن دی دا',
 
@@ -365,6 +380,11 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     globalSearchPlaceholder: 'بحث في سجل الطلاب...',
     studentSearchPlaceholder: 'ابحث باسم الطالب أو رقم القيد...',
+    selectStudentPromptTitle: 'يرجى اختيار اسم الطالب لعرض كشف الدرجات',
+    selectStudentPromptDesc: 'يرجى اختيار اسم الطالب من الخطوة ٣ أعلاه أو استخدام مربع البحث لعرض تقييم الفصل الدراسي الأول الرسمي.',
+    selectStudentPlaceholder: 'اضغط لاختيار اسم الطالب أو البحث...',
+    selectStudentToView: 'اختر طالباً من القائمة أعلاه لعرض كشف الدرجات',
+    studentsAvailable: 'طالب مسجل',
     searchNoStudent: 'لا يوجد طالب مطابق للاسم',
     foundInOtherClasses: 'تم العثور في شعب أخرى',
 

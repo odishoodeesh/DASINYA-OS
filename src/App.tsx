@@ -162,24 +162,23 @@ export default function App() {
     );
   }, [students, selectedGrade, selectedClass]);
 
-  // Selected Student ID
-  const [selectedStudentId, setSelectedStudentId] = useState<string>(
-    IMPORTED_STUDENTS[0]?.id || ''
-  );
+  // Selected Student ID - empty until explicitly chosen by user
+  const [selectedStudentId, setSelectedStudentId] = useState<string>('');
 
   // Search input specifically for Step 3: Select Student
   const [studentSearchTerm, setStudentSearchTerm] = useState<string>('');
   const [isStudentDropdownOpen, setIsStudentDropdownOpen] = useState<boolean>(false);
   const studentDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Active student record
+  // Active student record - strictly null until student is chosen in this class
   const activeStudent = useMemo(() => {
+    if (!selectedStudentId) return null;
     const found = students.find(s => s.id === selectedStudentId);
     if (found && found.grade === selectedGrade && found.section === selectedClass) {
       return found;
     }
-    return availableStudents[0] || null;
-  }, [selectedStudentId, selectedGrade, selectedClass, availableStudents, students]);
+    return null;
+  }, [selectedStudentId, selectedGrade, selectedClass, students]);
 
   // Filter students within current class by name/roll search in Step 3
   const filteredClassStudents = useMemo(() => {
@@ -235,32 +234,23 @@ export default function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle grade change and auto-set available class & student
+  // Handle grade change: reset student selection until user explicitly picks a name
   const handleGradeChange = (newGrade: string) => {
     setSelectedGrade(newGrade);
     const classes = SCHOOL_STRUCTURE[newGrade] || ['Class A'];
     const nextClass = classes.includes(selectedClass) ? selectedClass : classes[0];
     setSelectedClass(nextClass);
     setStudentSearchTerm('');
-
-    const matching = students.filter(
-      s => s.grade === newGrade && s.section === nextClass
-    );
-    if (matching.length > 0) {
-      setSelectedStudentId(matching[0].id);
-    }
+    setSelectedStudentId('');
+    setIsStudentDropdownOpen(false);
   };
 
-  // Handle class change and auto-set student
+  // Handle class change: clear student selection completely until user selects a name
   const handleClassChange = (newClass: string) => {
     setSelectedClass(newClass);
     setStudentSearchTerm('');
-    const matching = students.filter(
-      s => s.grade === selectedGrade && s.section === newClass
-    );
-    if (matching.length > 0) {
-      setSelectedStudentId(matching[0].id);
-    }
+    setSelectedStudentId('');
+    setIsStudentDropdownOpen(false);
   };
 
   // Direct selection from search
@@ -501,10 +491,10 @@ export default function App() {
 
       {/* VIEW 1: PLAIN WHITE INSTITUTIONAL HERO WITH MARKSHEET BUTTON */}
       {view === 'home' && (
-        <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-16 sm:py-24 flex flex-col items-center justify-center text-center">
+        <main className="flex-1 w-full max-w-4xl mx-auto px-6 pt-3 sm:pt-6 pb-10 flex flex-col items-center justify-start text-center">
           
           {/* Official Crest - 4x size */}
-          <div className="w-80 h-80 sm:w-96 sm:h-96 md:w-[448px] md:h-[448px] max-w-full flex items-center justify-center mb-8">
+          <div className="w-80 h-80 sm:w-96 sm:h-96 md:w-[448px] md:h-[448px] max-w-full flex items-center justify-center mb-4 sm:mb-5">
             <img 
               src={SCHOOL_LOGO_URL} 
               alt="Dasinya Private School Logo" 
@@ -513,10 +503,10 @@ export default function App() {
           </div>
 
           {/* School Titles */}
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 mb-3">
+          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 mb-2 sm:mb-2.5">
             {t.schoolName}
           </h2>
-          <p className="text-sm sm:text-base text-neutral-500 max-w-lg mx-auto mb-8 leading-relaxed font-normal">
+          <p className="text-sm sm:text-base text-neutral-500 max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed font-normal">
             {t.welcomeIntro}
           </p>
 
@@ -532,7 +522,7 @@ export default function App() {
           </div>
 
           {/* Language Fast Switcher on Home */}
-          <div className="mt-8 flex items-center justify-center gap-1.5 text-xs text-neutral-500">
+          <div className="mt-5 sm:mt-6 flex items-center justify-center gap-1.5 text-xs text-neutral-500">
             <span className="text-neutral-400 font-medium">{t.language}:</span>
             {SUPPORTED_LANGUAGES.map((langOpt) => (
               <button
@@ -747,7 +737,7 @@ export default function App() {
                       setStudentSearchTerm(e.target.value);
                       setIsStudentDropdownOpen(true);
                     }}
-                    placeholder={activeStudent ? `${activeStudent.name.slice(0, 18)}...` : t.studentSearchPlaceholder}
+                    placeholder={activeStudent ? activeStudent.name : t.selectStudentPlaceholder}
                     className={`w-full py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs font-semibold text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 focus:bg-white shadow-xs transition-colors ${
                       isRtl ? 'pr-8 pl-12 text-right' : 'pl-8 pr-12 text-left'
                     }`}
@@ -834,13 +824,21 @@ export default function App() {
                 </div>
 
                 {/* Selected Student Pill / Info Summary */}
-                <div className="flex items-center justify-between text-[10px] text-neutral-500 pt-0.5">
-                  <span className="truncate">
-                    <strong className="text-neutral-900 font-semibold">{activeStudent?.name}</strong>
-                  </span>
-                  <span className="font-mono text-neutral-600 shrink-0 ml-1">
-                    {activeStudent?.rollNumber}
-                  </span>
+                <div className="flex items-center justify-between text-[10px] text-neutral-500 pt-0.5 min-h-[18px]">
+                  {activeStudent ? (
+                    <>
+                      <span className="truncate">
+                        <strong className="text-neutral-900 font-semibold">{activeStudent.name}</strong>
+                      </span>
+                      <span className="font-mono text-neutral-600 shrink-0 ml-1">
+                        {activeStudent.rollNumber}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-neutral-400 italic">
+                      {t.selectStudentToView}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -1104,10 +1102,23 @@ export default function App() {
               </div>
             </section>
           ) : (
-            <div className="text-center py-12 border border-dashed border-neutral-300 rounded-xl">
-              <p className="text-sm text-neutral-500">
-                {t.searchNoStudent} {formatGradeLabel(selectedGrade, language)} - {formatClassLabel(selectedClass, language)}.
+            <div className="bg-neutral-50/70 border border-dashed border-neutral-300 rounded-2xl p-10 sm:p-14 text-center max-w-2xl mx-auto my-4 shadow-2xs">
+              <div className="w-14 h-14 rounded-full bg-white border border-neutral-200 shadow-2xs mx-auto flex items-center justify-center mb-3 text-neutral-600">
+                <GraduationCap className="w-7 h-7 text-neutral-700" />
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-neutral-900 mb-1.5">
+                {t.selectStudentPromptTitle}
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-500 max-w-md mx-auto mb-4 leading-relaxed font-normal">
+                {t.selectStudentPromptDesc}
               </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-neutral-200 text-neutral-600 text-xs font-medium shadow-2xs">
+                <span>{formatGradeLabel(selectedGrade, language)}</span>
+                <span className="text-neutral-300">&bull;</span>
+                <span>{formatClassLabel(selectedClass, language)}</span>
+                <span className="text-neutral-300">&bull;</span>
+                <span className="font-semibold text-neutral-900">{availableStudents.length} {t.studentsAvailable}</span>
+              </div>
             </div>
           )}
         </main>
