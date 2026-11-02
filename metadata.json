@@ -1,0 +1,6 @@
+{
+  "name": "Dasinya Private School",
+  "description": "Dasinya Private School - clean, modern website ready for content.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
