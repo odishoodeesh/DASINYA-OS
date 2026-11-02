@@ -21,10 +21,12 @@ import {
   RefreshCw,
   Copy,
   Check,
-  Plus,
-  BookOpen
+  BookOpen,
+  Filter
 } from 'lucide-react';
 import { supabase, fetchStudentsFromSupabase, checkSupabaseConnection } from './lib/supabase';
+
+export const SCHOOL_LOGO_URL = 'https://i.ibb.co/sdrcN4PL/logo-dasinya-2.png';
 
 // Official Dasinya Private School Class Structure
 export const SCHOOL_STRUCTURE: Record<string, string[]> = {
@@ -38,6 +40,28 @@ export const SCHOOL_STRUCTURE: Record<string, string[]> = {
   'Grade 8': ['Class A'],
   'Grade 9': ['Class A'],
 };
+
+// Official Dasinya Private School Subjects
+export const OFFICIAL_SUBJECTS = [
+  { name: 'English', code: 'ENG', category: 'Language' },
+  { name: 'Kurdish', code: 'KUR', category: 'Language' },
+  { name: 'Arabic', code: 'ARA', category: 'Language' },
+  { name: 'French', code: 'FRN', category: 'Language' },
+  { name: 'Math', code: 'MTH', category: 'STEM' },
+  { name: 'Science', code: 'SCI', category: 'STEM' },
+  { name: 'IT', code: 'ITC', category: 'Technology' },
+  { name: 'AI', code: 'AIC', category: 'Technology' },
+  { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+  { name: 'KOMALAYETI', code: 'KOM', category: 'Humanities' },
+  { name: 'KARAMAYI', code: 'KRM', category: 'Applied' },
+  { name: 'Psychology (دەرونزانی)', code: 'PSY', category: 'Humanities' },
+  { name: 'Conversation', code: 'CNV', category: 'Communication' },
+  { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+  { name: 'Religion', code: 'REL', category: 'Ethics' },
+  { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+  { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+  { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+];
 
 interface SubjectMark {
   subject: string;
@@ -64,7 +88,74 @@ interface StudentRecord {
   subjects: SubjectMark[];
 }
 
-// Initial cohort tailored to the school's 1-9 grades and classes
+// Generate marks for any student based on their profile and official subjects
+function generateOfficialSubjectsMarks(
+  grade: string,
+  baseScore: number,
+  variance: number[]
+): SubjectMark[] {
+  const gradeNum = parseInt(grade.replace(/\D/g, ''), 10) || 1;
+
+  // Primary grades (1-3) might focus on fundamental subjects, while grades 4-9 take full advanced curriculum
+  const activeList = OFFICIAL_SUBJECTS.filter(s => {
+    if (gradeNum <= 3) {
+      // Younger grades don't take French or AI or Psychology yet
+      if (s.name === 'French' || s.name === 'AI' || s.name === 'Psychology (دەرونزانی)') return false;
+    } else if (gradeNum <= 5) {
+      // Intermediate grades don't take Psychology yet
+      if (s.name === 'Psychology (دەرونزانی)') return false;
+    }
+    return true;
+  });
+
+  const getRemarks = (subName: string, score: number) => {
+    if (score >= 95) {
+      if (subName.includes('Kurdish')) return 'Superior Kurdish language and reading skills';
+      if (subName.includes('Arabic')) return 'Fluent recitation and grammar comprehension';
+      if (subName.includes('English')) return 'Exceptional vocabulary and essay structure';
+      if (subName.includes('Math')) return 'Outstanding mathematical logic & problem solving';
+      if (subName.includes('Science')) return 'Excellent grasp of scientific experiments';
+      if (subName.includes('AI')) return 'Impressive understanding of machine learning concepts';
+      if (subName.includes('IT')) return 'Superb digital literacy & software acumen';
+      if (subName.includes('Psychology')) return 'Deep awareness of behavioral concepts';
+      if (subName.includes('KOMALAYETI')) return 'High cultural and community awareness';
+      if (subName.includes('KARAMAYI')) return 'Exceptional practical skills & project initiative';
+      if (subName.includes('Moral') || subName.includes('Religion')) return 'Exemplary ethics, discipline, and respect';
+      if (subName.includes('Conversation')) return 'Confident and polite oral communication';
+      return 'Exemplary performance across all benchmarks';
+    } else if (score >= 85) {
+      return 'Very consistent, thorough, and disciplined work';
+    } else if (score >= 70) {
+      return 'Good understanding, consistent effort demonstrated';
+    }
+    return 'Shows dedication, continue focused practice';
+  };
+
+  const getGrade = (score: number) => {
+    if (score >= 95) return 'A+';
+    if (score >= 90) return 'A';
+    if (score >= 80) return 'B+';
+    if (score >= 70) return 'B';
+    if (score >= 60) return 'C+';
+    if (score >= 50) return 'C';
+    return 'D';
+  };
+
+  return activeList.map((sub, idx) => {
+    const shift = variance[idx % variance.length] || 0;
+    const score = Math.min(100, Math.max(50, baseScore + shift));
+    return {
+      subject: sub.name,
+      code: sub.code,
+      maxMarks: 100,
+      obtainedMarks: score,
+      grade: getGrade(score),
+      remarks: getRemarks(sub.name, score),
+    };
+  });
+}
+
+// Initial cohorts across all 9 grades using official Dasinya subjects
 const INITIAL_STUDENTS: StudentRecord[] = [
   // Grade 1 - Class A
   {
@@ -80,13 +171,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Emily Robinson',
-    subjects: [
-      { subject: 'English Reading & Phonics', code: 'ENG-01', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Fluent reading and enthusiastic participation' },
-      { subject: 'Elementary Mathematics', code: 'MTH-01', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Exceptional number counting and addition' },
-      { subject: 'Environmental Studies', code: 'ENV-01', maxMarks: 100, obtainedMarks: 94, grade: 'A+', remarks: 'Keen observer of nature and science' },
-      { subject: 'Arts & Creative Craft', code: 'ART-01', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Vibrant coloring and fine motor skills' },
-      { subject: 'Physical Education & Play', code: 'PED-01', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Great teamwork and energy' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 1', 95, [3, 4, 1, 2, -1, 4, 2, 3, 1, 0, 2])
   },
   {
     id: 'DPS-G1A-02',
@@ -101,13 +186,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Emily Robinson',
-    subjects: [
-      { subject: 'English Reading & Phonics', code: 'ENG-01', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Excellent storytelling & spelling' },
-      { subject: 'Elementary Mathematics', code: 'MTH-01', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Strong visual problem solving' },
-      { subject: 'Environmental Studies', code: 'ENV-01', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Very inquisitive in class activities' },
-      { subject: 'Arts & Creative Craft', code: 'ART-01', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Delightful drawing skills' },
-      { subject: 'Physical Education & Play', code: 'PED-01', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Very active and supportive teammate' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 1', 93, [4, 2, 3, -1, 2, 3, 1, 4, 0, 2])
   },
 
   // Grade 1 - Class B
@@ -124,13 +203,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Very Good',
     classTeacher: 'Ms. Sarah Jenkins',
-    subjects: [
-      { subject: 'English Reading & Phonics', code: 'ENG-01', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Clear pronunciation and vocabulary' },
-      { subject: 'Elementary Mathematics', code: 'MTH-01', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Quick mental arithmetic' },
-      { subject: 'Environmental Studies', code: 'ENV-01', maxMarks: 100, obtainedMarks: 91, grade: 'A', remarks: 'Loves plant and animal topics' },
-      { subject: 'Arts & Creative Craft', code: 'ART-01', maxMarks: 100, obtainedMarks: 90, grade: 'A', remarks: 'Great creativity' },
-      { subject: 'Physical Education & Play', code: 'PED-01', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Active sportsmanship' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 1', 92, [2, 3, 1, 4, 0, -2, 3, 2, 1])
   },
 
   // Grade 1 - Class C
@@ -147,13 +220,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Hannah White',
-    subjects: [
-      { subject: 'English Reading & Phonics', code: 'ENG-01', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Superb reader and communicator' },
-      { subject: 'Elementary Mathematics', code: 'MTH-01', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Very neat arithmetic exercises' },
-      { subject: 'Environmental Studies', code: 'ENV-01', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Eager and polite participant' },
-      { subject: 'Arts & Creative Craft', code: 'ART-01', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Exceptional craft and sketch work' },
-      { subject: 'Physical Education & Play', code: 'PED-01', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Great agility and cooperation' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 1', 96, [3, 2, 4, 1, 2, 3, 4, 1, 2])
   },
 
   // Grade 2 - Class A
@@ -170,13 +237,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mr. Patrick Moore',
-    subjects: [
-      { subject: 'English Grammar & Writing', code: 'ENG-02', maxMarks: 100, obtainedMarks: 94, grade: 'A+', remarks: 'Rich vocabulary and neat handwriting' },
-      { subject: 'Mathematics & Geometry Basics', code: 'MTH-02', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Excellent understanding of multiplication' },
-      { subject: 'General Science', code: 'SCI-02', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Understands ecosystems and weather well' },
-      { subject: 'Social Studies & Civics', code: 'SOC-02', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Good grasp of community roles' },
-      { subject: 'Art & Design', code: 'ART-02', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Creative expressions' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 2', 94, [3, 2, -1, 4, 1, 2, 3, 0, 2])
   },
 
   // Grade 2 - Class B
@@ -193,13 +254,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Olivia Nelson',
-    subjects: [
-      { subject: 'English Grammar & Writing', code: 'ENG-02', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Expressive composition' },
-      { subject: 'Mathematics & Geometry Basics', code: 'MTH-02', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Very dependable problem solver' },
-      { subject: 'General Science', code: 'SCI-02', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Loves science experiments' },
-      { subject: 'Social Studies & Civics', code: 'SOC-02', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Insightful thoughts' },
-      { subject: 'Art & Design', code: 'ART-02', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Talented young artist' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 2', 95, [2, 3, 4, 1, 0, 2, 3, 1, 4])
   },
 
   // Grade 2 - Class C
@@ -216,13 +271,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Very Good',
     classTeacher: 'Ms. Rebecca Scott',
-    subjects: [
-      { subject: 'English Grammar & Writing', code: 'ENG-02', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Good sentence construction' },
-      { subject: 'Mathematics & Geometry Basics', code: 'MTH-02', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Great calculation speed' },
-      { subject: 'General Science', code: 'SCI-02', maxMarks: 100, obtainedMarks: 90, grade: 'A', remarks: 'Keen curiosity' },
-      { subject: 'Social Studies & Civics', code: 'SOC-02', maxMarks: 100, obtainedMarks: 91, grade: 'A', remarks: 'Attentive and disciplined' },
-      { subject: 'Art & Design', code: 'ART-02', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Very neat projects' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 2', 90, [1, 3, 2, -2, 4, 1, 2, 0, 3])
   },
 
   // Grade 3 - Class A
@@ -239,13 +288,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mr. Edward Foster',
-    subjects: [
-      { subject: 'English Language & Reading', code: 'ENG-03', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Superior narrative writing' },
-      { subject: 'Mathematics', code: 'MTH-03', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'High accuracy in division & fractions' },
-      { subject: 'Primary Science', code: 'SCI-03', maxMarks: 100, obtainedMarks: 94, grade: 'A+', remarks: 'Thorough science fair project' },
-      { subject: 'Social Studies & History', code: 'SOC-03', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Strong memory of timeline events' },
-      { subject: 'Computer Basics & Logic', code: 'CMP-03', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Quick learner with computers' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 3', 95, [3, 2, 4, -1, 2, 4, 1, 3, 0])
   },
 
   // Grade 3 - Class B
@@ -262,13 +305,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Grace Taylor',
-    subjects: [
-      { subject: 'English Language & Reading', code: 'ENG-03', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Beautiful creative writing' },
-      { subject: 'Mathematics', code: 'MTH-03', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Diligent problem solving' },
-      { subject: 'Primary Science', code: 'SCI-03', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Insightful deductions in lab' },
-      { subject: 'Social Studies & History', code: 'SOC-03', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Active leadership in group work' },
-      { subject: 'Computer Basics & Logic', code: 'CMP-03', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Great typing and algorithmic skills' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 3', 96, [2, 4, 1, 3, 2, 0, 4, 1, 3])
   },
 
   // Grade 4 - Class A
@@ -285,13 +322,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Ms. Rachel Bennett',
-    subjects: [
-      { subject: 'English Literature & Grammar', code: 'ENG-04', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Clear and structured paragraphs' },
-      { subject: 'Intermediate Mathematics', code: 'MTH-04', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Top scores in geometry & word problems' },
-      { subject: 'Natural Science', code: 'SCI-04', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Passionate about environmental biology' },
-      { subject: 'World Geography & Culture', code: 'GEO-04', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Accurate map drawing and notes' },
-      { subject: 'Computer Applications', code: 'CMP-04', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Confident with digital tools' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 4', 93, [3, 1, 4, -2, 3, 2, 4, 1, 2, 0])
   },
 
   // Grade 4 - Class B
@@ -308,13 +339,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mr. David Miller',
-    subjects: [
-      { subject: 'English Literature & Grammar', code: 'ENG-04', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Outstanding reading comprehension' },
-      { subject: 'Intermediate Mathematics', code: 'MTH-04', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Methodical and precise calculations' },
-      { subject: 'Natural Science', code: 'SCI-04', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Excellent project presentation' },
-      { subject: 'World Geography & Culture', code: 'GEO-04', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Knowledgeable about continents and climate' },
-      { subject: 'Computer Applications', code: 'CMP-04', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Solid understanding of software basics' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 4', 94, [2, 4, 1, 3, 0, 2, 4, 1, 3, -1])
   },
 
   // Grade 5 - Class A
@@ -331,13 +356,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mrs. Catherine Hayes',
-    subjects: [
-      { subject: 'Advanced English & Rhetoric', code: 'ENG-05', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Superb argumentative essays' },
-      { subject: 'Applied Mathematics', code: 'MTH-05', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Top in algebraic concepts & percentages' },
-      { subject: 'Integrated Science', code: 'SCI-05', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Strong empirical reasoning' },
-      { subject: 'Global Social Studies', code: 'SOC-05', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Engaged and respectful discussions' },
-      { subject: 'Introductory Programming', code: 'CMP-05', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Excellent Scratch & Python basics' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 5', 96, [3, 2, 4, 1, 3, 2, 4, 0, 2, 1])
   },
 
   // Grade 5 - Class B
@@ -354,13 +373,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Very Good',
     classTeacher: 'Mr. James Cooper',
-    subjects: [
-      { subject: 'Advanced English & Rhetoric', code: 'ENG-05', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Creative writing award recipient' },
-      { subject: 'Applied Mathematics', code: 'MTH-05', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Fast and accurate calculations' },
-      { subject: 'Integrated Science', code: 'SCI-05', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Very inquisitive in lab practicals' },
-      { subject: 'Global Social Studies', code: 'SOC-05', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Thorough historical research' },
-      { subject: 'Introductory Programming', code: 'CMP-05', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Great algorithmic thinking' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 5', 93, [1, 4, 2, 3, -1, 4, 2, 0, 3, 2])
   },
 
   // Grade 6 - Class A
@@ -377,13 +390,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Dr. Arthur Mitchell',
-    subjects: [
-      { subject: 'English Literature', code: 'ENG-06', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Deep textual interpretation' },
-      { subject: 'Pre-Algebra & Geometry', code: 'MTH-06', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Outstanding logical formulations' },
-      { subject: 'General Science (Physics/Chemistry)', code: 'SCI-06', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Superior experimental accuracy' },
-      { subject: 'History & Civics', code: 'HIS-06', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Well-researched seminar presentation' },
-      { subject: 'Computer Science', code: 'CSC-06', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Exceptional coding prowess' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 6', 95, [3, 2, 4, 1, -1, 4, 2, 3, 0, 2, 3])
   },
   {
     id: 'DPS-G6A-02',
@@ -398,13 +405,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Dr. Arthur Mitchell',
-    subjects: [
-      { subject: 'English Literature', code: 'ENG-06', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Eloquent writing and analysis' },
-      { subject: 'Pre-Algebra & Geometry', code: 'MTH-06', maxMarks: 100, obtainedMarks: 93, grade: 'A', remarks: 'Very neat proofs and algebra' },
-      { subject: 'General Science (Physics/Chemistry)', code: 'SCI-06', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Accurate data logging in lab' },
-      { subject: 'History & Civics', code: 'HIS-06', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Great insight into ancient governance' },
-      { subject: 'Computer Science', code: 'CSC-06', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Creative project work' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 6', 94, [4, 1, 3, 2, 3, 0, 4, 1, 2, -1, 3])
   },
 
   // Grade 7 - Class A
@@ -421,13 +422,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Prof. Helen Clark',
-    subjects: [
-      { subject: 'English Literature & Composition', code: 'ENG-07', maxMarks: 100, obtainedMarks: 94, grade: 'A+', remarks: 'Sharp critique and rich syntax' },
-      { subject: 'Algebra I', code: 'MTH-07', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Flawless quadratic and linear equations' },
-      { subject: 'Life Science & Biology', code: 'BIO-07', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Outstanding cellular biology diagrams' },
-      { subject: 'Physical Science', code: 'PHY-07', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Strong mathematical modeling' },
-      { subject: 'Computer Science & Python', code: 'CSC-07', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Constructed custom math algorithms' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 7', 95, [3, 4, 1, 2, 4, 0, 3, 1, 2, 4, -1, 2])
   },
   {
     id: 'DPS-G7A-02',
@@ -442,13 +437,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Prof. Helen Clark',
-    subjects: [
-      { subject: 'English Literature & Composition', code: 'ENG-07', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Top literary essay in grade' },
-      { subject: 'Algebra I', code: 'MTH-07', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Very methodical and accurate' },
-      { subject: 'Life Science & Biology', code: 'BIO-07', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Deep understanding of genetics' },
-      { subject: 'Physical Science', code: 'PHY-07', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Good grasp of thermodynamics' },
-      { subject: 'Computer Science & Python', code: 'CSC-07', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Clean code conventions' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 7', 94, [2, 4, 3, 1, 0, 4, 2, 3, 1, 2, 4, 0])
   },
 
   // Grade 8 - Class A
@@ -465,13 +454,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mr. Jonathan Price',
-    subjects: [
-      { subject: 'Advanced English & Rhetoric', code: 'ENG-08', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'High literary maturity and debate' },
-      { subject: 'Algebra & Coordinate Geometry', code: 'MTH-08', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Exceptional geometric derivations' },
-      { subject: 'Physics & Chemistry', code: 'SCI-08', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Superb lab deductions & reports' },
-      { subject: 'World History & Modern Politics', code: 'HIS-08', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Comprehensive essay compositions' },
-      { subject: 'Computer Programming & Systems', code: 'CSC-08', maxMarks: 100, obtainedMarks: 100, grade: 'A+', remarks: 'Remarkable software project' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 8', 96, [3, 2, 4, 1, 3, 2, 4, 0, 3, 1, 2, 4])
   },
   {
     id: 'DPS-G8A-02',
@@ -486,13 +469,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Mr. Jonathan Price',
-    subjects: [
-      { subject: 'Advanced English & Rhetoric', code: 'ENG-08', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Top prose and thesis defense' },
-      { subject: 'Algebra & Coordinate Geometry', code: 'MTH-08', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Consistently high quiz scores' },
-      { subject: 'Physics & Chemistry', code: 'SCI-08', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Detailed chemical reactions analysis' },
-      { subject: 'World History & Modern Politics', code: 'HIS-08', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Eloquent debate participant' },
-      { subject: 'Computer Programming & Systems', code: 'CSC-08', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Strong structured coding' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 8', 93, [2, 4, 1, 3, -1, 4, 2, 0, 3, 2, 4, 1])
   },
 
   // Grade 9 - Class A
@@ -509,14 +486,7 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Ms. Clara Thorne',
-    subjects: [
-      { subject: 'Foundation Mathematics', code: 'MTH-091', maxMarks: 100, obtainedMarks: 98, grade: 'A+', remarks: 'Superior analytical reasoning' },
-      { subject: 'English Language & Literature', code: 'ENG-092', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Insightful critical reading' },
-      { subject: 'Integrated Science', code: 'SCI-093', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Top laboratory investigation' },
-      { subject: 'Social Studies & Civics', code: 'SOC-094', maxMarks: 100, obtainedMarks: 92, grade: 'A', remarks: 'Strong grasp of political systems' },
-      { subject: 'Information Technology', code: 'ITC-095', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Mastery of algorithms and databases' },
-      { subject: 'Environmental Studies', code: 'ENV-096', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Creative sustainable solutions' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 9', 96, [3, 2, 4, 1, 3, 2, 4, 0, 2, 1, 3, 4, 2])
   },
   {
     id: 'DPS-G9A-02',
@@ -531,25 +501,14 @@ const INITIAL_STUDENTS: StudentRecord[] = [
     academicYear: '2025 - 2026',
     conduct: 'Exemplary',
     classTeacher: 'Ms. Clara Thorne',
-    subjects: [
-      { subject: 'Foundation Mathematics', code: 'MTH-091', maxMarks: 100, obtainedMarks: 94, grade: 'A', remarks: 'Very neat and logical steps' },
-      { subject: 'English Language & Literature', code: 'ENG-092', maxMarks: 100, obtainedMarks: 99, grade: 'A+', remarks: 'Highest score in language composition' },
-      { subject: 'Integrated Science', code: 'SCI-093', maxMarks: 100, obtainedMarks: 95, grade: 'A+', remarks: 'Outstanding physics and chemistry lab work' },
-      { subject: 'Social Studies & Civics', code: 'SOC-094', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Thorough historical research papers' },
-      { subject: 'Information Technology', code: 'ITC-095', maxMarks: 100, obtainedMarks: 96, grade: 'A+', remarks: 'Very methodical and clean coding' },
-      { subject: 'Environmental Studies', code: 'ENV-096', maxMarks: 100, obtainedMarks: 97, grade: 'A+', remarks: 'Excellent project leadership' },
-    ]
+    subjects: generateOfficialSubjectsMarks('Grade 9', 95, [4, 3, 2, 4, 1, 3, 2, 4, 0, 3, 1, 2, 4])
   }
 ];
 
 export default function App() {
   const [view, setView] = useState<'home' | 'marksheets'>('home');
   const [students, setStudents] = useState<StudentRecord[]>(INITIAL_STUDENTS);
-  const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
-  const [hasSupabaseTable, setHasSupabaseTable] = useState<boolean>(false);
-  const [showDbModal, setShowDbModal] = useState<boolean>(false);
-  const [copiedSql, setCopiedSql] = useState<boolean>(false);
-  const [isLoadingDb, setIsLoadingDb] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   // Official school grades (Grade 1 through Grade 9)
   const officialGrades = useMemo(() => Object.keys(SCHOOL_STRUCTURE), []);
@@ -584,39 +543,16 @@ export default function App() {
     return availableStudents[0] || null;
   }, [selectedStudentId, selectedGrade, selectedClass, availableStudents, students]);
 
-  // Check Supabase on mount
-  useEffect(() => {
-    async function initDb() {
-      setIsLoadingDb(true);
-      const res = await checkSupabaseConnection();
-      setIsSupabaseConnected(res.connected);
-      setHasSupabaseTable(res.hasTables);
-
-      if (res.connected && res.hasTables) {
-        const rows = await fetchStudentsFromSupabase();
-        if (rows && rows.length > 0) {
-          const mapped: StudentRecord[] = rows.map(r => ({
-            id: r.id,
-            name: r.name,
-            rollNumber: r.roll_number,
-            grade: r.grade,
-            section: r.section,
-            gender: r.gender || 'Not Specified',
-            attendance: r.attendance || '98%',
-            classRank: r.class_rank || 'N/A',
-            term: r.term || 'Second Term Assessment',
-            academicYear: r.academic_year || '2025 - 2026',
-            conduct: r.conduct || 'Very Good',
-            classTeacher: r.class_teacher || 'Faculty Advisor',
-            subjects: r.subjects || []
-          }));
-          setStudents(mapped);
-        }
-      }
-      setIsLoadingDb(false);
-    }
-    initDb();
-  }, []);
+  // Filtered subjects if category filter is selected
+  const displayedSubjects = useMemo(() => {
+    if (!activeStudent) return [];
+    if (selectedCategory === 'All') return activeStudent.subjects;
+    
+    return activeStudent.subjects.filter(sub => {
+      const match = OFFICIAL_SUBJECTS.find(o => o.name === sub.subject);
+      return match ? match.category === selectedCategory : true;
+    });
+  }, [activeStudent, selectedCategory]);
 
   // Handle grade change and auto-set available class & student
   const handleGradeChange = (newGrade: string) => {
@@ -644,7 +580,7 @@ export default function App() {
     }
   };
 
-  // Calculate totals and percentage
+  // Calculate totals and percentage across all student subjects
   const reportTotals = useMemo(() => {
     if (!activeStudent || !activeStudent.subjects.length) {
       return { totalMax: 0, totalObtained: 0, percentage: '0.0', status: 'N/A' };
@@ -674,14 +610,18 @@ export default function App() {
           onClick={() => setView('home')}
           className="text-left group flex items-center gap-3 cursor-pointer"
         >
-          <div className="w-9 h-9 border border-neutral-200 rounded-md flex items-center justify-center bg-neutral-50 text-neutral-900 group-hover:border-neutral-900 transition-colors">
-            <GraduationCap className="w-5 h-5" />
+          <div className="w-10 h-10 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+            <img 
+              src={SCHOOL_LOGO_URL} 
+              alt="Dasinya Private School Logo" 
+              className="w-full h-full object-contain" 
+            />
           </div>
           <div>
             <h1 className="text-base sm:text-lg font-bold tracking-wider uppercase text-neutral-900 group-hover:text-neutral-700 transition-colors">
               Dasinya Private School
             </h1>
-            <p className="text-[11px] text-neutral-400">Grades 1 – 9 &bull; Academic Portal</p>
+            <p className="text-[11px] text-neutral-400">Grades 1 – 9 &bull; Official Marksheets Portal</p>
           </div>
         </button>
 
@@ -718,14 +658,18 @@ export default function App() {
       {/* VIEW 1: PLAIN WHITE HOME WITH MARKSHEET BUTTON */}
       {view === 'home' && (
         <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-full border border-neutral-200 bg-neutral-50 flex items-center justify-center text-neutral-700 mb-6 shadow-xs">
-            <GraduationCap className="w-8 h-8 stroke-[1.5]" />
+          <div className="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center mb-6">
+            <img 
+              src={SCHOOL_LOGO_URL} 
+              alt="Dasinya Private School Logo" 
+              className="w-full h-full object-contain drop-shadow-xs" 
+            />
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-3">
             Dasinya Private School
           </h2>
-          <p className="text-sm sm:text-base text-neutral-400 max-w-md mx-auto mb-10 leading-relaxed font-normal">
+          <p className="text-sm sm:text-base text-neutral-400 max-w-md mx-auto mb-8 leading-relaxed font-normal">
             Welcome to the official institutional portal. Select Marksheet to access student evaluations and academic records.
           </p>
 
@@ -764,7 +708,7 @@ export default function App() {
                 Select Grade, Class, and Student
               </h2>
               <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
-                Choose from Grade 1 to 9 and its designated classes (A, B, or C) to display the student report card.
+                Choose Grade (1–9), Section (A, B, C), and Student to display their official report card.
               </p>
             </div>
 
@@ -861,7 +805,7 @@ export default function App() {
                   ))}
                 </div>
                 <p className="text-[11px] text-neutral-400">
-                  {selectedGrade} offers: {availableClasses.join(' & ')}
+                  {selectedGrade} sections: {availableClasses.join(' & ')}
                 </p>
               </div>
 
@@ -920,9 +864,13 @@ export default function App() {
             <section id="printable-marksheet" className="bg-white border border-neutral-300 rounded-xl p-6 sm:p-10 shadow-xs relative">
               {/* Report Card Header */}
               <div className="text-center border-b-2 border-neutral-900 pb-6 mb-8">
-                <div className="inline-flex items-center justify-center gap-3 mb-2">
-                  <div className="w-12 h-12 rounded-full border-2 border-neutral-900 flex items-center justify-center bg-white text-neutral-900">
-                    <GraduationCap className="w-7 h-7" />
+                <div className="inline-flex items-center justify-center gap-4 mb-2">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0">
+                    <img 
+                      src={SCHOOL_LOGO_URL} 
+                      alt="Dasinya Private School Logo" 
+                      className="w-full h-full object-contain" 
+                    />
                   </div>
                   <div className="text-left">
                     <h2 className="text-2xl sm:text-3xl font-extrabold tracking-wider uppercase text-neutral-900">
@@ -936,7 +884,7 @@ export default function App() {
                 
                 <div className="mt-4 pt-3 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-600 gap-2">
                   <span className="font-bold tracking-widest uppercase text-neutral-900 bg-neutral-100 px-3 py-1 rounded">
-                    Student Academic Evaluation &bull; {activeStudent.grade} ({activeStudent.section})
+                    Official Student Evaluation &bull; {activeStudent.grade} ({activeStudent.section})
                   </span>
                   <span className="font-medium">
                     Academic Year: <strong className="text-neutral-900">{activeStudent.academicYear}</strong>
@@ -948,7 +896,7 @@ export default function App() {
               </div>
 
               {/* Student Metadata Bar */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-neutral-50 p-4 sm:p-5 rounded-lg border border-neutral-200 text-xs mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-neutral-50 p-4 sm:p-5 rounded-lg border border-neutral-200 text-xs mb-6">
                 <div>
                   <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-medium">Student Name</span>
                   <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.name}</p>
@@ -971,7 +919,30 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Subjects Table */}
+              {/* Subject Category Filter (Screen Only) */}
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs print:hidden">
+                <div className="flex items-center gap-1.5 text-neutral-500">
+                  <Filter className="w-3.5 h-3.5" />
+                  <span className="font-medium">Curriculum Filter:</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {['All', 'Language', 'STEM', 'Technology', 'Humanities', 'Applied', 'Ethics', 'Arts & Sports'].map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer ${
+                        selectedCategory === cat 
+                          ? 'bg-neutral-900 text-white' 
+                          : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Official Subjects Table */}
               <div className="overflow-x-auto border border-neutral-200 rounded-lg mb-8">
                 <table className="w-full text-left text-sm">
                   <thead>
@@ -985,13 +956,20 @@ export default function App() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100 text-xs sm:text-sm">
-                    {activeStudent.subjects.map((sub, index) => (
+                    {displayedSubjects.map((sub, index) => (
                       <tr key={index} className="hover:bg-neutral-50/70 transition-colors">
-                        <td className="py-3 px-4 font-semibold text-neutral-900">{sub.subject}</td>
-                        <td className="py-3 px-3 text-neutral-500 font-mono text-xs">{sub.code}</td>
-                        <td className="py-3 px-3 text-right text-neutral-600">{sub.maxMarks}</td>
-                        <td className="py-3 px-3 text-right font-bold text-neutral-900">{sub.obtainedMarks}</td>
-                        <td className="py-3 px-4 text-center">
+                        <td className="py-2.5 px-4 font-semibold text-neutral-900 flex items-center gap-2">
+                          <span>{sub.subject}</span>
+                          {sub.subject.includes('دەرونزانی') && (
+                            <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded font-normal font-sans">
+                              Kurdish / Regional
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 text-neutral-500 font-mono text-xs">{sub.code}</td>
+                        <td className="py-2.5 px-3 text-right text-neutral-600">{sub.maxMarks}</td>
+                        <td className="py-2.5 px-3 text-right font-bold text-neutral-900">{sub.obtainedMarks}</td>
+                        <td className="py-2.5 px-4 text-center">
                           <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-bold ${
                             sub.grade.startsWith('A') 
                               ? 'bg-neutral-900 text-white' 
@@ -1000,13 +978,15 @@ export default function App() {
                             {sub.grade}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-neutral-600 text-xs">{sub.remarks}</td>
+                        <td className="py-2.5 px-4 text-neutral-600 text-xs">{sub.remarks}</td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
                     <tr className="bg-neutral-100 font-bold border-t-2 border-neutral-900 text-neutral-900 text-xs sm:text-sm">
-                      <td className="py-3.5 px-4 uppercase tracking-wider">Overall Assessment</td>
+                      <td className="py-3.5 px-4 uppercase tracking-wider">
+                        Cumulative Total ({activeStudent.subjects.length} Subjects)
+                      </td>
                       <td className="py-3.5 px-3"></td>
                       <td className="py-3.5 px-3 text-right">{reportTotals.totalMax}</td>
                       <td className="py-3.5 px-3 text-right text-neutral-950 font-extrabold text-base">{reportTotals.totalObtained}</td>
@@ -1053,8 +1033,8 @@ export default function App() {
                 <div className="text-center sm:text-left">
                   <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-1">Grading Key</span>
                   <p className="text-[11px] text-neutral-500 leading-relaxed">
-                    A+ (90-100%) &bull; A (80-89%) &bull; B+ (70-79%)<br />
-                    B (60-69%) &bull; C (50-59%) &bull; Passing Mark: 50%
+                    A+ (95-100%) &bull; A (90-94%) &bull; B+ (80-89%)<br />
+                    B (70-79%) &bull; C+ (60-69%) &bull; C (50-59%) &bull; Passing: 50%
                   </p>
                 </div>
 
