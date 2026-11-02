@@ -12,7 +12,9 @@ import {
   Calendar, 
   CheckCircle2, 
   ArrowLeft,
+  ArrowRight,
   ChevronRight,
+  ChevronLeft,
   User,
   School,
   FileCheck,
@@ -25,9 +27,21 @@ import {
   X,
   ChevronDown,
   Percent,
-  SlidersHorizontal
+  Globe
 } from 'lucide-react';
 import { IMPORTED_STUDENTS, StudentRecord, SubjectMark } from './data/importedStudents';
+import { 
+  Language, 
+  SUPPORTED_LANGUAGES, 
+  TRANSLATIONS, 
+  formatGradeLabel, 
+  formatClassLabel, 
+  getTranslatedSubject, 
+  getTranslatedRemark, 
+  getTranslatedCategory,
+  formatClassRank,
+  formatConduct
+} from './lib/translations';
 
 export const SCHOOL_LOGO_URL = 'https://i.ibb.co/sdrcN4PL/logo-dasinya-2.png';
 
@@ -68,9 +82,34 @@ export const OFFICIAL_SUBJECTS = [
 
 export default function App() {
   const [view, setView] = useState<'home' | 'marksheets'>('home');
+  const [language, setLanguage] = useState<Language>('en');
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
   const [students] = useState<StudentRecord[]>(IMPORTED_STUDENTS);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [globalSearchQuery, setGlobalSearchQuery] = useState<string>('');
+
+  // Translations dictionary for active language
+  const t = useMemo(() => TRANSLATIONS[language], [language]);
+  const isRtl = language === 'ku' || language === 'ar';
+
+  // Synchronize HTML dir and lang attributes
+  useEffect(() => {
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [isRtl, language]);
+
+  // Close language menu on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Official school grades (Grade 1 through Grade 9)
   const officialGrades = useMemo(() => Object.keys(SCHOOL_STRUCTURE), []);
@@ -86,32 +125,23 @@ export default function App() {
   const isPrimary25 = gradeNum <= 3; // Grades 1, 2, 3 have 25% weight per term
   const termWeightPercentage = isPrimary25 ? 25 : 20;
 
-  // Available Terms based on Grade weighting rule
+  // Available Terms based on Grade weighting rule - Term 1 only for now
   const availableTerms = useMemo(() => {
-    if (isPrimary25) {
-      return [
-        { id: 'Term 1', label: 'Term 1 Examination', weight: '25%' },
-        { id: 'Term 2', label: 'Term 2 Examination', weight: '25%' },
-        { id: 'Term 3', label: 'Term 3 Examination', weight: '25%' },
-        { id: 'Term 4', label: 'Term 4 Final Examination', weight: '25%' },
-      ];
-    } else {
-      return [
-        { id: 'Term 1', label: 'Term 1 Examination', weight: '20%' },
-        { id: 'Term 2', label: 'Term 2 Examination', weight: '20%' },
-        { id: 'Term 3', label: 'Term 3 Examination', weight: '20%' },
-        { id: 'Term 4', label: 'Term 4 Examination', weight: '20%' },
-        { id: 'Term 5', label: 'Term 5 Final Examination', weight: '20%' },
-      ];
-    }
-  }, [isPrimary25]);
+    return [
+      { 
+        id: 'Term 1', 
+        label: t.term1Name, 
+        weight: `${termWeightPercentage}%` 
+      }
+    ];
+  }, [t.term1Name, termWeightPercentage]);
 
-  // Selected Term state
-  const [selectedTermId, setSelectedTermId] = useState<string>('Term 2');
+  // Selected Term state (Term 1 only)
+  const [selectedTermId, setSelectedTermId] = useState<string>('Term 1');
 
   const selectedTermObj = useMemo(() => {
-    return availableTerms.find(t => t.id === selectedTermId) || availableTerms[1] || availableTerms[0];
-  }, [availableTerms, selectedTermId]);
+    return availableTerms[0];
+  }, [availableTerms]);
 
   // Available classes for currently selected grade
   const availableClasses = useMemo(() => {
@@ -192,7 +222,7 @@ export default function App() {
     });
   }, [activeStudent, selectedCategory]);
 
-  // Close dropdown on outside click
+  // Close student dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (studentDropdownRef.current && !studentDropdownRef.current.contains(event.target as Node)) {
@@ -261,29 +291,40 @@ export default function App() {
     const weightedTotal = ((parseFloat(percentage) * termWeightPercentage) / 100).toFixed(2);
     const maxWeighted = termWeightPercentage.toFixed(1);
 
-    let status = 'Pass';
+    let status = t.statusPassed;
     const num = parseFloat(percentage);
-    if (num >= 95) status = 'Pass with High Distinction';
-    else if (num >= 85) status = 'Pass with Distinction';
-    else if (num >= 50) status = 'Passed';
-    else status = 'Needs Improvement';
+    if (num >= 95) status = t.statusPassHighDistinction;
+    else if (num >= 85) status = t.statusPassDistinction;
+    else if (num >= 50) status = t.statusPassed;
+    else status = t.statusNeedsImprovement;
 
     return { totalMax, totalObtained, percentage, weightedTotal, maxWeighted, status };
-  }, [activeStudent, termWeightPercentage]);
+  }, [activeStudent, termWeightPercentage, t]);
 
   const handlePrint = () => {
     window.print();
   };
 
+  // Current language option
+  const activeLangOption = useMemo(() => {
+    return SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
+  }, [language]);
+
   return (
-    <div className="min-h-screen bg-white text-neutral-900 flex flex-col font-sans selection:bg-neutral-100">
+    <div 
+      dir={isRtl ? 'rtl' : 'ltr'} 
+      className={`min-h-screen bg-white text-neutral-900 flex flex-col selection:bg-neutral-100 ${
+        isRtl ? 'font-cairo' : 'font-sans'
+      }`}
+    >
       {/* Global Header */}
-      <header className="w-full border-b border-neutral-100 px-6 py-5 sm:px-10 flex items-center justify-between bg-white sticky top-0 z-30">
+      <header className="w-full border-b border-neutral-100 px-4 sm:px-8 py-4 flex items-center justify-between bg-white sticky top-0 z-30 shadow-2xs">
+        {/* School Crest & Identity */}
         <button
           onClick={() => setView('home')}
-          className="text-left group flex items-center gap-3 cursor-pointer"
+          className={`flex items-center gap-3 cursor-pointer group ${isRtl ? 'text-right' : 'text-left'}`}
         >
-          <div className="w-10 h-10 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
             <img 
               src={SCHOOL_LOGO_URL} 
               alt="Dasinya Private School Logo" 
@@ -291,46 +332,109 @@ export default function App() {
             />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-bold tracking-wider uppercase text-neutral-900 group-hover:text-neutral-700 transition-colors">
-              Dasinya Private School
+            <h1 className="text-base sm:text-lg font-bold tracking-tight text-neutral-900 group-hover:text-neutral-700 transition-colors leading-tight">
+              {t.schoolName}
             </h1>
-            <p className="text-[11px] text-neutral-400">Grades 1 – 9 &bull; Official Marksheets (301 Students)</p>
+            <p className="text-[11px] text-neutral-400 font-medium">
+              {t.schoolSubtitle}
+            </p>
           </div>
         </button>
 
-        <div className="flex items-center gap-3">
+        {/* Right Action Tools: Language Selector & Marksheet / Print Navigation */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          
+          {/* Language Selector Dropdown */}
+          <div className="relative" ref={langMenuRef}>
+            <button
+              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-neutral-200 hover:border-neutral-900 bg-neutral-50/80 hover:bg-neutral-100 text-neutral-800 rounded-lg text-xs font-semibold transition-all shadow-2xs cursor-pointer"
+              title="Select Language / هلبژارتنا زمانی / اختيار اللغة"
+            >
+              <Globe className="w-3.5 h-3.5 text-neutral-600" />
+              <span className="hidden sm:inline">{activeLangOption.nativeLabel}</span>
+              <span className="sm:hidden font-mono uppercase text-[11px]">{language}</span>
+              <ChevronDown className={`w-3 h-3 text-neutral-400 transition-transform duration-150 ${isLangMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isLangMenuOpen && (
+              <div 
+                className={`absolute top-full mt-1.5 bg-white border border-neutral-200 rounded-xl shadow-xl z-50 py-1 w-52 sm:w-56 overflow-hidden ${
+                  isRtl ? 'left-0 sm:left-auto sm:right-0' : 'right-0'
+                }`}
+              >
+                <div className="px-3 py-1.5 border-b border-neutral-100 text-[10px] uppercase tracking-wider font-bold text-neutral-400">
+                  {t.language}
+                </div>
+                {SUPPORTED_LANGUAGES.map((langOpt) => {
+                  const isSelected = language === langOpt.code;
+                  return (
+                    <button
+                      key={langOpt.code}
+                      onClick={() => {
+                        setLanguage(langOpt.code);
+                        setIsLangMenuOpen(false);
+                      }}
+                      className={`w-full px-3 py-2 text-xs flex items-center justify-between text-left transition-colors cursor-pointer ${
+                        isSelected 
+                          ? 'bg-neutral-900 text-white font-bold' 
+                          : 'hover:bg-neutral-50 text-neutral-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span>{langOpt.flag}</span>
+                        <div>
+                          <span className="block leading-snug">{langOpt.nativeLabel}</span>
+                          <span className={`text-[10px] block leading-tight ${isSelected ? 'text-neutral-300' : 'text-neutral-400'}`}>
+                            {langOpt.label}
+                          </span>
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-white shrink-0 ml-1" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* View Toggle */}
           {view === 'home' ? (
             <button
               onClick={() => setView('marksheets')}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors duration-150 rounded text-sm font-medium shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-neutral-900 text-white hover:bg-neutral-800 active:scale-[0.99] transition-colors rounded-lg text-xs sm:text-sm font-semibold shadow-xs cursor-pointer"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>Marksheet</span>
+              <span>{t.marksheet}</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={handlePrint}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-neutral-300 text-neutral-700 hover:bg-neutral-100 rounded text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-neutral-300 text-neutral-700 hover:bg-neutral-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Print Report</span>
+                <span className="hidden sm:inline">{t.printReport}</span>
               </button>
               <button
                 onClick={() => setView('home')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back</span>
+                {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+                <span>{t.back}</span>
               </button>
             </div>
           )}
         </div>
       </header>
 
-      {/* VIEW 1: PLAIN WHITE HOME WITH MARKSHEET BUTTON */}
+      {/* VIEW 1: PLAIN WHITE INSTITUTIONAL HERO WITH MARKSHEET BUTTON */}
       {view === 'home' && (
-        <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center">
+        <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-16 sm:py-24 flex flex-col items-center justify-center text-center">
+          
+          {/* Official Crest */}
           <div className="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center mb-6">
             <img 
               src={SCHOOL_LOGO_URL} 
@@ -339,29 +443,46 @@ export default function App() {
             />
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-3">
-            Dasinya Private School
+          {/* School Titles */}
+          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 mb-3">
+            {t.schoolName}
           </h2>
-          <p className="text-sm sm:text-base text-neutral-400 max-w-md mx-auto mb-8 leading-relaxed font-normal">
-            Welcome to the official institutional portal. Select Marksheet to access student evaluations and academic records.
+          <p className="text-sm sm:text-base text-neutral-500 max-w-lg mx-auto mb-8 leading-relaxed font-normal">
+            {t.welcomeIntro}
           </p>
 
+          {/* Primary Action Button */}
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <button
               onClick={() => setView('marksheets')}
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-neutral-900 text-white hover:bg-neutral-800 active:scale-[0.99] transition-all rounded text-sm font-medium shadow-xs cursor-pointer group"
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-neutral-900 text-white hover:bg-neutral-800 active:scale-[0.99] transition-all rounded-lg text-sm sm:text-base font-semibold shadow-xs cursor-pointer group"
             >
               <FileSpreadsheet className="w-4 h-4 text-neutral-300 group-hover:text-white transition-colors" />
-              <span>Marksheet</span>
+              <span>{t.marksheet}</span>
             </button>
           </div>
 
-          <div className="mt-12 pt-6 border-t border-neutral-100 flex items-center gap-6 text-xs text-neutral-400">
-            <span>301 Official Students</span>
-            <span>&bull;</span>
-            <span>Grades 1 to 9</span>
-            <span>&bull;</span>
-            <span>Term 25% (G1-3) / 20% (G4-9)</span>
+          {/* Language Fast Switcher on Home */}
+          <div className="mt-8 flex items-center justify-center gap-1.5 text-xs text-neutral-500">
+            <span className="text-neutral-400 font-medium">{t.language}:</span>
+            {SUPPORTED_LANGUAGES.map((langOpt) => (
+              <button
+                key={langOpt.code}
+                onClick={() => setLanguage(langOpt.code)}
+                className={`px-2.5 py-1 rounded-md text-xs transition-colors cursor-pointer ${
+                  language === langOpt.code 
+                    ? 'bg-neutral-900 text-white font-bold' 
+                    : 'text-neutral-600 hover:bg-neutral-100'
+                }`}
+              >
+                {langOpt.nativeLabel}
+              </button>
+            ))}
+          </div>
+
+          {/* Institutional Metric Pills */}
+          <div className="mt-12 pt-6 border-t border-neutral-100 flex flex-wrap items-center justify-center gap-4 text-xs text-neutral-400 font-medium">
+            <span>{t.officialRecordsSummary}</span>
           </div>
         </main>
       )}
@@ -370,25 +491,27 @@ export default function App() {
       {view === 'marksheets' && (
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-8">
           
-          {/* Top Bar with Quick Search */}
+          {/* Top Bar with Return Link and Global Quick Search */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <button
               onClick={() => setView('home')}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Return to School Home</span>
+              {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+              <span>{t.returnHome}</span>
             </button>
 
             {/* Global Search across all 301 students */}
             <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+              <Search className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 text-neutral-400 ${isRtl ? 'right-3' : 'left-3'}`} />
               <input
                 type="text"
-                placeholder="Global search any of 301 students..."
+                placeholder={t.globalSearchPlaceholder}
                 value={globalSearchQuery}
                 onChange={(e) => setGlobalSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 focus:bg-white transition-colors"
+                className={`w-full py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 focus:bg-white transition-colors ${
+                  isRtl ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3 text-left'
+                }`}
               />
               {filteredGlobalSearchResults.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-xl z-40 max-h-56 overflow-y-auto py-1">
@@ -396,11 +519,11 @@ export default function App() {
                     <button
                       key={s.id}
                       onClick={() => handleSelectFromSearch(s)}
-                      className="w-full text-left px-3 py-2 text-xs hover:bg-neutral-50 flex items-center justify-between border-b border-neutral-50 last:border-b-0 cursor-pointer"
+                      className="w-full px-3 py-2 text-xs hover:bg-neutral-50 flex items-center justify-between border-b border-neutral-50 last:border-b-0 cursor-pointer"
                     >
                       <span className="font-semibold text-neutral-900">{s.name}</span>
-                      <span className="text-[11px] text-neutral-400">
-                        {s.grade} &bull; {s.section} &bull; {s.rollNumber}
+                      <span className="text-[11px] text-neutral-400 font-mono">
+                        {formatGradeLabel(s.grade, language)} &bull; {formatClassLabel(s.section, language)} &bull; {s.rollNumber}
                       </span>
                     </button>
                   ))}
@@ -410,21 +533,21 @@ export default function App() {
           </div>
 
           {/* School Structure Selection Card: Grade, Class, Student, and Term */}
-          <section className="bg-white border border-neutral-200 rounded-xl p-6 shadow-xs">
+          <section className="bg-white border border-neutral-200 rounded-xl p-5 sm:p-6 shadow-xs">
             <div className="mb-5 pb-4 border-b border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h2 className="text-base sm:text-lg font-bold text-neutral-900 flex items-center gap-2">
                   <FileCheck className="w-5 h-5 text-neutral-800" />
-                  Select Grade, Class, Student, and Examination Term
+                  <span>{t.stepGrade} &rarr; {t.stepClass} &rarr; {t.stepStudent} &rarr; {t.stepTerm}</span>
                 </h2>
                 <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
-                  Select Grade, Section, Student, and evaluation Term ({termWeightPercentage}% weight for {selectedGrade}).
+                  {t.termWeightPolicy} ({t.termWeightExplainer} {formatGradeLabel(selectedGrade, language)}: {termWeightPercentage}%).
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded bg-neutral-100 text-neutral-800 border border-neutral-200">
                   <Percent className="w-3.5 h-3.5 text-neutral-600" />
-                  <span>{termWeightPercentage}% Term Weight</span>
+                  <span>{termWeightPercentage}% {t.termWeightLabel}</span>
                 </span>
               </div>
             </div>
@@ -436,43 +559,49 @@ export default function App() {
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold">1</span>
-                    <span>Select Grade</span>
+                    <span>{t.stepGrade}</span>
                   </div>
-                  <span className="text-[10px] text-neutral-400 font-normal">9 Grades</span>
+                  <span className="text-[10px] text-neutral-400 font-normal">{t.gradeCountLabel}</span>
                 </label>
                 
                 <div className="relative">
                   <select
                     value={selectedGrade}
                     onChange={(e) => handleGradeChange(e.target.value)}
-                    className="w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs"
+                    className={`w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs ${
+                      isRtl ? 'text-right' : 'text-left'
+                    }`}
                   >
                     {officialGrades.map(grade => (
                       <option key={grade} value={grade}>
-                        {grade} ({SCHOOL_STRUCTURE[grade].join(', ')})
+                        {formatGradeLabel(grade, language)} ({SCHOOL_STRUCTURE[grade].map(c => formatClassLabel(c, language)).join(', ')})
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-500">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className={`pointer-events-none absolute inset-y-0 flex items-center px-3 text-neutral-500 ${isRtl ? 'left-0' : 'right-0'}`}>
+                    <ChevronDown className="w-4 h-4" />
                   </div>
                 </div>
 
                 {/* Grade Quick Select Buttons */}
                 <div className="grid grid-cols-3 gap-1 pt-1">
-                  {officialGrades.map(grade => (
-                    <button
-                      key={grade}
-                      onClick={() => handleGradeChange(grade)}
-                      className={`text-[10px] py-1 px-1 rounded border transition-colors cursor-pointer text-center font-medium ${
-                        selectedGrade === grade
-                          ? 'border-neutral-900 bg-neutral-900 text-white'
-                          : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
-                      }`}
-                    >
-                      {grade.replace('Grade ', 'G')}
-                    </button>
-                  ))}
+                  {officialGrades.map(grade => {
+                    const gradeNumber = grade.replace(/\D/g, '');
+                    const labelShort = language === 'en' ? `G${gradeNumber}` : `${gradeNumber}`;
+                    return (
+                      <button
+                        key={grade}
+                        onClick={() => handleGradeChange(grade)}
+                        className={`text-[11px] py-1 px-1 rounded border transition-colors cursor-pointer text-center font-bold ${
+                          selectedGrade === grade
+                            ? 'border-neutral-900 bg-neutral-900 text-white'
+                            : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+                        }`}
+                      >
+                        {labelShort}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -481,10 +610,10 @@ export default function App() {
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold">2</span>
-                    <span>Select Class</span>
+                    <span>{t.stepClass}</span>
                   </div>
                   <span className="text-[10px] text-neutral-400 font-normal">
-                    {availableClasses.length} section{availableClasses.length > 1 ? 's' : ''}
+                    {availableClasses.length} {t.sectionsCountLabel}
                   </span>
                 </label>
 
@@ -492,16 +621,18 @@ export default function App() {
                   <select
                     value={selectedClass}
                     onChange={(e) => handleClassChange(e.target.value)}
-                    className="w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs"
+                    className={`w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs ${
+                      isRtl ? 'text-right' : 'text-left'
+                    }`}
                   >
                     {availableClasses.map(cls => (
                       <option key={cls} value={cls}>
-                        {cls}
+                        {formatClassLabel(cls, language)}
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-500">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className={`pointer-events-none absolute inset-y-0 flex items-center px-3 text-neutral-500 ${isRtl ? 'left-0' : 'right-0'}`}>
+                    <ChevronDown className="w-4 h-4" />
                   </div>
                 </div>
 
@@ -511,18 +642,18 @@ export default function App() {
                     <button
                       key={cls}
                       onClick={() => handleClassChange(cls)}
-                      className={`flex-1 text-[11px] py-1 px-2 rounded border transition-colors cursor-pointer text-center font-medium ${
+                      className={`flex-1 text-[11px] py-1 px-2 rounded border transition-colors cursor-pointer text-center font-bold ${
                         selectedClass === cls
                           ? 'border-neutral-900 bg-neutral-900 text-white'
                           : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
                       }`}
                     >
-                      {cls}
+                      {formatClassLabel(cls, language)}
                     </button>
                   ))}
                 </div>
                 <p className="text-[10px] text-neutral-400">
-                  {availableStudents.length} Students in {selectedGrade} ({selectedClass})
+                  {availableStudents.length} {t.studentsInClassLabel} {formatGradeLabel(selectedGrade, language)} ({formatClassLabel(selectedClass, language)})
                 </p>
               </div>
 
@@ -531,16 +662,16 @@ export default function App() {
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold">3</span>
-                    <span>Select Student</span>
+                    <span>{t.stepStudent}</span>
                   </div>
                   <span className="text-[10px] text-neutral-400 font-normal">
-                    {filteredClassStudents.length} of {availableStudents.length}
+                    {filteredClassStudents.length} / {availableStudents.length}
                   </span>
                 </label>
 
                 {/* Searchable Input Combobox for Student Name */}
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-neutral-400">
+                  <div className={`absolute inset-y-0 flex items-center pointer-events-none text-neutral-400 ${isRtl ? 'right-2.5' : 'left-2.5'}`}>
                     <Search className="w-3.5 h-3.5" />
                   </div>
                   <input
@@ -551,10 +682,12 @@ export default function App() {
                       setStudentSearchTerm(e.target.value);
                       setIsStudentDropdownOpen(true);
                     }}
-                    placeholder={activeStudent ? `${activeStudent.name.slice(0, 16)}...` : 'Search name / roll...'}
-                    className="w-full pl-8 pr-12 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs font-semibold text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 focus:bg-white shadow-xs transition-colors"
+                    placeholder={activeStudent ? `${activeStudent.name.slice(0, 18)}...` : t.studentSearchPlaceholder}
+                    className={`w-full py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs font-semibold text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 focus:bg-white shadow-xs transition-colors ${
+                      isRtl ? 'pr-8 pl-12 text-right' : 'pl-8 pr-12 text-left'
+                    }`}
                   />
-                  <div className="absolute inset-y-0 right-0 pr-2 flex items-center gap-0.5">
+                  <div className={`absolute inset-y-0 flex items-center gap-0.5 ${isRtl ? 'left-2' : 'right-2'}`}>
                     {studentSearchTerm && (
                       <button
                         onClick={() => {
@@ -562,7 +695,7 @@ export default function App() {
                           setIsStudentDropdownOpen(false);
                         }}
                         className="p-1 text-neutral-400 hover:text-neutral-700 rounded-full"
-                        title="Clear search"
+                        title="Clear"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -590,7 +723,9 @@ export default function App() {
                                 setIsStudentDropdownOpen(false);
                                 setStudentSearchTerm('');
                               }}
-                              className={`w-full text-left px-3 py-2 text-xs transition-colors cursor-pointer flex items-center justify-between ${
+                              className={`w-full px-3 py-2 text-xs transition-colors cursor-pointer flex items-center justify-between ${
+                                isRtl ? 'text-right' : 'text-left'
+                              } ${
                                 isSelected ? 'bg-neutral-900 text-white font-medium' : 'hover:bg-neutral-50 text-neutral-900'
                               }`}
                             >
@@ -598,7 +733,7 @@ export default function App() {
                                 <span className="font-bold text-[11px]">{student.name}</span>
                                 {student.motherName && (
                                   <span className={`text-[9px] ${isSelected ? 'text-neutral-300' : 'text-neutral-400'}`}>
-                                    Mother: {student.motherName}
+                                    {t.motherName}: {student.motherName}
                                   </span>
                                 )}
                               </div>
@@ -610,7 +745,7 @@ export default function App() {
                         })
                       ) : (
                         <div className="p-3 text-center text-xs text-neutral-500">
-                          <p>No student matching "{studentSearchTerm}"</p>
+                          <p>{t.searchNoStudent} "{studentSearchTerm}"</p>
                         </div>
                       )}
 
@@ -618,17 +753,17 @@ export default function App() {
                       {crossClassMatches.length > 0 && (
                         <div className="bg-neutral-50 p-2 border-t border-neutral-200">
                           <span className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider block mb-1">
-                            Found in other classes:
+                            {t.foundInOtherClasses}:
                           </span>
                           {crossClassMatches.map(cs => (
                             <button
                               key={cs.id}
                               onClick={() => handleSelectFromSearch(cs)}
-                              className="w-full text-left p-1 text-[10px] hover:bg-neutral-200/60 rounded flex items-center justify-between text-neutral-700 cursor-pointer"
+                              className="w-full p-1 text-[10px] hover:bg-neutral-200/60 rounded flex items-center justify-between text-neutral-700 cursor-pointer"
                             >
                               <span className="font-medium text-neutral-900">{cs.name}</span>
                               <span className="text-[9px] text-neutral-500 font-semibold bg-white px-1 py-0.5 rounded border border-neutral-200">
-                                {cs.grade} - {cs.section}
+                                {formatGradeLabel(cs.grade, language)} - {formatClassLabel(cs.section, language)}
                               </span>
                             </button>
                           ))}
@@ -654,10 +789,10 @@ export default function App() {
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold">4</span>
-                    <span>Select Term</span>
+                    <span>{t.stepTerm}</span>
                   </div>
                   <span className="text-[10px] font-bold text-neutral-800">
-                    {termWeightPercentage}% Weight
+                    {termWeightPercentage}% {t.termWeightLabel}
                   </span>
                 </label>
 
@@ -665,7 +800,9 @@ export default function App() {
                   <select
                     value={selectedTermId}
                     onChange={(e) => setSelectedTermId(e.target.value)}
-                    className="w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs"
+                    className={`w-full appearance-none bg-neutral-50 border border-neutral-300 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 focus:outline-none focus:border-neutral-900 focus:bg-white cursor-pointer shadow-xs ${
+                      isRtl ? 'text-right' : 'text-left'
+                    }`}
                   >
                     {availableTerms.map(term => (
                       <option key={term.id} value={term.id}>
@@ -673,29 +810,27 @@ export default function App() {
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-500">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className={`pointer-events-none absolute inset-y-0 flex items-center px-3 text-neutral-500 ${isRtl ? 'left-0' : 'right-0'}`}>
+                    <ChevronDown className="w-4 h-4" />
                   </div>
                 </div>
 
-                {/* Term Quick Select Buttons */}
-                <div className="grid grid-cols-2 gap-1 pt-1">
-                  {availableTerms.slice(0, 4).map(term => (
-                    <button
-                      key={term.id}
-                      onClick={() => setSelectedTermId(term.id)}
-                      className={`text-[10px] py-1 px-1.5 rounded border transition-colors cursor-pointer text-center font-medium ${
-                        selectedTermId === term.id
-                          ? 'border-neutral-900 bg-neutral-900 text-white'
-                          : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
-                      }`}
-                    >
-                      {term.id} ({term.weight})
-                    </button>
-                  ))}
+                {/* Term 1 Active Option Button */}
+                <div className="pt-1">
+                  <button
+                    onClick={() => setSelectedTermId('Term 1')}
+                    className="w-full text-xs py-2 px-3 rounded-lg border border-neutral-900 bg-neutral-900 text-white font-medium flex items-center justify-between shadow-2xs cursor-pointer"
+                  >
+                    <span className="font-bold">{t.term1Name}</span>
+                    <span className="bg-neutral-800 text-neutral-200 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                      {termWeightPercentage}%
+                    </span>
+                  </button>
                 </div>
                 <p className="text-[10px] text-neutral-400">
-                  {isPrimary25 ? 'Grade 1–3: 25% per term' : 'Grade 4–9: 20% per term'}
+                  {isPrimary25 
+                    ? (language === 'ku' ? 'قۆناغێن ١ هەتا ٣: ٢٥٪ بۆ وەرزێ ئێکێ' : language === 'ar' ? 'الصفوف ١ إلى ٣: ٢٥٪ للفصل الأول' : 'Grade 1–3: 25% for Term 1')
+                    : (language === 'ku' ? 'قۆناغێن ٤ هەتا ٩: ٢٠٪ بۆ وەرزێ ئێکێ' : language === 'ar' ? 'الصفوف ٤ إلى ٩: ٢٠٪ للفصل الأول' : 'Grade 4–9: 20% for Term 1')}
                 </p>
               </div>
 
@@ -715,25 +850,25 @@ export default function App() {
                       className="w-full h-full object-contain" 
                     />
                   </div>
-                  <div className="text-left">
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-wider uppercase text-neutral-900">
-                      Dasinya Private School
+                  <div className={isRtl ? 'text-right' : 'text-left'}>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
+                      {t.schoolName}
                     </h2>
-                    <p className="text-xs uppercase tracking-widest text-neutral-500 font-semibold">
-                      Department of Academic Affairs &bull; Official Marksheet
+                    <p className="text-xs uppercase tracking-wider text-neutral-500 font-semibold mt-0.5">
+                      {t.departmentName}
                     </p>
                   </div>
                 </div>
                 
                 <div className="mt-4 pt-3 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-600 gap-2">
-                  <span className="font-bold tracking-widest uppercase text-neutral-900 bg-neutral-100 px-3 py-1 rounded">
-                    {selectedTermObj.label} &bull; {activeStudent.grade} ({activeStudent.section})
+                  <span className="font-bold tracking-wide uppercase text-neutral-900 bg-neutral-100 px-3 py-1 rounded">
+                    {selectedTermObj.label} &bull; {formatGradeLabel(activeStudent.grade, language)} ({formatClassLabel(activeStudent.section, language)})
                   </span>
                   <span className="font-medium">
-                    Term Weight: <strong className="text-neutral-900">{termWeightPercentage}%</strong> ({isPrimary25 ? 'Grades 1–3 System' : 'Grades 4–9 System'})
+                    {t.termWeightLabel}: <strong className="text-neutral-900">{termWeightPercentage}%</strong> ({isPrimary25 ? (language === 'ku' ? 'سیستەمێ قۆناغێن ١-٣' : language === 'ar' ? 'نظام الصفوف ١-٣' : 'Grades 1–3 System') : (language === 'ku' ? 'سیستەمێ قۆناغێن ٤-٩' : language === 'ar' ? 'نظام الصفوف ٤-٩' : 'Grades 4–9 System')})
                   </span>
                   <span className="font-medium">
-                    Academic Year: <strong className="text-neutral-900">{activeStudent.academicYear}</strong>
+                    {t.academicYear}: <strong className="text-neutral-900">{activeStudent.academicYear}</strong>
                   </span>
                 </div>
               </div>
@@ -741,34 +876,42 @@ export default function App() {
               {/* Student Metadata Bar */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-neutral-50 p-4 sm:p-5 rounded-lg border border-neutral-200 text-xs mb-6">
                 <div>
-                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-medium">Student Full Name</span>
+                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.studentName}</span>
                   <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.name}</p>
                   {activeStudent.motherName && (
-                    <span className="text-[11px] text-neutral-500 block">Mother: {activeStudent.motherName}</span>
+                    <span className="text-[11px] text-neutral-500 block">{t.motherName}: {activeStudent.motherName}</span>
                   )}
-                  <span className="text-[11px] text-neutral-400">{activeStudent.gender}</span>
+                  <span className="text-[11px] text-neutral-400">
+                    {t.gender}: {activeStudent.gender === 'Female' ? t.female : t.male}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-medium">Roll / Registration ID</span>
+                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.rollNumber}</span>
                   <p className="text-neutral-900 text-sm font-bold font-mono mt-0.5">{activeStudent.rollNumber}</p>
-                  <span className="text-[11px] text-neutral-500 block">ID: {activeStudent.id.replace('DPS-', '')}</span>
+                  <span className="text-[11px] text-neutral-500 block">{t.idNumber}: {activeStudent.id.replace('DPS-', '')}</span>
                   {activeStudent.bloodGroup && (
-                    <span className="text-[10px] text-neutral-400">Blood: {activeStudent.bloodGroup}</span>
+                    <span className="text-[10px] text-neutral-400">{t.bloodGroup}: {activeStudent.bloodGroup}</span>
                   )}
                 </div>
                 <div>
-                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-medium">Class & Section</span>
-                  <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.grade} - {activeStudent.section}</p>
+                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.classAndSection}</span>
+                  <p className="text-neutral-900 text-sm font-bold mt-0.5">
+                    {formatGradeLabel(activeStudent.grade, language)} - {formatClassLabel(activeStudent.section, language)}
+                  </p>
                   {activeStudent.dob && (
-                    <span className="text-[11px] text-neutral-500 block">DOB: {activeStudent.dob}</span>
+                    <span className="text-[11px] text-neutral-500 block">{t.dob}: {activeStudent.dob}</span>
                   )}
-                  <span className="text-[11px] text-neutral-400">Advisor: {activeStudent.classTeacher}</span>
+                  <span className="text-[11px] text-neutral-400">{t.advisor}: {activeStudent.classTeacher}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-medium">Attendance & Standing</span>
-                  <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.attendance}</p>
-                  <span className="text-[11px] font-semibold text-neutral-700 block">{activeStudent.classRank}</span>
-                  <span className="text-[10px] text-emerald-600 font-medium">{activeStudent.conduct} Conduct</span>
+                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.attendance}</span>
+                  <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.attendance} {t.presence}</p>
+                  <span className="text-[11px] font-semibold text-neutral-700 block">
+                    {formatClassRank(activeStudent.classRank, language)}
+                  </span>
+                  <span className="text-[10px] text-emerald-600 font-medium">
+                    {formatConduct(activeStudent.conduct, language)}
+                  </span>
                 </div>
               </div>
 
@@ -776,7 +919,7 @@ export default function App() {
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs print:hidden">
                 <div className="flex items-center gap-1.5 text-neutral-500">
                   <Filter className="w-3.5 h-3.5" />
-                  <span className="font-medium">Curriculum Filter:</span>
+                  <span className="font-semibold">{t.curriculumFilter}:</span>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {['All', 'Language', 'STEM', 'Technology', 'Humanities', 'Applied', 'Ethics', 'Arts & Sports'].map(cat => (
@@ -785,11 +928,11 @@ export default function App() {
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer ${
                         selectedCategory === cat 
-                          ? 'bg-neutral-900 text-white' 
+                          ? 'bg-neutral-900 text-white font-bold' 
                           : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                       }`}
                     >
-                      {cat}
+                      {getTranslatedCategory(cat, language)}
                     </button>
                   ))}
                 </div>
@@ -797,37 +940,47 @@ export default function App() {
 
               {/* Official Subjects Table with Term Weight Points */}
               <div className="overflow-x-auto border border-neutral-200 rounded-lg mb-8">
-                <table className="w-full text-left text-sm">
+                <table className={`w-full text-sm ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="bg-neutral-100 border-b border-neutral-200 text-neutral-800 text-xs uppercase tracking-wider font-bold">
-                      <th className="py-3 px-4">Subject</th>
-                      <th className="py-3 px-3">Subject Code</th>
-                      <th className="py-3 px-3 text-right">Max Marks</th>
-                      <th className="py-3 px-3 text-right">Marks (100)</th>
-                      <th className="py-3 px-3 text-right">
-                        Term ({termWeightPercentage}%)
+                      <th className="py-3 px-4">{t.subject}</th>
+                      <th className="py-3 px-3">{t.subjectCode}</th>
+                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{t.maxMarks}</th>
+                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{t.obtainedMarks}</th>
+                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>
+                        {t.termWeightScore} ({termWeightPercentage}%)
                       </th>
-                      <th className="py-3 px-3 text-center">Letter Grade</th>
-                      <th className="py-3 px-4">Academic Remarks</th>
+                      <th className="py-3 px-3 text-center">{t.letterGrade}</th>
+                      <th className="py-3 px-4">{t.academicRemarks}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100 text-xs sm:text-sm">
                     {displayedSubjects.map((sub, index) => {
                       const weightedMark = ((sub.obtainedMarks * termWeightPercentage) / 100).toFixed(1);
+                      const translatedName = getTranslatedSubject(sub.subject, language);
+                      const translatedRemark = getTranslatedRemark(sub.remarks, language);
+
                       return (
                         <tr key={index} className="hover:bg-neutral-50/70 transition-colors">
-                          <td className="py-2.5 px-4 font-semibold text-neutral-900 flex items-center gap-2">
-                            <span>{sub.subject}</span>
-                            {sub.subject.includes('دەرونزانی') && (
-                              <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded font-normal font-sans">
-                                Kurdish / Regional
-                              </span>
-                            )}
+                          <td className="py-2.5 px-4 font-semibold text-neutral-900">
+                            <div className="flex items-center gap-2">
+                              <span>{translatedName}</span>
+                              {language !== 'en' && (
+                                <span className="text-[10px] text-neutral-400 font-normal font-sans">
+                                  ({sub.subject.replace(/ \(دەرونزانی\)/, '')})
+                                </span>
+                              )}
+                              {sub.subject.includes('دەرونزانی') && language === 'en' && (
+                                <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded font-normal font-sans">
+                                  Kurdish / Regional
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className="py-2.5 px-3 text-neutral-500 font-mono text-xs">{sub.code}</td>
-                          <td className="py-2.5 px-3 text-right text-neutral-600">{sub.maxMarks}</td>
-                          <td className="py-2.5 px-3 text-right font-bold text-neutral-900">{sub.obtainedMarks}</td>
-                          <td className="py-2.5 px-3 text-right font-semibold text-neutral-800 font-mono">
+                          <td className={`py-2.5 px-3 text-neutral-600 ${isRtl ? 'text-left' : 'text-right'}`}>{sub.maxMarks}</td>
+                          <td className={`py-2.5 px-3 font-bold text-neutral-900 ${isRtl ? 'text-left' : 'text-right'}`}>{sub.obtainedMarks}</td>
+                          <td className={`py-2.5 px-3 font-semibold text-neutral-800 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
                             {weightedMark}
                           </td>
                           <td className="py-2.5 px-3 text-center">
@@ -839,7 +992,7 @@ export default function App() {
                               {sub.grade}
                             </span>
                           </td>
-                          <td className="py-2.5 px-4 text-neutral-600 text-xs">{sub.remarks}</td>
+                          <td className="py-2.5 px-4 text-neutral-600 text-xs">{translatedRemark}</td>
                         </tr>
                       );
                     })}
@@ -847,21 +1000,21 @@ export default function App() {
                   <tfoot>
                     <tr className="bg-neutral-100 font-bold border-t-2 border-neutral-900 text-neutral-900 text-xs sm:text-sm">
                       <td className="py-3.5 px-4 uppercase tracking-wider">
-                        Cumulative Total ({activeStudent.subjects.length} Subjects)
+                        {t.cumulativeTotal} ({activeStudent.subjects.length} {t.subject})
                       </td>
                       <td className="py-3.5 px-3"></td>
-                      <td className="py-3.5 px-3 text-right">{reportTotals.totalMax}</td>
-                      <td className="py-3.5 px-3 text-right text-neutral-950 font-extrabold text-base">
+                      <td className={`py-3.5 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{reportTotals.totalMax}</td>
+                      <td className={`py-3.5 px-3 text-neutral-950 font-extrabold text-base ${isRtl ? 'text-left' : 'text-right'}`}>
                         {reportTotals.totalObtained}
                       </td>
-                      <td className="py-3.5 px-3 text-right font-mono text-neutral-950 font-extrabold">
+                      <td className={`py-3.5 px-3 font-mono text-neutral-950 font-extrabold ${isRtl ? 'text-left' : 'text-right'}`}>
                         {reportTotals.weightedTotal} / {reportTotals.maxWeighted}
                       </td>
                       <td className="py-3.5 px-3 text-center text-sm font-extrabold text-neutral-950">
                         {reportTotals.percentage}%
                       </td>
                       <td className="py-3.5 px-4 text-xs font-medium text-neutral-700">
-                        Status: <span className="font-bold text-neutral-900">{reportTotals.status}</span>
+                        {t.academicStanding}: <span className="font-bold text-neutral-900">{reportTotals.status}</span>
                       </td>
                     </tr>
                   </tfoot>
@@ -871,24 +1024,30 @@ export default function App() {
               {/* Summary Performance Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
                 <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">Class Standing</span>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
+                    {t.standing}
+                  </span>
                   <div className="flex items-center gap-2">
                     <Award className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">{activeStudent.classRank}</span>
-                  </div>
-                </div>
-
-                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">Percentage Score</span>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">{reportTotals.percentage}% (100 Scale)</span>
+                    <span className="text-sm font-bold text-neutral-900">
+                      {formatClassRank(activeStudent.classRank, language)}
+                    </span>
                   </div>
                 </div>
 
                 <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
                   <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
-                    Term Weight Contribution
+                    {t.overallPercentage}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-neutral-800" />
+                    <span className="text-sm font-bold text-neutral-900">{reportTotals.percentage}% (100)</span>
+                  </div>
+                </div>
+
+                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
+                    {t.termContribution}
                   </span>
                   <div className="flex items-center gap-2">
                     <Percent className="w-5 h-5 text-neutral-800" />
@@ -899,43 +1058,51 @@ export default function App() {
                 </div>
 
                 <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">Attendance Record</span>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
+                    {t.attendance}
+                  </span>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">{activeStudent.attendance} Presence</span>
+                    <span className="text-sm font-bold text-neutral-900">{activeStudent.attendance} {t.presence}</span>
                   </div>
                 </div>
               </div>
 
               {/* Signatures & Accreditation Footer */}
               <div className="pt-8 border-t border-neutral-200 grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-neutral-600">
-                <div className="text-center sm:text-left">
-                  <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-1">
-                    Evaluation & Weight Policy
+                <div className={isRtl ? 'text-right' : 'text-left'}>
+                  <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-bold block mb-1">
+                    {t.evaluationPolicyNote}
                   </span>
                   <p className="text-[11px] text-neutral-500 leading-relaxed">
-                    <strong>Grades 1–3:</strong> 25% weight per term (4 terms = 100%)<br />
-                    <strong>Grades 4–9:</strong> 20% weight per term (5 terms = 100%)<br />
-                    Passing Mark: 50% &bull; Distinction: 85%+
+                    <strong>{formatGradeLabel('Grade 1–3', language)}:</strong> {t.policyG1to3}<br />
+                    <strong>{formatGradeLabel('Grade 4–9', language)}:</strong> {t.policyG4to9}<br />
+                    {t.passingScoreNote}
                   </p>
                 </div>
 
                 <div className="flex flex-col items-center justify-end">
                   <div className="w-40 border-b border-neutral-400 mb-1"></div>
-                  <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">Class Teacher Signature</span>
+                  <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">
+                    {t.classTeacherSignature}
+                  </span>
                   <span className="text-[10px] text-neutral-500">{activeStudent.classTeacher}</span>
                 </div>
 
                 <div className="flex flex-col items-center sm:items-end justify-end">
                   <div className="w-40 border-b border-neutral-400 mb-1"></div>
-                  <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">Principal's Seal & Signature</span>
-                  <span className="text-[10px] text-neutral-500">Dasinya Private School Office</span>
+                  <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">
+                    {t.principalSignature}
+                  </span>
+                  <span className="text-[10px] text-neutral-500">{t.schoolOfficeStamp}</span>
                 </div>
               </div>
             </section>
           ) : (
             <div className="text-center py-12 border border-dashed border-neutral-300 rounded-xl">
-              <p className="text-sm text-neutral-500">No student found for {selectedGrade} - {selectedClass}.</p>
+              <p className="text-sm text-neutral-500">
+                {t.searchNoStudent} {formatGradeLabel(selectedGrade, language)} - {formatClassLabel(selectedClass, language)}.
+              </p>
             </div>
           )}
         </main>
@@ -943,7 +1110,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="w-full border-t border-neutral-100 py-6 px-6 sm:px-10 text-center text-xs text-neutral-400">
-        &copy; {new Date().getFullYear()} Dasinya Private School &bull; Grades 1 to 9 Academic Evaluation System (301 Students)
+        &copy; {new Date().getFullYear()} {t.footerCopyright}
       </footer>
     </div>
   );
