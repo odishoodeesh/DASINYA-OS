@@ -23,8 +23,8 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   },
   {
     code: 'ku',
-    label: 'Kurdish (Badini of Duhok)',
-    nativeLabel: 'کوردی (بادینی - دهۆک)',
+    label: 'Kurdish',
+    nativeLabel: 'کوردی',
     dir: 'rtl',
     flag: '☀️',
   },
@@ -46,6 +46,8 @@ export interface TranslationDictionary {
   returnHome: string;
   back: string;
   printReport: string;
+  downloadPdf: string;
+  generatingPdf: string;
   language: string;
   officialPortal: string;
   welcomeIntro: string;
@@ -96,7 +98,11 @@ export interface TranslationDictionary {
   standing: string;
 
   // Marksheet Table Headers
+  rowNumber: string;
   subject: string;
+  term1MarkOutOf25: string;
+  term1MarkOutOf20: string;
+  totalMarks: string;
   subjectCode: string;
   category: string;
   maxMarks: string;
@@ -144,18 +150,20 @@ export interface TranslationDictionary {
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
   en: {
     schoolName: 'Dasinya Private School',
-    schoolSubtitle: 'Grades 1 – 9 • Official Marksheets (301 Students)',
+    schoolSubtitle: 'Grades 1 – 9 • Official Marksheets',
     departmentName: 'Department of Academic Affairs • Official Marksheet',
     marksheet: 'Marksheet',
     returnHome: 'Return to School Home',
     back: 'Back',
-    printReport: 'Print / Export PDF',
+    printReport: 'Print Report',
+    downloadPdf: 'Download PDF',
+    generatingPdf: 'Generating PDF...',
     language: 'Language',
     officialPortal: 'Official Academic Portal',
     welcomeIntro: 'Welcome to the official institutional portal. Select Marksheet to access student evaluations and academic records.',
-    officialRecordsSummary: '301 Official Students • Grades 1 to 9 • Term 25% (G1-3) / 20% (G4-9)',
+    officialRecordsSummary: '',
 
-    globalSearchPlaceholder: 'Global search any of 301 students...',
+    globalSearchPlaceholder: 'Search all students...',
     studentSearchPlaceholder: 'Search student name or roll...',
     searchNoStudent: 'No student matching',
     foundInOtherClasses: 'Found in other classes',
@@ -169,7 +177,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     studentsInClassLabel: 'Students in',
     termWeightLabel: 'Term Weight',
     termWeightExplainer: 'Weight for',
-    termWeightPolicy: 'Grades 1–3: 25% for Term 1 • Grades 4–9: 20% for Term 1',
+    termWeightPolicy: 'Grades 1–3: Out of 25 • Grades 4–9: Out of 20',
 
     gradePrefix: 'Grade',
     classPrefix: 'Class',
@@ -189,12 +197,16 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     bloodGroup: 'Blood Group',
     academicYear: 'Academic Year',
     advisor: 'Advisor',
-    attendance: 'Attendance & Standing',
+    attendance: 'Attendance',
     presence: 'Presence',
     conduct: 'Exemplary',
     standing: 'Standing',
 
+    rowNumber: '#',
     subject: 'Subject',
+    term1MarkOutOf25: 'Term 1 Mark (out of 25)',
+    term1MarkOutOf20: 'Term 1 Mark (out of 20)',
+    totalMarks: 'Total Marks',
     subjectCode: 'Code',
     category: 'Category',
     maxMarks: 'Max Marks',
@@ -227,29 +239,31 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     principalSignature: 'Principal\'s Seal & Signature',
     parentSignature: 'Parent / Guardian Signature',
     schoolOfficeStamp: 'Dasinya Private School Office',
-    evaluationPolicyNote: 'Evaluation & Weight Policy',
-    policyG1to3: 'Grades 1–3: 25% weight per term (4 terms = 100%)',
-    policyG4to9: 'Grades 4–9: 20% weight per term (5 terms = 100%)',
+    evaluationPolicyNote: 'Term 1 Evaluation Policy',
+    policyG1to3: 'Grades 1–3: Term 1 marks are evaluated out of 25 per subject (25% weight)',
+    policyG4to9: 'Grades 4–9: Term 1 marks are evaluated out of 20 per subject (20% weight)',
     passingScoreNote: 'Passing Mark: 50% • Distinction: 85%+',
 
-    footerCopyright: 'Dasinya Private School • Grades 1 to 9 Academic Evaluation System (301 Students)',
+    footerCopyright: 'Dasinya Private School • Academic Evaluation System',
   },
 
   ku: {
-    // Badini Kurdish (Duhok dialect)
+    // Kurdish
     schoolName: 'قوتابخانەیا داسنیا یا تایبەت',
-    schoolSubtitle: 'قۆناغێن ١ – ٩ • کەشفا فەرمی یا نمران (٣٠١ قوتابی)',
+    schoolSubtitle: 'قۆناغێن ١ – ٩ • کەشفا فەرمی یا نمران',
     departmentName: 'پشکا کارگێری و دەستەیا خواندنێ • کەشفا فەرمی یا نمران',
     marksheet: 'کەشفا نمران',
     returnHome: 'زڤڕین بۆ پەڕێ سەرەکی',
     back: 'زڤڕین',
-    printReport: 'چاپکرن / دەرئێخستنا PDF',
+    printReport: 'چاپکرنا راپۆرتێ',
+    downloadPdf: 'داگرتنا PDF',
+    generatingPdf: 'دروستکرنا فایلا PDF...',
     language: 'زمان',
     officialPortal: 'دەوازەیا فەرمی یا ئەکادیمی',
     welcomeIntro: 'بخێربێن بۆ دەوازەیا ئەکادیمی یا قوتابخانەیا داسنیا. کرتێ ل سەر کەشفا نمران بکە بۆ دیتنا کارتا نمرێت قوتابیان و پشکنینا پێشکەفتنا خواندنێ.',
-    officialRecordsSummary: '٣٠١ قوتابیێن فەرمی • قۆناغێن ١ هەتا ٩ • کێشا وەرزێ ئێکێ: ٢٥٪ (١-٣) / ٢٠٪ (٤-٩)',
+    officialRecordsSummary: '',
 
-    globalSearchPlaceholder: 'لێگەڕیان ل دووڤ هەر قوتابیەکی ژ ٣٠١ قوتابیان...',
+    globalSearchPlaceholder: 'لێگەڕیان ل دووڤ قوتابیان...',
     studentSearchPlaceholder: 'ناڤێ قوتابی یان ژمارا تۆمارێ بنڤیسە...',
     searchNoStudent: 'چ قوتابی نەهاتە دیتن ل ژێر ناڤێ',
     foundInOtherClasses: 'هاتە دیتن د هۆبێن دی دا',
@@ -263,7 +277,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     studentsInClassLabel: 'قوتابی ل قۆناغا',
     termWeightLabel: 'کێشا وەرزی',
     termWeightExplainer: 'رێژەیا قۆناغا',
-    termWeightPolicy: 'قۆناغێن ١-٣: ٢٥٪ بۆ وەرزێ ئێکێ • قۆناغێن ٤-٩: ٢٠٪ بۆ وەرزێ ئێکێ',
+    termWeightPolicy: 'قۆناغێن ١-٣: نمرە ژ ٢٥ • قۆناغێن ٤-٩: نمرە ژ ٢٠',
 
     gradePrefix: 'قۆناغا',
     classPrefix: 'هۆبا',
@@ -283,12 +297,16 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     bloodGroup: 'گرووپێ خوینێ',
     academicYear: 'ساڵا خواندنێ',
     advisor: 'مامۆستایێ رێبەر',
-    attendance: 'ئامادەبوون و بەشداری',
+    attendance: 'ئامادەبوون',
     presence: 'ئامادەبوون',
     conduct: 'رەوشت باش',
     standing: 'ئاست',
 
+    rowNumber: '#',
     subject: 'بابەتێ خواندنێ',
+    term1MarkOutOf25: 'نمرەیا وەرزێ ئێکێ (ژ ٢٥)',
+    term1MarkOutOf20: 'نمرەیا وەرزێ ئێکێ (ژ ٢٠)',
+    totalMarks: 'کۆما نمران',
     subjectCode: 'کۆدێ بابەتێ',
     category: 'پۆلێن',
     maxMarks: 'بلندترین نمرە',
@@ -321,29 +339,31 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     principalSignature: 'مۆر و ئیمزایا رێڤەبەرێ قوتابخانێ',
     parentSignature: 'ئیمزایا سەرپەرشتێ قوتابی',
     schoolOfficeStamp: 'نڤیسینگەها قوتابخانەیا داسنیا یا تایبەت',
-    evaluationPolicyNote: 'یاسایا هەلسەنگاندن و کێشا نمران',
-    policyG1to3: 'قۆناغێن ١ هەتا ٣: ٢٥٪ کێش بۆ هەر وەرزەکی (٤ وەرز = ١٠٠٪)',
-    policyG4to9: 'قۆناغێن ٤ هەتا ٩: ٢٠٪ کێش بۆ هەر وەرزەکی (٥ وەرز = ١٠٠٪)',
+    evaluationPolicyNote: 'یاسایا هەلسەنگاندنا نمرەیێن وەرزێ ئێکێ',
+    policyG1to3: 'قۆناغێن ١ هەتا ٣: نمرەیێن وەرزێ ئێکێ ژ ٢٥ نمرانە بۆ هەر بابەتەکی (٢٥٪)',
+    policyG4to9: 'قۆناغێن ٤ هەتا ٩: نمرەیێن وەرزێ ئێکێ ژ ٢٠ نمرانە بۆ هەر بابەتەکی (٢٠٪)',
     passingScoreNote: 'نمرەیا دەربازبوونێ: ٥٠٪ • پلەیا نایاب: ٨٥٪+',
 
-    footerCopyright: 'قوتابخانەیا داسنیا یا تایبەت • سیستەمێ هەلسەنگاندنا ئەکادیمی یا قۆناغێن ١ هەتا ٩ (٣٠١ قوتابی)',
+    footerCopyright: 'قوتابخانەیا داسنیا یا تایبەت • سیستەمێ هەلسەنگاندنا ئەکادیمی',
   },
 
   ar: {
     // Arabic
     schoolName: 'مدرسة داسنيا الأهلية',
-    schoolSubtitle: 'الصفوف ١ – ٩ • كشف الدرجات الرسمي (٣٠١ طالب)',
+    schoolSubtitle: 'الصفوف ١ – ٩ • كشف الدرجات الرسمي',
     departmentName: 'قسم الشؤون التعليمية والامتحانات • كشف الدرجات الرسمي',
     marksheet: 'كشف الدرجات',
     returnHome: 'العودة للصفحة الرئيسية',
     back: 'رجوع',
-    printReport: 'طباعة / تصدير PDF',
+    printReport: 'طباعة التقرير',
+    downloadPdf: 'تنزيل PDF',
+    generatingPdf: 'جاري إنشاء ملف PDF...',
     language: 'اللغة',
     officialPortal: 'البوابة الأكاديمية الرسمية',
     welcomeIntro: 'مرحباً بكم في البوابة الرسمية لمدرسة داسنيا الأهلية. اضغط على كشف الدرجات للاطلاع على بطاقات التقويم الأكاديمي وسجلات الطلاب.',
-    officialRecordsSummary: '٣٠١ طالب رسمي • الصفوف من ١ إلى ٩ • وزن الفصل الأول: ٢٥٪ (١-٣) / ٢٠٪ (٤-٩)',
+    officialRecordsSummary: '',
 
-    globalSearchPlaceholder: 'بحث عام في سجل ٣٠١ طالب...',
+    globalSearchPlaceholder: 'بحث في سجل الطلاب...',
     studentSearchPlaceholder: 'ابحث باسم الطالب أو رقم القيد...',
     searchNoStudent: 'لا يوجد طالب مطابق للاسم',
     foundInOtherClasses: 'تم العثور في شعب أخرى',
@@ -357,7 +377,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     studentsInClassLabel: 'طلاب الصف',
     termWeightLabel: 'وزن الفصل',
     termWeightExplainer: 'النسبة للصف',
-    termWeightPolicy: 'الصفوف ١-٣: ٢٥٪ للفصل الأول • الصفوف ٤-٩: ٢٠٪ للفصل الأول',
+    termWeightPolicy: 'الصفوف ١-٣: الدرجة من ٢٥ • الصفوف ٤-٩: الدرجة من ٢٠',
 
     gradePrefix: 'الصف',
     classPrefix: 'الشعبة',
@@ -377,12 +397,16 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     bloodGroup: 'فصيلة الدم',
     academicYear: 'العام الدراسي',
     advisor: 'مرشد الصف',
-    attendance: 'نسبة الحضور والالتزام',
+    attendance: 'الحضور',
     presence: 'حضور',
     conduct: 'سلوك مثالي',
     standing: 'المرتبة',
 
+    rowNumber: '#',
     subject: 'المادة الدراسية',
+    term1MarkOutOf25: 'درجة الفصل الأول (من ٢٥)',
+    term1MarkOutOf20: 'درجة الفصل الأول (من ٢٠)',
+    totalMarks: 'مجموع الدرجات',
     subjectCode: 'رمز المادة',
     category: 'التصنيف',
     maxMarks: 'الدرجة العظمى',
@@ -415,12 +439,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     principalSignature: 'ختم وتوقيع مدير المدرسة',
     parentSignature: 'توقيع ولي الأمر',
     schoolOfficeStamp: 'إدارة مدرسة داسنيا الأهلية',
-    evaluationPolicyNote: 'نظام التقويم وتوزيع الأوزان النسبية',
-    policyG1to3: 'الصفوف ١ إلى ٣: ٢٥٪ وزن لكل فصل دراسي (٤ فصول = ١٠٠٪)',
-    policyG4to9: 'الصفوف ٤ إلى ٩: ٢٠٪ وزن لكل فصل دراسي (٥ فصول = ١٠٠٪)',
+    evaluationPolicyNote: 'نظام تقييم درجات الفصل الأول',
+    policyG1to3: 'الصفوف ١ إلى ٣: درجات الفصل الأول من ٢٥ درجة لكل مادة (٢٥٪)',
+    policyG4to9: 'الصفوف ٤ إلى ٩: درجات الفصل الأول من ٢٠ درجة لكل مادة (٢٠٪)',
     passingScoreNote: 'درجة النجاح: ٥٠٪ • الامتياز: ٨٥٪ فما فوق',
 
-    footerCopyright: 'مدرسة داسنيا الأهلية • نظام التقييم الأكاديمي للصفوف ١ إلى ٩ (٣٠١ طالب)',
+    footerCopyright: 'مدرسة داسنيا الأهلية • نظام التقييم الأكاديمي',
   },
 };
 

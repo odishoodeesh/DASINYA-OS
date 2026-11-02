@@ -7,6 +7,8 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   FileSpreadsheet, 
   Printer, 
+  Download,
+  Loader2,
   Award, 
   GraduationCap, 
   Calendar, 
@@ -29,6 +31,8 @@ import {
   Percent,
   Globe
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { IMPORTED_STUDENTS, StudentRecord, SubjectMark } from './data/importedStudents';
 import { 
   Language, 
@@ -184,8 +188,7 @@ export default function App() {
     return availableStudents.filter(s => 
       s.name.toLowerCase().includes(term) ||
       s.rollNumber.toLowerCase().includes(term) ||
-      s.id.toLowerCase().includes(term) ||
-      (s.motherName && s.motherName.toLowerCase().includes(term))
+      s.id.toLowerCase().includes(term)
     );
   }, [availableStudents, studentSearchTerm]);
 
@@ -199,15 +202,14 @@ export default function App() {
     ).slice(0, 3);
   }, [students, selectedGrade, selectedClass, studentSearchTerm]);
 
-  // Global search across all 301 students
+  // Global search across students
   const filteredGlobalSearchResults = useMemo(() => {
     if (!globalSearchQuery.trim()) return [];
     const query = globalSearchQuery.toLowerCase().trim();
     return students.filter(s => 
       s.name.toLowerCase().includes(query) ||
       s.rollNumber.toLowerCase().includes(query) ||
-      s.id.toLowerCase().includes(query) ||
-      (s.motherName && s.motherName.toLowerCase().includes(query))
+      s.id.toLowerCase().includes(query)
     ).slice(0, 10);
   }, [globalSearchQuery, students]);
 
@@ -271,35 +273,87 @@ export default function App() {
     setIsStudentDropdownOpen(false);
   };
 
-  // Calculate totals and percentage across all student subjects
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
+
+  // Term 1 maximum mark per subject (25 for Grade 1-3, 20 for Grade 4-9)
+  const maxTermMark = isPrimary25 ? 25 : 20;
+
+  // Helper to get Term 1 mark for any subject out of 25 or 20
+  const getSubjectTerm1Mark = (rawMark: number): number => {
+    const scaled = (rawMark / 100) * maxTermMark;
+    return Number(scaled.toFixed(1));
+  };
+
+  // Calculate totals across displayed student subjects for Term 1
   const reportTotals = useMemo(() => {
-    if (!activeStudent || !activeStudent.subjects.length) {
+    if (!activeStudent || !displayedSubjects.length) {
       return { 
         totalMax: 0, 
         totalObtained: 0, 
-        percentage: '0.0', 
-        weightedTotal: '0.0',
-        maxWeighted: '0.0',
-        status: 'N/A' 
+        maxTermMark 
       };
     }
-    const totalMax = activeStudent.subjects.reduce((sum, s) => sum + s.maxMarks, 0);
-    const totalObtained = activeStudent.subjects.reduce((sum, s) => sum + s.obtainedMarks, 0);
-    const percentage = totalMax > 0 ? ((totalObtained / totalMax) * 100).toFixed(1) : '0.0';
-    
-    // Calculate term weighted contribution (out of 25% for G1-3, out of 20% for G4-9)
-    const weightedTotal = ((parseFloat(percentage) * termWeightPercentage) / 100).toFixed(2);
-    const maxWeighted = termWeightPercentage.toFixed(1);
+    const totalMax = displayedSubjects.length * maxTermMark;
+    const totalObtained = displayedSubjects.reduce((sum, s) => {
+      const mark = Number(((s.obtainedMarks / 100) * maxTermMark).toFixed(1));
+      return sum + mark;
+    }, 0);
 
-    let status = t.statusPassed;
-    const num = parseFloat(percentage);
-    if (num >= 95) status = t.statusPassHighDistinction;
-    else if (num >= 85) status = t.statusPassDistinction;
-    else if (num >= 50) status = t.statusPassed;
-    else status = t.statusNeedsImprovement;
+    return { 
+      totalMax, 
+      totalObtained: Number(totalObtained.toFixed(1)), 
+      maxTermMark 
+    };
+  }, [activeStudent, displayedSubjects, maxTermMark]);
 
-    return { totalMax, totalObtained, percentage, weightedTotal, maxWeighted, status };
-  }, [activeStudent, termWeightPercentage, t]);
+  // Direct client-side PDF Download using html2canvas and jsPDF
+  const handleDownloadPdf = async () => {
+    const element = document.getElementById('printable-marksheet');
+    if (!element || isGeneratingPdf) return;
+
+    try {
+      setIsGeneratingPdf(true);
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const printWidth = pdfWidth - margin * 2;
+      const printHeight = (canvas.height * printWidth) / canvas.width;
+
+      pdf.addImage(
+        imgData, 
+        'PNG', 
+        margin, 
+        margin, 
+        printWidth, 
+        Math.min(printHeight, pdfHeight - margin * 2)
+      );
+
+      const studentNameClean = (activeStudent?.name || 'Student').replace(/\s+/g, '_');
+      const gradeClean = selectedGrade.replace(/\s+/g, '_');
+      const classClean = selectedClass.replace(/\s+/g, '_');
+      pdf.save(`Dasinya_Marksheet_${gradeClean}_${classClean}_${studentNameClean}.pdf`);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      window.print();
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   const handlePrint = () => {
     window.print();
@@ -412,6 +466,21 @@ export default function App() {
           ) : (
             <div className="flex items-center gap-1.5 sm:gap-2">
               <button
+                onClick={handleDownloadPdf}
+                disabled={isGeneratingPdf}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+                title={t.downloadPdf}
+              >
+                {isGeneratingPdf ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span className="hidden sm:inline">
+                  {isGeneratingPdf ? t.generatingPdf : t.downloadPdf}
+                </span>
+              </button>
+              <button
                 onClick={handlePrint}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-neutral-300 text-neutral-700 hover:bg-neutral-100 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
               >
@@ -480,10 +549,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Institutional Metric Pills */}
-          <div className="mt-12 pt-6 border-t border-neutral-100 flex flex-wrap items-center justify-center gap-4 text-xs text-neutral-400 font-medium">
-            <span>{t.officialRecordsSummary}</span>
-          </div>
         </main>
       )}
 
@@ -541,13 +606,13 @@ export default function App() {
                   <span>{t.stepGrade} &rarr; {t.stepClass} &rarr; {t.stepStudent} &rarr; {t.stepTerm}</span>
                 </h2>
                 <p className="text-xs sm:text-sm text-neutral-500 mt-0.5">
-                  {t.termWeightPolicy} ({t.termWeightExplainer} {formatGradeLabel(selectedGrade, language)}: {termWeightPercentage}%).
+                  {t.termWeightPolicy} ({formatGradeLabel(selectedGrade, language)}: {maxTermMark} {language === 'ku' ? 'نمرە' : language === 'ar' ? 'درجة' : 'marks'}).
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded bg-neutral-100 text-neutral-800 border border-neutral-200">
-                  <Percent className="w-3.5 h-3.5 text-neutral-600" />
-                  <span>{termWeightPercentage}% {t.termWeightLabel}</span>
+                  <Award className="w-3.5 h-3.5 text-neutral-600" />
+                  <span>{maxTermMark} {language === 'ku' ? 'نمرە' : language === 'ar' ? 'درجة' : 'Marks'}</span>
                 </span>
               </div>
             </div>
@@ -731,11 +796,6 @@ export default function App() {
                             >
                               <div className="flex flex-col">
                                 <span className="font-bold text-[11px]">{student.name}</span>
-                                {student.motherName && (
-                                  <span className={`text-[9px] ${isSelected ? 'text-neutral-300' : 'text-neutral-400'}`}>
-                                    {t.motherName}: {student.motherName}
-                                  </span>
-                                )}
                               </div>
                               <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${isSelected ? 'bg-neutral-800 text-neutral-200' : 'bg-neutral-100 text-neutral-600'}`}>
                                 {student.rollNumber}
@@ -784,7 +844,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 4. SELECT TERM (25% for G1-3, 20% for G4-9) */}
+              {/* 4. SELECT TERM */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
@@ -792,7 +852,7 @@ export default function App() {
                     <span>{t.stepTerm}</span>
                   </div>
                   <span className="text-[10px] font-bold text-neutral-800">
-                    {termWeightPercentage}% {t.termWeightLabel}
+                    {maxTermMark} {language === 'ku' ? 'نمرە' : language === 'ar' ? 'درجة' : 'Marks'}
                   </span>
                 </label>
 
@@ -804,11 +864,9 @@ export default function App() {
                       isRtl ? 'text-right' : 'text-left'
                     }`}
                   >
-                    {availableTerms.map(term => (
-                      <option key={term.id} value={term.id}>
-                        {term.label} ({term.weight})
-                      </option>
-                    ))}
+                    <option value="Term 1">
+                      {t.term1Name} ({isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20})
+                    </option>
                   </select>
                   <div className={`pointer-events-none absolute inset-y-0 flex items-center px-3 text-neutral-500 ${isRtl ? 'left-0' : 'right-0'}`}>
                     <ChevronDown className="w-4 h-4" />
@@ -823,19 +881,51 @@ export default function App() {
                   >
                     <span className="font-bold">{t.term1Name}</span>
                     <span className="bg-neutral-800 text-neutral-200 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
-                      {termWeightPercentage}%
+                      {isPrimary25 ? '/ 25' : '/ 20'}
                     </span>
                   </button>
                 </div>
                 <p className="text-[10px] text-neutral-400">
                   {isPrimary25 
-                    ? (language === 'ku' ? 'قۆناغێن ١ هەتا ٣: ٢٥٪ بۆ وەرزێ ئێکێ' : language === 'ar' ? 'الصفوف ١ إلى ٣: ٢٥٪ للفصل الأول' : 'Grade 1–3: 25% for Term 1')
-                    : (language === 'ku' ? 'قۆناغێن ٤ هەتا ٩: ٢٠٪ بۆ وەرزێ ئێکێ' : language === 'ar' ? 'الصفوف ٤ إلى ٩: ٢٠٪ للفصل الأول' : 'Grade 4–9: 20% for Term 1')}
+                    ? (language === 'ku' ? 'قۆناغێن ١ هەتا ٣: نمرەیێن وەرزێ ئێکێ ژ ٢٥ نمرانە' : language === 'ar' ? 'الصفوف ١ إلى ٣: درجات الفصل الأول من ٢٥ درجة' : 'Grades 1–3: Term 1 marks are out of 25')
+                    : (language === 'ku' ? 'قۆناغێن ٤ هەتا ٩: نمرەیێن وەرزێ ئێکێ ژ ٢٠ نمرانە' : language === 'ar' ? 'الصفوف ٤ إلى ٩: درجات الفصل الأول من ٢٠ درجة' : 'Grades 4–9: Term 1 marks are out of 20')}
                 </p>
               </div>
 
             </div>
           </section>
+
+          {/* Action Toolbar above Report Card */}
+          {activeStudent && (
+            <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-neutral-800 bg-neutral-100 px-3 py-1.5 rounded-lg border border-neutral-200">
+                  {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={isGeneratingPdf}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 rounded-lg text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-[0.99]"
+                >
+                  {isGeneratingPdf ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  <span>{isGeneratingPdf ? t.generatingPdf : t.downloadPdf}</span>
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 border border-neutral-300 text-neutral-700 hover:bg-neutral-100 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>{t.printReport}</span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* REPORT CARD DISPLAY */}
           {activeStudent ? (
@@ -862,10 +952,10 @@ export default function App() {
                 
                 <div className="mt-4 pt-3 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-600 gap-2">
                   <span className="font-bold tracking-wide uppercase text-neutral-900 bg-neutral-100 px-3 py-1 rounded">
-                    {selectedTermObj.label} &bull; {formatGradeLabel(activeStudent.grade, language)} ({formatClassLabel(activeStudent.section, language)})
+                    {t.term1Name} &bull; {formatGradeLabel(activeStudent.grade, language)} ({formatClassLabel(activeStudent.section, language)})
                   </span>
-                  <span className="font-medium">
-                    {t.termWeightLabel}: <strong className="text-neutral-900">{termWeightPercentage}%</strong> ({isPrimary25 ? (language === 'ku' ? 'سیستەمێ قۆناغێن ١-٣' : language === 'ar' ? 'نظام الصفوف ١-٣' : 'Grades 1–3 System') : (language === 'ku' ? 'سیستەمێ قۆناغێن ٤-٩' : language === 'ar' ? 'نظام الصفوف ٤-٩' : 'Grades 4–9 System')})
+                  <span className="font-bold text-neutral-800">
+                    {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
                   </span>
                   <span className="font-medium">
                     {t.academicYear}: <strong className="text-neutral-900">{activeStudent.academicYear}</strong>
@@ -873,14 +963,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Student Metadata Bar */}
+              {/* Student Metadata Bar (Mother Name & Attendance & Standing removed) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-neutral-50 p-4 sm:p-5 rounded-lg border border-neutral-200 text-xs mb-6">
                 <div>
                   <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.studentName}</span>
                   <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.name}</p>
-                  {activeStudent.motherName && (
-                    <span className="text-[11px] text-neutral-500 block">{t.motherName}: {activeStudent.motherName}</span>
-                  )}
                   <span className="text-[11px] text-neutral-400">
                     {t.gender}: {activeStudent.gender === 'Female' ? t.female : t.male}
                   </span>
@@ -889,9 +976,6 @@ export default function App() {
                   <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.rollNumber}</span>
                   <p className="text-neutral-900 text-sm font-bold font-mono mt-0.5">{activeStudent.rollNumber}</p>
                   <span className="text-[11px] text-neutral-500 block">{t.idNumber}: {activeStudent.id.replace('DPS-', '')}</span>
-                  {activeStudent.bloodGroup && (
-                    <span className="text-[10px] text-neutral-400">{t.bloodGroup}: {activeStudent.bloodGroup}</span>
-                  )}
                 </div>
                 <div>
                   <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.classAndSection}</span>
@@ -901,17 +985,13 @@ export default function App() {
                   {activeStudent.dob && (
                     <span className="text-[11px] text-neutral-500 block">{t.dob}: {activeStudent.dob}</span>
                   )}
-                  <span className="text-[11px] text-neutral-400">{t.advisor}: {activeStudent.classTeacher}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.attendance}</span>
-                  <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.attendance} {t.presence}</p>
-                  <span className="text-[11px] font-semibold text-neutral-700 block">
-                    {formatClassRank(activeStudent.classRank, language)}
-                  </span>
-                  <span className="text-[10px] text-emerald-600 font-medium">
-                    {formatConduct(activeStudent.conduct, language)}
-                  </span>
+                  <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.academicYear}</span>
+                  <p className="text-neutral-900 text-sm font-bold mt-0.5">{activeStudent.academicYear}</p>
+                  {activeStudent.bloodGroup && (
+                    <span className="text-[11px] text-neutral-500 block">{t.bloodGroup}: {activeStudent.bloodGroup}</span>
+                  )}
                 </div>
               </div>
 
@@ -938,35 +1018,34 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Official Subjects Table with Term Weight Points */}
+              {/* Streamlined Official Marksheet Table */}
+              {/* CODE, MAX MARKS, TERM WEIGHT, GRADE, and REMARKS removed */}
               <div className="overflow-x-auto border border-neutral-200 rounded-lg mb-8">
                 <table className={`w-full text-sm ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="bg-neutral-100 border-b border-neutral-200 text-neutral-800 text-xs uppercase tracking-wider font-bold">
-                      <th className="py-3 px-4">{t.subject}</th>
-                      <th className="py-3 px-3">{t.subjectCode}</th>
-                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{t.maxMarks}</th>
-                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{t.obtainedMarks}</th>
-                      <th className={`py-3 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>
-                        {t.termWeightScore} ({termWeightPercentage}%)
+                      <th className="py-3.5 px-4 w-14 text-center">{t.rowNumber}</th>
+                      <th className="py-3.5 px-4">{t.subject}</th>
+                      <th className={`py-3.5 px-6 ${isRtl ? 'text-left' : 'text-right'}`}>
+                        {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
                       </th>
-                      <th className="py-3 px-3 text-center">{t.letterGrade}</th>
-                      <th className="py-3 px-4">{t.academicRemarks}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100 text-xs sm:text-sm">
                     {displayedSubjects.map((sub, index) => {
-                      const weightedMark = ((sub.obtainedMarks * termWeightPercentage) / 100).toFixed(1);
+                      const term1Mark = getSubjectTerm1Mark(sub.obtainedMarks);
                       const translatedName = getTranslatedSubject(sub.subject, language);
-                      const translatedRemark = getTranslatedRemark(sub.remarks, language);
 
                       return (
                         <tr key={index} className="hover:bg-neutral-50/70 transition-colors">
-                          <td className="py-2.5 px-4 font-semibold text-neutral-900">
+                          <td className="py-3 px-4 text-center font-mono text-xs text-neutral-400 font-semibold">
+                            {index + 1}
+                          </td>
+                          <td className="py-3 px-4 font-semibold text-neutral-900">
                             <div className="flex items-center gap-2">
-                              <span>{translatedName}</span>
+                              <span className="text-sm">{translatedName}</span>
                               {language !== 'en' && (
-                                <span className="text-[10px] text-neutral-400 font-normal font-sans">
+                                <span className="text-[11px] text-neutral-400 font-normal font-sans">
                                   ({sub.subject.replace(/ \(دەرونزانی\)/, '')})
                                 </span>
                               )}
@@ -977,99 +1056,33 @@ export default function App() {
                               )}
                             </div>
                           </td>
-                          <td className="py-2.5 px-3 text-neutral-500 font-mono text-xs">{sub.code}</td>
-                          <td className={`py-2.5 px-3 text-neutral-600 ${isRtl ? 'text-left' : 'text-right'}`}>{sub.maxMarks}</td>
-                          <td className={`py-2.5 px-3 font-bold text-neutral-900 ${isRtl ? 'text-left' : 'text-right'}`}>{sub.obtainedMarks}</td>
-                          <td className={`py-2.5 px-3 font-semibold text-neutral-800 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
-                            {weightedMark}
+                          <td className={`py-3 px-6 font-bold text-neutral-900 font-mono text-sm sm:text-base ${isRtl ? 'text-left' : 'text-right'}`}>
+                            <span>{term1Mark}</span>
+                            <span className="text-xs text-neutral-400 font-normal font-mono ml-1">/ {maxTermMark}</span>
                           </td>
-                          <td className="py-2.5 px-3 text-center">
-                            <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-bold ${
-                              sub.grade.startsWith('A') 
-                                ? 'bg-neutral-900 text-white' 
-                                : 'bg-neutral-200 text-neutral-800'
-                            }`}>
-                              {sub.grade}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-4 text-neutral-600 text-xs">{translatedRemark}</td>
                         </tr>
                       );
                     })}
                   </tbody>
                   <tfoot>
                     <tr className="bg-neutral-100 font-bold border-t-2 border-neutral-900 text-neutral-900 text-xs sm:text-sm">
-                      <td className="py-3.5 px-4 uppercase tracking-wider">
-                        {t.cumulativeTotal} ({activeStudent.subjects.length} {t.subject})
+                      <td className="py-3.5 px-4 text-center text-neutral-500 font-mono text-xs">
+                        #
                       </td>
-                      <td className="py-3.5 px-3"></td>
-                      <td className={`py-3.5 px-3 ${isRtl ? 'text-left' : 'text-right'}`}>{reportTotals.totalMax}</td>
-                      <td className={`py-3.5 px-3 text-neutral-950 font-extrabold text-base ${isRtl ? 'text-left' : 'text-right'}`}>
-                        {reportTotals.totalObtained}
+                      <td className="py-3.5 px-4 uppercase tracking-wider font-extrabold text-neutral-900">
+                        {t.totalMarks} ({displayedSubjects.length} {t.subject})
                       </td>
-                      <td className={`py-3.5 px-3 font-mono text-neutral-950 font-extrabold ${isRtl ? 'text-left' : 'text-right'}`}>
-                        {reportTotals.weightedTotal} / {reportTotals.maxWeighted}
-                      </td>
-                      <td className="py-3.5 px-3 text-center text-sm font-extrabold text-neutral-950">
-                        {reportTotals.percentage}%
-                      </td>
-                      <td className="py-3.5 px-4 text-xs font-medium text-neutral-700">
-                        {t.academicStanding}: <span className="font-bold text-neutral-900">{reportTotals.status}</span>
+                      <td className={`py-3.5 px-6 font-mono text-neutral-950 font-black text-base sm:text-lg ${isRtl ? 'text-left' : 'text-right'}`}>
+                        <span>{reportTotals.totalObtained}</span>
+                        <span className="text-xs text-neutral-500 font-bold ml-1">/ {reportTotals.totalMax}</span>
                       </td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
 
-              {/* Summary Performance Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
-                    {t.standing}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">
-                      {formatClassRank(activeStudent.classRank, language)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
-                    {t.overallPercentage}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">{reportTotals.percentage}% (100)</span>
-                  </div>
-                </div>
-
-                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
-                    {t.termContribution}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Percent className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">
-                      {reportTotals.weightedTotal} / {reportTotals.maxWeighted}%
-                    </span>
-                  </div>
-                </div>
-
-                <div className="border border-neutral-200 p-4 rounded-lg bg-neutral-50/50">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-1">
-                    {t.attendance}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-neutral-800" />
-                    <span className="text-sm font-bold text-neutral-900">{activeStudent.attendance} {t.presence}</span>
-                  </div>
-                </div>
-              </div>
-
               {/* Signatures & Accreditation Footer */}
-              <div className="pt-8 border-t border-neutral-200 grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-neutral-600">
+              <div className="pt-8 border-t border-neutral-200 grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-neutral-600">
                 <div className={isRtl ? 'text-right' : 'text-left'}>
                   <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-bold block mb-1">
                     {t.evaluationPolicyNote}
@@ -1081,16 +1094,8 @@ export default function App() {
                   </p>
                 </div>
 
-                <div className="flex flex-col items-center justify-end">
-                  <div className="w-40 border-b border-neutral-400 mb-1"></div>
-                  <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">
-                    {t.classTeacherSignature}
-                  </span>
-                  <span className="text-[10px] text-neutral-500">{activeStudent.classTeacher}</span>
-                </div>
-
                 <div className="flex flex-col items-center sm:items-end justify-end">
-                  <div className="w-40 border-b border-neutral-400 mb-1"></div>
+                  <div className="w-48 border-b border-neutral-400 mb-1"></div>
                   <span className="text-[11px] font-bold text-neutral-800 uppercase tracking-wider">
                     {t.principalSignature}
                   </span>
