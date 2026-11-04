@@ -102,7 +102,8 @@ export const OFFICIAL_SUBJECTS = [
 export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | null;
 
 interface AuthenticatedGuardian {
-  email: string;
+  password: string;
+  email?: string;
   students: StudentRecord[];
 }
 
@@ -224,7 +225,6 @@ export default function App() {
 
   // Guardian Authentication State
   const [authGuardian, setAuthGuardian] = useState<AuthenticatedGuardian | null>(null);
-  const [loginEmail, setLoginEmail] = useState<string>('');
   const [loginPassword, setLoginPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string>('');
@@ -268,17 +268,17 @@ export default function App() {
     try {
       const stored = localStorage.getItem('dasinya_guardian_session');
       if (stored) {
-        const { email, password } = JSON.parse(stored);
-        if (email && password) {
+        const parsed = JSON.parse(stored);
+        const pwd = (parsed.password || parsed.pwd || '').trim();
+        if (pwd) {
           const matched = students.filter(s => 
-            s.guardianEmail && 
-            s.guardianEmail.trim().toLowerCase() === email.trim().toLowerCase() &&
-            s.guardianPassword &&
-            s.guardianPassword.trim() === password.trim()
+            (s.guardianPassword && s.guardianPassword.trim() === pwd) ||
+            (s.guardianPasswordAlt && s.guardianPasswordAlt.trim() === pwd)
           );
           if (matched.length > 0) {
             setAuthGuardian({
-              email: matched[0].guardianEmail || email,
+              password: pwd,
+              email: matched[0].guardianEmail || '',
               students: matched
             });
             setSelectedChildId(matched[0].id);
@@ -305,32 +305,36 @@ export default function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle Guardian Login
-  const handleGuardianLogin = (e?: React.FormEvent, customEmail?: string, customPwd?: string) => {
+  // Handle Student / Guardian Login (Password Only)
+  const handleGuardianLogin = (e?: React.FormEvent, customPwd?: string) => {
     if (e) e.preventDefault();
     setLoginError('');
     setIsLoggingIn(true);
 
-    const emailToVerify = (customEmail !== undefined ? customEmail : loginEmail).trim();
     const pwdToVerify = (customPwd !== undefined ? customPwd : loginPassword).trim();
 
-    if (!emailToVerify || !pwdToVerify) {
-      setLoginError(t.invalidCredentialsError);
+    if (!pwdToVerify) {
+      setLoginError(
+        language === 'ku'
+          ? 'تکایە وشەی تێپەڕبوون بنووسە'
+          : language === 'ar'
+          ? 'يرجى إدخال كلمة المرور'
+          : 'Please enter your password'
+      );
       setIsLoggingIn(false);
       return;
     }
 
-    // Lookup matching student(s) by guardian email and password
+    // Lookup matching student(s) by password
     const matched = students.filter(s => 
-      s.guardianEmail && 
-      s.guardianEmail.trim().toLowerCase() === emailToVerify.toLowerCase() &&
-      s.guardianPassword &&
-      s.guardianPassword.trim() === pwdToVerify
+      (s.guardianPassword && s.guardianPassword.trim() === pwdToVerify) ||
+      (s.guardianPasswordAlt && s.guardianPasswordAlt.trim() === pwdToVerify)
     );
 
     if (matched.length > 0) {
       const session: AuthenticatedGuardian = {
-        email: matched[0].guardianEmail || emailToVerify,
+        password: pwdToVerify,
+        email: matched[0].guardianEmail || '',
         students: matched
       };
       setAuthGuardian(session);
@@ -340,14 +344,19 @@ export default function App() {
       setSelectedCategory('All');
       try {
         localStorage.setItem('dasinya_guardian_session', JSON.stringify({
-          email: emailToVerify,
           password: pwdToVerify
         }));
       } catch {
         // Ignore
       }
     } else {
-      setLoginError(t.invalidCredentialsError);
+      setLoginError(
+        language === 'ku'
+          ? 'وشەی تێپەڕبوون هەڵەیە. تکایە وشەی تێپەڕبوونەکەت بپشکنە و دووبارە هەوڵبدەوە.'
+          : language === 'ar'
+          ? 'كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والمحاولة مرة أخرى.'
+          : 'Invalid password. Please check your password and try again.'
+      );
     }
     setIsLoggingIn(false);
   };
@@ -356,7 +365,6 @@ export default function App() {
   const handleGuardianLogout = () => {
     setAuthGuardian(null);
     setSelectedChildId('');
-    setLoginEmail('');
     setLoginPassword('');
     setLoginError('');
     setActivePortalTab(null);
@@ -663,7 +671,7 @@ export default function App() {
             {t.guardianLoginSubtitle}
           </p>
 
-          {/* GUARDIAN LOGIN CARD (NO HINTS, NO SAMPLES) */}
+          {/* STUDENT / GUARDIAN LOGIN CARD (PASSWORD ONLY) */}
           <div className="w-full max-w-md bg-white border border-neutral-200 hover:border-[#0087A5]/50 rounded-2xl p-6 sm:p-8 shadow-sm text-left transition-colors">
             <div className={`flex items-center gap-3 mb-5 pb-4 border-b border-neutral-100 ${isRtl ? 'flex-row-reverse text-right' : ''}`}>
               <div className="w-10 h-10 rounded-xl bg-[#0087A5]/10 flex items-center justify-center text-[#0087A5] shrink-0">
@@ -671,10 +679,10 @@ export default function App() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-neutral-900">
-                  {t.guardianLoginTitle}
+                  {language === 'ku' ? 'چوونەژوورا دەرگەهێ قوتابی' : language === 'ar' ? 'الدخول إلى بوابة الطالب' : 'Student Portal Access'}
                 </h3>
                 <p className="text-xs text-neutral-500">
-                  {t.guardianAccountTitle}
+                  {language === 'ku' ? 'ب رێکا وشەی تێپەڕبوون بچۆ ژوورڤە' : language === 'ar' ? 'تسجيل الدخول بكلمة المرور فقط' : 'Log in using password only'}
                 </p>
               </div>
             </div>
@@ -687,38 +695,15 @@ export default function App() {
               </div>
             )}
 
-            {/* Form */}
+            {/* Password-Only Form */}
             <form onSubmit={handleGuardianLogin} className="space-y-4">
-              {/* Guardian Email (No hint) */}
-              <div className="space-y-1.5">
-                <label className={`block text-xs font-bold uppercase tracking-wider text-neutral-700 ${isRtl ? 'text-right' : 'text-left'}`}>
-                  {t.emailAddressLabel}
-                </label>
-                <div className="relative">
-                  <div className={`absolute inset-y-0 flex items-center pointer-events-none text-neutral-400 ${isRtl ? 'right-3' : 'left-3'}`}>
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="email"
-                    required
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    autoComplete="email"
-                    className={`w-full py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-medium text-neutral-900 focus:outline-none focus:border-[#0087A5] focus:ring-1 focus:ring-[#0087A5] focus:bg-white shadow-2xs transition-colors ${
-                      isRtl ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3 text-left'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              {/* Password (No hint) */}
               <div className="space-y-1.5">
                 <label className={`block text-xs font-bold uppercase tracking-wider text-neutral-700 ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t.passwordLabel}
                 </label>
                 <div className="relative">
                   <div className={`absolute inset-y-0 flex items-center pointer-events-none text-neutral-400 ${isRtl ? 'right-3' : 'left-3'}`}>
-                    <KeyRound className="w-4 h-4" />
+                    <KeyRound className="w-4 h-4 text-[#0087A5]" />
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -726,8 +711,9 @@ export default function App() {
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     autoComplete="current-password"
-                    className={`w-full py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-medium text-neutral-900 focus:outline-none focus:border-[#0087A5] focus:ring-1 focus:ring-[#0087A5] focus:bg-white shadow-2xs transition-colors ${
-                      isRtl ? 'pr-9 pl-10 text-right' : 'pl-9 pr-10 text-left'
+                    autoFocus
+                    className={`w-full py-3 bg-neutral-50 border border-neutral-300 rounded-xl text-sm font-semibold text-neutral-900 focus:outline-none focus:border-[#0087A5] focus:ring-2 focus:ring-[#0087A5]/20 focus:bg-white shadow-2xs transition-colors ${
+                      isRtl ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10 text-left'
                     }`}
                   />
                   <button
@@ -747,7 +733,7 @@ export default function App() {
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-3 px-4 bg-[#0087A5] text-white hover:bg-[#00728c] active:scale-[0.99] font-bold text-xs sm:text-sm rounded-lg transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 mt-3 disabled:opacity-60"
+                className="w-full py-3 px-4 bg-[#0087A5] text-white hover:bg-[#00728c] active:scale-[0.99] font-bold text-xs sm:text-sm rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-60"
               >
                 {isLoggingIn ? (
                   <>
@@ -809,14 +795,16 @@ export default function App() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] uppercase tracking-wider text-white/80 font-bold">
-                    {t.guardianAccountTitle}
+                    {language === 'ku' ? 'هەژمارا قوتابی' : language === 'ar' ? 'حساب الطالب' : 'Student Portal'}
                   </span>
-                  <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/30">
-                    {authGuardian.students.length} {t.registeredChildrenLabel}
-                  </span>
+                  {authGuardian.students.length > 1 && (
+                    <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/30">
+                      {authGuardian.students.length} {t.registeredChildrenLabel}
+                    </span>
+                  )}
                 </div>
-                <h2 className="text-sm sm:text-base font-bold font-mono text-white">
-                  {authGuardian.email}
+                <h2 className="text-sm sm:text-base font-bold text-white">
+                  {currentStudent ? currentStudent.name : 'Student Profile'}
                 </h2>
               </div>
             </div>
@@ -1219,8 +1207,10 @@ export default function App() {
                     )}
 
                     <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 col-span-1 sm:col-span-2">
-                      <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">{t.guardianEmail}</span>
-                      <p className="text-neutral-900 text-sm font-bold font-mono mt-0.5 truncate">{currentStudent.guardianEmail || authGuardian.email}</p>
+                      <span className="text-neutral-400 block uppercase tracking-wider text-[10px] font-bold">
+                        {language === 'ku' ? 'وشەی تێپەڕبوونا دەرگەهێ قوتابی' : language === 'ar' ? 'كلمة مرور بوابة الطالب' : 'Student Access Password'}
+                      </span>
+                      <p className="text-neutral-900 text-sm font-bold font-mono mt-0.5">{currentStudent.guardianPassword}</p>
                     </div>
                   </div>
 
