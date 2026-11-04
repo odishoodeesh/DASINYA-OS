@@ -169,6 +169,40 @@ export interface TranslationDictionary {
   staffBrowseOption: string;
   backToGuardianLogin: string;
 
+  // Logged-in Portal Buttons & Tabs
+  tabInfo: string;
+  tabMarksheet: string;
+  tabFoodMenu: string;
+  tabClassesTimetable: string;
+  tabBehaviourReport: string;
+  infoSubtitle: string;
+  backToPortalMenu: string;
+
+  // Food Menu, Timetable, Behaviour labels
+  foodMenuTitle: string;
+  foodMenuSubtitle: string;
+  timetableTitle: string;
+  timetableSubtitle: string;
+  behaviourTitle: string;
+  behaviourSubtitle: string;
+  periodLabel: string;
+  timeLabel: string;
+  subjectTeacherLabel: string;
+  classroomLabel: string;
+  morningBreakLabel: string;
+  lunchBreakLabel: string;
+  sundayLabel: string;
+  mondayLabel: string;
+  tuesdayLabel: string;
+  wednesdayLabel: string;
+  thursdayLabel: string;
+  conductStandingLabel: string;
+  attendanceRateLabel: string;
+  positiveNotesLabel: string;
+  disciplinaryStandingLabel: string;
+  commendationsLabel: string;
+  counselorSignLabel: string;
+
   // Footer
   footerCopyright: string;
 }
@@ -295,6 +329,38 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     staffBrowseOption: 'School Administration View (Browse All)',
     backToGuardianLogin: 'Return to Guardian Login',
 
+    tabInfo: 'INFO',
+    tabMarksheet: 'MARKSHEET',
+    tabFoodMenu: 'FOOD MENU',
+    tabClassesTimetable: 'CLASSES TIMETABLE',
+    tabBehaviourReport: 'BEHAVIOUR REPORT',
+    infoSubtitle: 'Student personal profile and registration details',
+    backToPortalMenu: 'Back to Menu',
+
+    foodMenuTitle: 'Weekly Nutrition & Cafeteria Menu',
+    foodMenuSubtitle: 'Healthy, balanced, and freshly prepared hot meals and fresh fruit snacks for students.',
+    timetableTitle: 'Official Weekly Classes Timetable',
+    timetableSubtitle: 'Standard instructional periods and weekly schedule (Sunday – Thursday).',
+    behaviourTitle: 'Student Behaviour & Conduct Report',
+    behaviourSubtitle: 'Official Term 1 disciplinary standing, attendance rate, and positive commendations.',
+    periodLabel: 'Period',
+    timeLabel: 'Time',
+    subjectTeacherLabel: 'Subject & Instructor',
+    classroomLabel: 'Classroom',
+    morningBreakLabel: 'Morning Nutrition Break',
+    lunchBreakLabel: 'Lunch & Recreation Break',
+    sundayLabel: 'Sunday',
+    mondayLabel: 'Monday',
+    tuesdayLabel: 'Tuesday',
+    wednesdayLabel: 'Wednesday',
+    thursdayLabel: 'Thursday',
+    conductStandingLabel: 'Conduct Standing',
+    attendanceRateLabel: 'Term 1 Attendance Rate',
+    positiveNotesLabel: 'Behavioral Observations & Positive Growth',
+    disciplinaryStandingLabel: 'Disciplinary Record',
+    commendationsLabel: 'Special Commendations & Strengths',
+    counselorSignLabel: 'School Counselor & Disciplinary Committee',
+
     footerCopyright: 'Dasinya Private School • Academic Evaluation System',
   },
 
@@ -420,6 +486,38 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     staffBrowseOption: 'دیتنا کارگێڕیا قوتابخانێ (پشکنینا گشتی)',
     backToGuardianLogin: 'زڤڕین بۆ چوونا ژوورێ یا بێخێڤی',
 
+    tabInfo: 'پێزانین',
+    tabMarksheet: 'کەشفا نمران',
+    tabFoodMenu: 'مێنیویا خوارنێ',
+    tabClassesTimetable: 'خشتەیێ دەوامێ',
+    tabBehaviourReport: 'راپۆرتا سلوکی',
+    infoSubtitle: 'پێزانین و پڕۆفایلا فەرمی یا قوتابی',
+    backToPortalMenu: 'زڤڕین بۆ مێنیویا سەرەکی',
+
+    foodMenuTitle: 'مێنیویا خوارنێ یا حەفتیانە',
+    foodMenuSubtitle: 'خوارنێن ساخلەم و هەمەجۆر دگەل میوەیێن تەڕ و تازە بۆ قوتابیان.',
+    timetableTitle: 'خشتەیێ حەفتیانە یێ وانان',
+    timetableSubtitle: 'دەواما فەرمی یا وانان (ئێک شەمبی هەتا پێنج شەمبی) یا ڤێ هۆبێ.',
+    behaviourTitle: 'راپۆرتا فەرمی یا سلوک و رەوشتێ قوتابی',
+    behaviourSubtitle: 'هەلسەنگاندنا رەوشت، پابەندبوون ب دەوامی، و دەستخۆشیێن مامۆستایان بۆ وەرزێ ئێکێ.',
+    periodLabel: 'وانە',
+    timeLabel: 'دەمژمێر',
+    subjectTeacherLabel: 'بابەت و مامۆستا',
+    classroomLabel: 'پۆل',
+    morningBreakLabel: 'بێنڤەدانا سپێدێ و خوارنا سڤک',
+    lunchBreakLabel: 'بێنڤەدانا فراڤینێ',
+    sundayLabel: 'ئێک شەمبی',
+    mondayLabel: 'دوو شەمبی',
+    tuesdayLabel: 'سێ شەمبی',
+    wednesdayLabel: 'چوار شەمبی',
+    thursdayLabel: 'پێنج شەمبی',
+    conductStandingLabel: 'ئاستێ رەوشتی',
+    attendanceRateLabel: 'رێژەیا ئامادەبوونێ یا وەرزێ ئێکێ',
+    positiveNotesLabel: 'تێبینیێن ئەرێنی و پێشکەفتنا سلوکی',
+    disciplinaryStandingLabel: 'تۆمارا پابەندبوونێ',
+    commendationsLabel: 'دەستخۆشی و رێزلێنان',
+    counselorSignLabel: 'رێبەرێ دەروونی و لژنەیا رەوشتی',
+
     footerCopyright: 'قوتابخانەیا داسنیا یا تایبەت • سیستەمێ هەلسەنگاندنا ئەکادیمی',
   },
 
@@ -544,6 +642,38 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     quickDemoHint: 'اضغط على أي حساب لتعبئة البيانات تلقائياً',
     staffBrowseOption: 'عرض إدارة المدرسة (تصفح جميع الصفوف)',
     backToGuardianLogin: 'العودة لتسجيل دخول ولي الأمر',
+
+    tabInfo: 'المعلومات',
+    tabMarksheet: 'كشف الدرجات',
+    tabFoodMenu: 'قائمة الطعام',
+    tabClassesTimetable: 'جدول الحصص',
+    tabBehaviourReport: 'تقرير السلوك',
+    infoSubtitle: 'البيانات الشخصية وسجل القيد المدرسي',
+    backToPortalMenu: 'العودة للقائمة الرئيسية',
+
+    foodMenuTitle: 'قائمة الوجبات الغذائية الأسبوعية',
+    foodMenuSubtitle: 'وجبات صحية متوازنة وطازجة يومياً مع وجبات الفواكه الصحية للطلاب.',
+    timetableTitle: 'جدول الحصص الأسبوعي المعتمد',
+    timetableSubtitle: 'الجدول الدراسي واليومي المعتمد (من الأحد إلى الخميس) لهذا الصف.',
+    behaviourTitle: 'تقرير السلوك والمواظبة الأكاديمية',
+    behaviourSubtitle: 'التقييم السلوكي الرسمي للفصل الدراسي الأول ونسبة الحضور وملاحظات التميز.',
+    periodLabel: 'الحصة',
+    timeLabel: 'الوقت',
+    subjectTeacherLabel: 'المادة والمدرس',
+    classroomLabel: 'القاعة',
+    morningBreakLabel: 'استراحة الصباح والوجبة الخفيفة',
+    lunchBreakLabel: 'استراحة الغداء والراحة',
+    sundayLabel: 'الأحد',
+    mondayLabel: 'الإثنين',
+    tuesdayLabel: 'الثلاثاء',
+    wednesdayLabel: 'الأربعاء',
+    thursdayLabel: 'الخميس',
+    conductStandingLabel: 'المستوى السلوكي',
+    attendanceRateLabel: 'نسبة الحضور للفصل الأول',
+    positiveNotesLabel: 'الملاحظات السلوكية والتطور الإيجابي',
+    disciplinaryStandingLabel: 'سجل الانضباط والمواظبة',
+    commendationsLabel: 'كتب الشكر والتقدير والنقاط الإيجابية',
+    counselorSignLabel: 'المرشد التربوي ولجنة الانضباط',
 
     footerCopyright: 'مدرسة داسنيا الأهلية • نظام التقييم الأكاديمي',
   },

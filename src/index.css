@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand: #0087A5;
+  --color-brand-hover: #00728c;
+  --color-brand-active: #005d72;
+  --color-brand-light: #e6f6f9;
+  --color-brand-border: #99d8e5;
+}
+
 :root {
+  --color-brand: #0087A5;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -12,10 +21,14 @@
   body * {
     visibility: hidden;
   }
-  #printable-marksheet, #printable-marksheet * {
+  #printable-marksheet, #printable-marksheet *,
+  #printable-timetable, #printable-timetable *,
+  #printable-behaviour, #printable-behaviour * {
     visibility: visible;
   }
-  #printable-marksheet {
+  #printable-marksheet,
+  #printable-timetable,
+  #printable-behaviour {
     position: absolute;
     left: 0;
     top: 0;
