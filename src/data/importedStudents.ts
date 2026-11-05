@@ -72,9 +72,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 98,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -215,9 +215,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
+        "obtainedMarks": 96,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -358,9 +358,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -501,9 +501,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 96,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -644,9 +644,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -787,9 +787,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -932,7 +932,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1073,9 +1073,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1218,7 +1218,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1359,9 +1359,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 99,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1502,9 +1502,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1645,9 +1645,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 96,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -1788,9 +1788,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
+        "obtainedMarks": 96,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -1931,9 +1931,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 93,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 76,
+        "grade": "B+",
+        "remarks": "Good foundational Kurdish comprehension and effort"
       },
       {
         "subject": "Arabic",
@@ -2074,9 +2074,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -2217,9 +2217,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -2360,9 +2360,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -2503,9 +2503,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -2646,9 +2646,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -2789,9 +2789,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 99,
-        "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 92,
+        "grade": "A",
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -2932,9 +2932,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 92,
+        "grade": "A",
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -3075,9 +3075,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
+        "obtainedMarks": 96,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -3218,9 +3218,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -3361,9 +3361,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -3506,7 +3506,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 92,
         "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -3649,7 +3649,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -3792,7 +3792,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -3933,9 +3933,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4076,9 +4076,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4219,9 +4219,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4362,9 +4362,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -4505,9 +4505,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 93,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4648,9 +4648,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4793,7 +4793,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -4934,9 +4934,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 98,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5077,9 +5077,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5220,9 +5220,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 96,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5365,7 +5365,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5506,9 +5506,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -5649,9 +5649,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5792,9 +5792,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 98,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -5935,9 +5935,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -6078,9 +6078,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 96,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -6221,9 +6221,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 93,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -6364,9 +6364,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -6507,9 +6507,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -6652,7 +6652,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -6793,9 +6793,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -6936,9 +6936,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 99,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7079,9 +7079,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 96,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7222,9 +7222,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7365,9 +7365,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7508,9 +7508,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7651,9 +7651,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 99,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7794,9 +7794,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -7937,9 +7937,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
-        "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 92,
+        "grade": "A",
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -8080,9 +8080,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -8223,9 +8223,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 94,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -8366,9 +8366,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 96,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -8509,9 +8509,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -8652,9 +8652,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and Kurdish language skills"
       },
       {
         "subject": "Arabic",
@@ -8795,9 +8795,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -8940,7 +8940,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -9081,9 +9081,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 97,
-        "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 92,
+        "grade": "A",
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -9224,9 +9224,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -9367,9 +9367,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -9512,7 +9512,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 92,
         "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Very good reading and Kurdish vocabulary grasp"
       },
       {
         "subject": "Arabic",
@@ -9653,9 +9653,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 93,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -9796,9 +9796,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -9941,7 +9941,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -10082,9 +10082,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "B+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -10225,9 +10225,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 98,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -10368,9 +10368,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 100,
-        "obtainedMarks": 95,
+        "obtainedMarks": 100,
         "grade": "A+",
-        "remarks": "Exemplary Kurdish literacy and grammar"
+        "remarks": "Outstanding performance in Kurdish language and literacy"
       },
       {
         "subject": "Arabic",
@@ -24172,9 +24172,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
+        "obtainedMarks": 80,
         "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Good English language comprehension and oral performance"
       },
       {
         "subject": "Kurdish",
@@ -24316,9 +24316,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 30,
+        "grade": "E",
+        "remarks": "Requires focused remedial reinforcement and support"
       },
       {
         "subject": "Kurdish",
@@ -24460,9 +24460,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -24604,9 +24604,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 40,
+        "grade": "D",
+        "remarks": "Needs additional practice in reading and writing basics"
       },
       {
         "subject": "Kurdish",
@@ -24748,9 +24748,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -24892,9 +24892,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -25036,9 +25036,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
+        "obtainedMarks": 90,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -25180,9 +25180,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 75,
+        "grade": "B+",
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -25305,7 +25305,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "نرمین یوسف ناصر",
     "rollNumber": "DPS-177",
     "grade": "Grade 4",
-    "section": "Class A",
+    "section": "Class B",
     "gender": "Male",
     "attendance": "98%",
     "classRank": "9th in Class",
@@ -25324,9 +25324,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and English literacy skills"
       },
       {
         "subject": "Kurdish",
@@ -25468,9 +25468,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 65,
+        "grade": "B",
+        "remarks": "Satisfactory participation and language comprehension"
       },
       {
         "subject": "Kurdish",
@@ -25612,9 +25612,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and English literacy skills"
       },
       {
         "subject": "Kurdish",
@@ -25756,9 +25756,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
+        "obtainedMarks": 80,
         "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Good English language comprehension and oral performance"
       },
       {
         "subject": "Kurdish",
@@ -25900,9 +25900,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 85,
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -26044,9 +26044,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 55,
+        "grade": "C",
+        "remarks": "Progressing in vocabulary and sentence formation"
       },
       {
         "subject": "Kurdish",
@@ -26188,9 +26188,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 55,
+        "grade": "C",
+        "remarks": "Progressing in vocabulary and sentence formation"
       },
       {
         "subject": "Kurdish",
@@ -26332,9 +26332,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 70,
+        "grade": "B",
+        "remarks": "Competent command of core English vocabulary and concepts"
       },
       {
         "subject": "Kurdish",
@@ -26476,9 +26476,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -26620,9 +26620,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and English literacy skills"
       },
       {
         "subject": "Kurdish",
@@ -26764,9 +26764,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 65,
+        "grade": "B",
+        "remarks": "Satisfactory participation and language comprehension"
       },
       {
         "subject": "Kurdish",
@@ -26908,9 +26908,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 60,
+        "grade": "C+",
+        "remarks": "Adequate performance with opportunity for further practice"
       },
       {
         "subject": "Kurdish",
@@ -27054,7 +27054,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 90,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -27196,9 +27196,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 75,
+        "grade": "B+",
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -27340,9 +27340,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 75,
+        "grade": "B+",
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -27465,7 +27465,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "لورین یوسف خالد",
     "rollNumber": "DPS-192",
     "grade": "Grade 4",
-    "section": "Class B",
+    "section": "Class A",
     "gender": "Male",
     "attendance": "98%",
     "classRank": "6th in Class",
@@ -27484,9 +27484,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -27628,9 +27628,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -27772,9 +27772,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 5,
+        "grade": "E",
+        "remarks": "Requires immediate intervention and personalized support"
       },
       {
         "subject": "Kurdish",
@@ -27916,9 +27916,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 5,
+        "grade": "E",
+        "remarks": "Requires immediate intervention and personalized support"
       },
       {
         "subject": "Kurdish",
@@ -28060,9 +28060,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -28204,9 +28204,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -28329,7 +28329,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "ژیمان محسن اسلام",
     "rollNumber": "DPS-198",
     "grade": "Grade 4",
-    "section": "Class B",
+    "section": "Class A",
     "gender": "Male",
     "attendance": "98%",
     "classRank": "12th in Class",
@@ -28348,9 +28348,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 85,
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -28492,9 +28492,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and English literacy skills"
       },
       {
         "subject": "Kurdish",
@@ -28636,9 +28636,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 65,
+        "grade": "B",
+        "remarks": "Satisfactory participation and language comprehension"
       },
       {
         "subject": "Kurdish",
@@ -28780,9 +28780,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 80,
+        "grade": "B+",
+        "remarks": "Good English language comprehension and oral performance"
       },
       {
         "subject": "Kurdish",
@@ -28924,9 +28924,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -29068,9 +29068,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
+        "obtainedMarks": 85,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -29212,9 +29212,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 25,
+        "grade": "E",
+        "remarks": "Requires intensive language intervention and practice"
       },
       {
         "subject": "Kurdish",
@@ -29356,9 +29356,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 85,
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -29500,9 +29500,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 50,
+        "grade": "C",
+        "remarks": "Passing assessment; guided reading practice recommended"
       },
       {
         "subject": "Kurdish",
@@ -29644,9 +29644,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
+        "obtainedMarks": 75,
         "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -29788,9 +29788,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 45,
+        "grade": "D+",
+        "remarks": "Developing skills; extra language support advised"
       },
       {
         "subject": "Kurdish",
@@ -29932,9 +29932,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 70,
+        "grade": "B",
+        "remarks": "Competent command of core English vocabulary and concepts"
       },
       {
         "subject": "Kurdish",
@@ -30076,9 +30076,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 15,
+        "grade": "E",
+        "remarks": "Requires intensive remedial attention and structured support"
       },
       {
         "subject": "Kurdish",
@@ -30220,9 +30220,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 35,
+        "grade": "D",
+        "remarks": "Targeted revision and tutoring recommended"
       },
       {
         "subject": "Kurdish",
@@ -30364,9 +30364,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 75,
+        "grade": "B+",
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -30508,9 +30508,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 90,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 50,
+        "grade": "C",
+        "remarks": "Passing assessment; guided reading practice recommended"
       },
       {
         "subject": "Kurdish",
@@ -30652,9 +30652,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 80,
+        "grade": "B+",
+        "remarks": "Good English language comprehension and oral performance"
       },
       {
         "subject": "Kurdish",
@@ -30777,7 +30777,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "کاژین عبدالقادر احمد",
     "rollNumber": "DPS-215",
     "grade": "Grade 5",
-    "section": "Class A",
+    "section": "Class B",
     "gender": "Male",
     "attendance": "98%",
     "classRank": "13th in Class",
@@ -30796,9 +30796,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 75,
+        "grade": "B+",
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -30940,9 +30940,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -31084,9 +31084,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 60,
+        "grade": "C+",
+        "remarks": "Adequate performance with opportunity for further practice"
       },
       {
         "subject": "Kurdish",
@@ -31228,9 +31228,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 45,
+        "grade": "D+",
+        "remarks": "Developing skills; extra language support advised"
       },
       {
         "subject": "Kurdish",
@@ -31372,9 +31372,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 30,
+        "grade": "E",
+        "remarks": "Requires focused remedial reinforcement and support"
       },
       {
         "subject": "Kurdish",
@@ -31517,8 +31517,8 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 100,
         "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -31660,9 +31660,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 70,
+        "grade": "B",
+        "remarks": "Competent command of core English vocabulary and concepts"
       },
       {
         "subject": "Kurdish",
@@ -31804,9 +31804,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -31929,7 +31929,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "یسری کمال صالح",
     "rollNumber": "DPS-223",
     "grade": "Grade 5",
-    "section": "Class B",
+    "section": "Class A",
     "gender": "Female",
     "attendance": "98%",
     "classRank": "1st in Class",
@@ -31948,9 +31948,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
+        "obtainedMarks": 85,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -32092,9 +32092,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 80,
+        "grade": "B+",
+        "remarks": "Good English language comprehension and oral performance"
       },
       {
         "subject": "Kurdish",
@@ -32236,9 +32236,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 90,
+        "obtainedMarks": 85,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -32380,9 +32380,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
+        "obtainedMarks": 90,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -32524,9 +32524,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
+        "obtainedMarks": 90,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -32668,9 +32668,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -32812,9 +32812,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 30,
+        "grade": "E",
+        "remarks": "Requires focused remedial reinforcement and support"
       },
       {
         "subject": "Kurdish",
@@ -32956,9 +32956,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 35,
+        "grade": "D",
+        "remarks": "Targeted revision and tutoring recommended"
       },
       {
         "subject": "Kurdish",
@@ -33100,9 +33100,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 84,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 15,
+        "grade": "E",
+        "remarks": "Requires intensive remedial attention and structured support"
       },
       {
         "subject": "Kurdish",
@@ -33245,8 +33245,8 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 100,
         "obtainedMarks": 85,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -33388,9 +33388,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 86,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -33532,9 +33532,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 87,
+        "obtainedMarks": 75,
         "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Good foundational understanding with consistent progress"
       },
       {
         "subject": "Kurdish",
@@ -33676,9 +33676,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 88,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 25,
+        "grade": "E",
+        "remarks": "Requires intensive language intervention and practice"
       },
       {
         "subject": "Kurdish",
@@ -33820,9 +33820,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 89,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -33966,7 +33966,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 90,
         "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -34108,9 +34108,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 91,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 100,
+        "grade": "A+",
+        "remarks": "Outstanding performance in English language and communication"
       },
       {
         "subject": "Kurdish",
@@ -34252,9 +34252,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 92,
-        "grade": "A",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Excellent comprehension and English literacy skills"
       },
       {
         "subject": "Kurdish",
@@ -34396,9 +34396,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 81,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 65,
+        "grade": "B",
+        "remarks": "Satisfactory participation and language comprehension"
       },
       {
         "subject": "Kurdish",
@@ -34540,9 +34540,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 82,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 85,
+        "grade": "A",
+        "remarks": "Solid English reading, grammar and vocabulary grasp"
       },
       {
         "subject": "Kurdish",
@@ -34684,9 +34684,9 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "English",
         "code": "ENG",
         "maxMarks": 100,
-        "obtainedMarks": 83,
-        "grade": "B+",
-        "remarks": "Outstanding comprehension and participation"
+        "obtainedMarks": 90,
+        "grade": "A",
+        "remarks": "Very good analytical and language communication proficiency"
       },
       {
         "subject": "Kurdish",
@@ -44494,6 +44494,150 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 100,
         "obtainedMarks": 91,
         "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      }
+    ]
+  },
+  {
+    "serial": 303,
+    "id": "DPS-5127848",
+    "name": "سیلین کاوار عادل",
+    "motherName": "نیلیان ابراهیم",
+    "rollNumber": "DPS-303",
+    "grade": "Grade 4",
+    "section": "Class B",
+    "gender": "Female",
+    "attendance": "98%",
+    "classRank": "8th in Class",
+    "term": "Term 1 (Autumn 2024-2025)",
+    "academicYear": "2024 - 2025",
+    "conduct": "Exemplary",
+    "classTeacher": "Mr. Farhad Harki",
+    "phone": "+964 750 442 8190",
+    "dob": "2014-06-18",
+    "bloodGroup": "A+",
+    "guardianEmail": "Kawar.Adil@dasinya.com",
+    "guardianPassword": "123674",
+    "guardianPasswordAlt": "123758",
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 100,
+        "obtainedMarks": 65,
+        "grade": "B",
+        "remarks": "Satisfactory participation and language comprehension"
+      },
+      {
+        "subject": "Kurdish",
+        "code": "KUR",
+        "maxMarks": 100,
+        "obtainedMarks": 94,
+        "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 100,
+        "obtainedMarks": 97,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 100,
+        "obtainedMarks": 99,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 100,
+        "obtainedMarks": 92,
+        "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "IT",
+        "code": "ITC",
+        "maxMarks": 100,
+        "obtainedMarks": 95,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Social Studies",
+        "code": "SST",
+        "maxMarks": 100,
+        "obtainedMarks": 98,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "KOMALAYETI",
+        "code": "KOM",
+        "maxMarks": 100,
+        "obtainedMarks": 99,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "KARAMAYI",
+        "code": "KRM",
+        "maxMarks": 100,
+        "obtainedMarks": 93,
+        "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Conversation",
+        "code": "CNV",
+        "maxMarks": 100,
+        "obtainedMarks": 96,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 100,
+        "obtainedMarks": 99,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 100,
+        "obtainedMarks": 91,
+        "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 100,
+        "obtainedMarks": 94,
+        "grade": "A",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "Music",
+        "code": "MUS",
+        "maxMarks": 100,
+        "obtainedMarks": 97,
+        "grade": "A+",
+        "remarks": "Outstanding comprehension and participation"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 100,
+        "obtainedMarks": 99,
+        "grade": "A+",
         "remarks": "Outstanding comprehension and participation"
       }
     ]

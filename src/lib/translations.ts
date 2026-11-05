@@ -150,6 +150,34 @@ export interface TranslationDictionary {
   policyG4to9: string;
   passingScoreNote: string;
 
+  // Portal Selection & Role Logins
+  portalSelectionTitle: string;
+  portalSelectionSubtitle: string;
+  selectPortal: string;
+  portalAdmin: string;
+  portalAdminDesc: string;
+  portalStaff: string;
+  portalStaffDesc: string;
+  portalTeacher: string;
+  portalTeacherDesc: string;
+  portalParent: string;
+  portalParentDesc: string;
+  portalStudent: string;
+  portalStudentDesc: string;
+  backToPortals: string;
+  switchPortal: string;
+  authUsernamePassword: string;
+  authPasswordOnly: string;
+  usernameLabel: string;
+  enterUsername: string;
+  enterPassword: string;
+  adminLoginTitle: string;
+  staffLoginTitle: string;
+  teacherLoginTitle: string;
+  parentLoginTitle: string;
+  studentLoginTitle: string;
+  invalidUsernameOrPassword: string;
+
   // Guardian Portal
   guardianLoginTitle: string;
   guardianLoginSubtitle: string;
@@ -310,6 +338,32 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'Grades 1–3: Term 1 marks are evaluated out of 25 per subject (25% weight)',
     policyG4to9: 'Grades 4–9: Term 1 marks are evaluated out of 20 per subject (20% weight)',
     passingScoreNote: 'Passing Mark: 50% • Distinction: 85%+',
+    portalSelectionTitle: 'Select Your Portal',
+    portalSelectionSubtitle: 'Welcome to Dasinya Private School Portal System. Please choose your portal to sign in.',
+    selectPortal: 'Select Portal',
+    portalAdmin: 'Admin Portal',
+    portalAdminDesc: 'Governance, school-wide registry, accounts & reporting',
+    portalStaff: 'Staff Portal',
+    portalStaffDesc: 'Student directories, class records & administrative services',
+    portalTeacher: 'Teacher Portal',
+    portalTeacherDesc: 'Class rosters, subject grade evaluations & attendance',
+    portalParent: 'Parent Portal',
+    portalParentDesc: 'Academic progress, marksheet, meal plans & timetable',
+    portalStudent: 'Student Portal',
+    portalStudentDesc: 'Student schedule, term marksheets, cafeteria & records',
+    backToPortals: 'Back to Portal Selection',
+    switchPortal: 'Switch Portal',
+    authUsernamePassword: 'Username & Password',
+    authPasswordOnly: 'Password Only',
+    usernameLabel: 'Username',
+    enterUsername: 'Enter your username',
+    enterPassword: 'Enter your password',
+    adminLoginTitle: 'Admin Portal Sign In',
+    staffLoginTitle: 'Staff Portal Sign In',
+    teacherLoginTitle: 'Teacher Portal Sign In',
+    parentLoginTitle: 'Parent Portal Sign In',
+    studentLoginTitle: 'Student Portal Sign In',
+    invalidUsernameOrPassword: 'Invalid username or password. Please verify your credentials.',
 
     guardianLoginTitle: 'Guardian Portal Login',
     guardianLoginSubtitle: 'Sign in with your registered Guardian Email and Password to view your student\'s details and marksheets.',
@@ -467,6 +521,32 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'قۆناغێن ١ هەتا ٣: نمرەیێن وەرزێ ئێکێ ژ ٢٥ نمرانە بۆ هەر بابەتەکی (٢٥٪)',
     policyG4to9: 'قۆناغێن ٤ هەتا ٩: نمرەیێن وەرزێ ئێکێ ژ ٢٠ نمرانە بۆ هەر بابەتەکی (٢٠٪)',
     passingScoreNote: 'نمرەیا دەربازبوونێ: ٥٠٪ • پلەیا نایاب: ٨٥٪+',
+    portalSelectionTitle: 'دەرگەهێ خۆ هەڵبژێرە',
+    portalSelectionSubtitle: 'ب خێر بێین بۆ سیستەمێ دەرگەهێن قوتابخانا داسنیا یا تایبەت. تکایە پۆرتالێ گونجای هەڵبژێرە.',
+    selectPortal: 'هەڵبژارتنا دەرگەهی',
+    portalAdmin: 'دەرگەهێ ئەدمینی',
+    portalAdminDesc: 'بەڕێوەبردن، تۆماری گشتی یێ قوتابخانێ، هەژمار و راپۆرت',
+    portalStaff: 'دەرگەهێ کارگێڕی',
+    portalStaffDesc: 'تۆمارێن قوتابیان، خشتە و خزمەتگوزاریێن کارگێڕی',
+    portalTeacher: 'دەرگەهێ مامۆستایان',
+    portalTeacherDesc: 'لیستێن پۆلان، هەلسەنگاندنا نمرەیان و ئامادەبوون',
+    portalParent: 'دەرگەهێ دایک و باوکان',
+    portalParentDesc: 'پێشکەوتنا زانستی، کارتا نمرەیان، مێنیوێ خوارنێ و خشتە',
+    portalStudent: 'دەرگەهێ قوتابیان',
+    portalStudentDesc: 'خشتەیێ قوتابی، نمرەیێن وەرزی، خارنگەهـ و تۆمار',
+    backToPortals: 'زڤرین بۆ هەڵبژارتنا دەرگەهان',
+    switchPortal: 'گوهۆڕینا دەرگەهی',
+    authUsernamePassword: 'ناڤێ بەکارهێنەری و وشەی تێپەڕبوون',
+    authPasswordOnly: 'ب تەنێ وشەی تێپەڕبوون',
+    usernameLabel: 'ناڤێ بەکارهێنەری',
+    enterUsername: 'ناڤێ بەکارهێنەری بنووسە',
+    enterPassword: 'وشەی تێپەڕبوون بنووسە',
+    adminLoginTitle: 'چوونەژوورا ئەدمینی',
+    staffLoginTitle: 'چوونەژوورا کارگێڕی',
+    teacherLoginTitle: 'چوونەژوورا مامۆستایان',
+    parentLoginTitle: 'چوونەژوورا دایک و باوکان',
+    studentLoginTitle: 'چوونەژوورا قوتابیان',
+    invalidUsernameOrPassword: 'ناڤێ بەکارهێنەری یان وشەی تێپەڕبوون هەڵەیە. تکایە دووبارە بپشکنە.',
 
     guardianLoginTitle: 'چوونا ژوورێ یا بێخێڤی',
     guardianLoginSubtitle: 'ب ئیمەیل و تێپەڕەواژەیا (پاسوۆردێ) بێخێڤێ قۆتابی بچە ژوور دا پێزانین و کارتا نمرەیێن قۆتابییێ خۆ ببینی.',
@@ -624,6 +704,32 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     policyG1to3: 'الصفوف ١ إلى ٣: درجات الفصل الأول من ٢٥ درجة لكل مادة (٢٥٪)',
     policyG4to9: 'الصفوف ٤ إلى ٩: درجات الفصل الأول من ٢٠ درجة لكل مادة (٢٠٪)',
     passingScoreNote: 'درجة النجاح: ٥٠٪ • الامتياز: ٨٥٪ فما فوق',
+    portalSelectionTitle: 'اختر البوابة المناسبة',
+    portalSelectionSubtitle: 'مرحباً بكم في نظام بوابات مدرسة داسنيا الأهلية. يرجى اختيار البوابة لتسجيل الدخول.',
+    selectPortal: 'اختيار البوابة',
+    portalAdmin: 'بوابة الإدارة',
+    portalAdminDesc: 'الإدارة العامة، السجل المدرسي الشامل، الحسابات والتقارير',
+    portalStaff: 'بوابة الكادر الإداري',
+    portalStaffDesc: 'سجلات الطلاب، كشوف الشعب والخدمات الإدارية',
+    portalTeacher: 'بوابة المعلمين',
+    portalTeacherDesc: 'كشوف الحصص، تقييم درجات المواد والغيابات',
+    portalParent: 'بوابة أولياء الأمور',
+    portalParentDesc: 'التقدم الدراسي، كشوف الدرجات، جدول الوجبات والدوام',
+    portalStudent: 'بوابة الطلاب',
+    portalStudentDesc: 'الجدول المدرسي، درجات الفصل، وجبات الكافتيريا والسجلات',
+    backToPortals: 'العودة لاختيار البوابة',
+    switchPortal: 'تبديل البوابة',
+    authUsernamePassword: 'اسم المستخدم وكلمة المرور',
+    authPasswordOnly: 'بكلمة المرور فقط',
+    usernameLabel: 'اسم المستخدم',
+    enterUsername: 'أدخل اسم المستخدم',
+    enterPassword: 'أدخل كلمة المرور',
+    adminLoginTitle: 'تسجيل دخول الإدارة',
+    staffLoginTitle: 'تسجيل دخول الكادر الإداري',
+    teacherLoginTitle: 'تسجيل دخول المعلمين',
+    parentLoginTitle: 'تسجيل دخول أولياء الأمور',
+    studentLoginTitle: 'تسجيل دخول الطلاب',
+    invalidUsernameOrPassword: 'اسم المستخدم أو كلمة المرور غير صحيحة. يرجى التأكد والمحاولة مرة أخرى.',
 
     guardianLoginTitle: 'تسجيل دخول ولي الأمر',
     guardianLoginSubtitle: 'سجل الدخول باستخدام البريد الإلكتروني وكلمة المرور لولي الأمر لعرض بيانات الطالب وكشوف الدرجات.',
