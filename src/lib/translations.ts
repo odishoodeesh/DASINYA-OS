@@ -203,10 +203,13 @@ export interface TranslationDictionary {
   tabFoodMenu: string;
   tabClassesTimetable: string;
   tabBehaviourReport: string;
+  tabCalendar: string;
   infoSubtitle: string;
   backToPortalMenu: string;
 
-  // Food Menu, Timetable, Behaviour labels
+  // Food Menu, Timetable, Behaviour, Calendar labels
+  calendarTitle: string;
+  calendarSubtitle: string;
   foodMenuTitle: string;
   foodMenuSubtitle: string;
   timetableTitle: string;
@@ -388,8 +391,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabFoodMenu: 'FOOD MENU',
     tabClassesTimetable: 'CLASSES TIMETABLE',
     tabBehaviourReport: 'BEHAVIOUR REPORT',
+    tabCalendar: 'ACADEMIC CALENDAR',
     infoSubtitle: 'Student personal profile and registration details',
     backToPortalMenu: 'Back to Menu',
+
+    calendarTitle: 'Official School Calendar 2026–2027',
+    calendarSubtitle: 'Official Ministry & School Schedule of Terms, Examinations & Holidays',
 
     foodMenuTitle: 'Weekly Nutrition & Cafeteria Menu',
     foodMenuSubtitle: 'Healthy, balanced, and freshly prepared hot meals and fresh fruit snacks for students.',
@@ -571,8 +578,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabFoodMenu: 'مێنیویا خوارنێ',
     tabClassesTimetable: 'خشتەیێ دەوامێ',
     tabBehaviourReport: 'راپۆرتا سلوکی',
+    tabCalendar: 'ساڵنامەی خوێندن',
     infoSubtitle: 'پێزانین و پڕۆفایلا فەرمی یا قوتابی',
     backToPortalMenu: 'زڤڕین بۆ مێنیویا سەرەکی',
+
+    calendarTitle: 'ساڵنامەی فەرمی یێ خوێندن و تاقیکردنەوان ٢٠٢٦-٢٠٢٧',
+    calendarSubtitle: 'خشتەی فەرمی یێ دەستپێکرنا وانان، هەڵسەنگاندن، ئەزموون و پشوویێن فەرمی',
 
     foodMenuTitle: 'مێنیویا خوارنێ یا حەفتیانە',
     foodMenuSubtitle: 'خوارنێن ساخلەم و هەمەجۆر دگەل میوەیێن تەڕ و تازە بۆ قوتابیان.',
@@ -754,8 +765,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabFoodMenu: 'قائمة الطعام',
     tabClassesTimetable: 'جدول الحصص',
     tabBehaviourReport: 'تقرير السلوك',
+    tabCalendar: 'التقويم الدراسي',
     infoSubtitle: 'البيانات الشخصية وسجل القيد المدرسي',
     backToPortalMenu: 'العودة للقائمة الرئيسية',
+
+    calendarTitle: 'التقويم الدراسي الرسمي ٢٠٢٦-٢٠٢٧',
+    calendarSubtitle: 'المواعيد المعتمدة لبدء الدروس، الامتحانات الدورية والنهائية، والعطلات الرسمية',
 
     foodMenuTitle: 'قائمة الوجبات الغذائية الأسبوعية',
     foodMenuSubtitle: 'وجبات صحية متوازنة وطازجة يومياً مع وجبات الفواكه الصحية للطلاب.',

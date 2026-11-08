@@ -47,7 +47,8 @@ import {
   Building,
   BookOpen,
   UserCheck,
-  Layers
+  Layers,
+  ExternalLink
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -56,6 +57,11 @@ import {
   getClassTimetable, 
   OFFICIAL_TIMETABLE_PERIODS 
 } from './data/classSchedules';
+import { 
+  SCHOOL_CALENDAR_2026_2027, 
+  OFFICIAL_CALENDAR_PDF_URLS, 
+  CalendarEvent 
+} from './data/schoolCalendar';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -85,15 +91,13 @@ export const SCHOOL_STRUCTURE: Record<string, string[]> = {
 
 // Official Dasinya Private School Subjects Catalog
 export const OFFICIAL_SUBJECTS = [
-  { name: 'English', code: 'ENG', category: 'Language' },
   { name: 'Kurdish', code: 'KUR', category: 'Language' },
+  { name: 'English', code: 'ENG', category: 'Language' },
   { name: 'Arabic', code: 'ARA', category: 'Language' },
   { name: 'Math', code: 'MTH', category: 'STEM' },
   { name: 'Science', code: 'SCI', category: 'STEM' },
   { name: 'IT', code: 'ITC', category: 'Technology' },
   { name: 'Social Studies', code: 'SST', category: 'Humanities' },
-  { name: 'KOMALAYETI', code: 'KOM', category: 'Humanities' },
-  { name: 'KARAMAYI', code: 'KRM', category: 'Applied' },
   { name: 'Conversation', code: 'CNV', category: 'Language' },
   { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
   { name: 'Religion', code: 'REL', category: 'Ethics' },
@@ -102,7 +106,140 @@ export const OFFICIAL_SUBJECTS = [
   { name: 'PE', code: 'PED', category: 'Arts & Sports' },
 ];
 
-export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | null;
+export interface CurriculumSubject {
+  name: string;
+  code: string;
+  category: string;
+}
+
+export const GRADE_CURRICULUM: Record<string, CurriculumSubject[]> = {
+  'Grade 1': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Conversation', code: 'CNV', category: 'Language' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 2': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Conversation', code: 'CNV', category: 'Language' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 3': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Conversation', code: 'CNV', category: 'Language' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 4': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 5': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 6': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'Music', code: 'MUS', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 7': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'IT', code: 'ITC', category: 'Technology' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 8': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'IT', code: 'ITC', category: 'Technology' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+  'Grade 9': [
+    { name: 'Kurdish', code: 'KUR', category: 'Language' },
+    { name: 'English', code: 'ENG', category: 'Language' },
+    { name: 'Arabic', code: 'ARA', category: 'Language' },
+    { name: 'Math', code: 'MTH', category: 'STEM' },
+    { name: 'Science', code: 'SCI', category: 'STEM' },
+    { name: 'Social Studies', code: 'SST', category: 'Humanities' },
+    { name: 'Religion', code: 'REL', category: 'Ethics' },
+    { name: 'Moral Values', code: 'MRV', category: 'Ethics' },
+    { name: 'Art', code: 'ART', category: 'Arts & Sports' },
+    { name: 'PE', code: 'PED', category: 'Arts & Sports' },
+  ],
+};
+
+export interface ReportSubjectRow {
+  index: number;
+  subject: string;
+  code: string;
+  category: string;
+  hasMark: boolean;
+  obtainedMarks: number | null;
+  maxMarks: number;
+  remarks?: string;
+}
+
+export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | null;
 
 interface AuthenticatedGuardian {
   password: string;
@@ -234,6 +371,7 @@ export default function App() {
 
   // Authentication State for Parent & Student (Password Only)
   const [authGuardian, setAuthGuardian] = useState<AuthenticatedGuardian | null>(null);
+  const isPortalAuthenticated = Boolean(authGuardian);
 
   // Authentication State for Admin, Staff, Teacher (Username & Password)
   const [authStaff, setAuthStaff] = useState<AuthenticatedStaff | null>(null);
@@ -254,6 +392,10 @@ export default function App() {
 
   // Active day selection for Timetable
   const [selectedTimetableDay, setSelectedTimetableDay] = useState<string>('all');
+
+  // Calendar filter and search states
+  const [calendarSemesterFilter, setCalendarSemesterFilter] = useState<'all' | 'first' | 'second' | 'exams'>('all');
+  const [calendarSearchQuery, setCalendarSearchQuery] = useState<string>('');
 
   // Category filter for marksheet
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -292,6 +434,43 @@ export default function App() {
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Helper to ensure user always sees the top of the page
+  const scrollToTop = (smooth = true) => {
+    try {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      const root = document.getElementById('root');
+      if (root) root.scrollTop = 0;
+    } catch {
+      window.scrollTo(0, 0);
+    }
+  };
+
+  // Scroll to top on portal tab, active student, or authentication changes
+  useEffect(() => {
+    scrollToTop(true);
+  }, [activePortalTab, selectedChildId, isPortalAuthenticated]);
+
+  // Global listener: WHEN CLICKING ON ANY BUTTON, USER SHOULD SEE THE TOP OF THE PAGE, NOT BOTTOM.
+  useEffect(() => {
+    const handleButtonClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const button = target?.closest('button');
+      if (button) {
+        scrollToTop(true);
+        setTimeout(() => scrollToTop(true), 40);
+        setTimeout(() => scrollToTop(false), 140);
+      }
+    };
+    document.addEventListener('click', handleButtonClick, true);
+    return () => document.removeEventListener('click', handleButtonClick, true);
   }, []);
 
   // Handle Login: Parents log in by password only
@@ -393,40 +572,85 @@ export default function App() {
   const isPrimary25 = gradeNum <= 3; // Grades 1, 2, 3 have 25% weight per term
   const maxTermMark = isPrimary25 ? 25 : 20;
 
-  // Helper to get Term 1 mark for any subject out of 25 or 20
-  const getSubjectTerm1Mark = (rawMark: number): number => {
-    const scaled = (rawMark / 100) * maxTermMark;
-    return Number(scaled.toFixed(1));
+  // Helper to get Term 1 mark for any subject (obtainedMarks represents authentic mark from official uploaded marksheets)
+  const getSubjectTerm1Mark = (subOrMark: SubjectMark | number): number => {
+    if (typeof subOrMark === 'number') {
+      return subOrMark;
+    }
+    return subOrMark.obtainedMarks;
   };
 
-  // Filtered subjects based on category selection
-  const displayedSubjects = useMemo(() => {
+  // Complete curriculum subject rows for the student's grade:
+  // Subjects with authentic uploaded marks show their mark.
+  // Subjects without marks are kept on the report with NO mark, just empty.
+  const reportSubjects = useMemo<ReportSubjectRow[]>(() => {
     if (!currentStudent) return [];
-    if (selectedCategory === 'All') return currentStudent.subjects;
+    const curriculum = GRADE_CURRICULUM[currentStudent.grade] || OFFICIAL_SUBJECTS;
     
-    return currentStudent.subjects.filter(sub => {
-      const match = OFFICIAL_SUBJECTS.find(o => o.name === sub.subject);
-      return match ? match.category === selectedCategory : true;
-    });
-  }, [currentStudent, selectedCategory]);
+    return curriculum.map((currSubject, idx) => {
+      const uploaded = currentStudent.subjects?.find(
+        s => s.subject.toLowerCase() === currSubject.name.toLowerCase()
+      );
+      const hasMark = Boolean(uploaded && typeof uploaded.obtainedMarks === 'number');
 
-  // Calculate totals across displayed subjects for Term 1
+      return {
+        index: idx + 1,
+        subject: currSubject.name,
+        code: currSubject.code,
+        category: currSubject.category,
+        hasMark,
+        obtainedMarks: hasMark ? uploaded!.obtainedMarks : null,
+        maxMarks: uploaded?.maxMarks || maxTermMark,
+        remarks: uploaded?.remarks || '',
+      };
+    });
+  }, [currentStudent, maxTermMark]);
+
+  // Filtered report subjects based on category selection
+  const displayedReportSubjects = useMemo(() => {
+    if (selectedCategory === 'All') return reportSubjects;
+    return reportSubjects.filter(sub => sub.category === selectedCategory);
+  }, [reportSubjects, selectedCategory]);
+
+  const displayedSubjects = currentStudent?.subjects || [];
+
+  // Calculate totals across displayed subjects for Term 1 (only authentic recorded marks)
   const reportTotals = useMemo(() => {
-    if (!currentStudent || !displayedSubjects.length) {
-      return { totalMax: 0, totalObtained: 0, maxTermMark };
+    if (!currentStudent || !reportSubjects.length) {
+      return { totalMax: 0, totalObtained: 0, totalRecordedMax: 0, hasAnyMark: false, maxTermMark };
     }
-    const totalMax = displayedSubjects.length * maxTermMark;
-    const totalObtained = displayedSubjects.reduce((sum, s) => {
-      const mark = Number(((s.obtainedMarks / 100) * maxTermMark).toFixed(1));
-      return sum + mark;
-    }, 0);
+    const uploadedList = reportSubjects.filter(s => s.hasMark && typeof s.obtainedMarks === 'number');
+    const totalObtained = uploadedList.reduce((sum, s) => sum + (s.obtainedMarks || 0), 0);
+    const totalRecordedMax = uploadedList.reduce((sum, s) => sum + s.maxMarks, 0);
 
     return { 
-      totalMax, 
+      totalMax: reportSubjects.length * maxTermMark,
+      totalRecordedMax,
       totalObtained: Number(totalObtained.toFixed(1)), 
+      hasAnyMark: uploadedList.length > 0,
       maxTermMark 
     };
-  }, [currentStudent, displayedSubjects, maxTermMark]);
+  }, [currentStudent, reportSubjects, maxTermMark]);
+
+  // Filtered academic calendar events
+  const filteredCalendarEvents = useMemo(() => {
+    return SCHOOL_CALENDAR_2026_2027.filter((event) => {
+      if (calendarSemesterFilter === 'first' && event.semester !== 'first') return false;
+      if (calendarSemesterFilter === 'second' && event.semester !== 'second') return false;
+      if (calendarSemesterFilter === 'exams' && event.type !== 'exam' && event.type !== 'assessment' && event.type !== 'break') return false;
+
+      if (calendarSearchQuery.trim()) {
+        const q = calendarSearchQuery.toLowerCase().trim();
+        const matchesDate = event.dateRange.toLowerCase().includes(q);
+        const matchesEn = event.activityEn.toLowerCase().includes(q);
+        const matchesKu = event.activityKu.toLowerCase().includes(q);
+        const matchesAr = event.activityAr.toLowerCase().includes(q);
+        const matchesWeek = (event.weekEn || '').toLowerCase().includes(q) || (event.weekKu || '').toLowerCase().includes(q);
+        return matchesDate || matchesEn || matchesKu || matchesAr || matchesWeek;
+      }
+      return true;
+    });
+  }, [calendarSemesterFilter, calendarSearchQuery]);
 
   // Direct client-side PDF Download using html2canvas and jsPDF
   const handleDownloadPdf = async (targetElementId = 'printable-marksheet', filenameSuffix = 'Marksheet') => {
@@ -543,20 +767,15 @@ export default function App() {
 
   const activeLangOption = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
 
-  // Helper check if current parent session is authenticated
-  const isPortalAuthenticated = useMemo(() => {
-    return Boolean(authGuardian);
-  }, [authGuardian]);
-
   return (
     <div 
       dir={isRtl ? 'rtl' : 'ltr'} 
-      className={`min-h-screen bg-[#F5F6FF] text-[#1A1D4E] flex flex-col selection:bg-[#E1E9FF] selection:text-[#4754FF] ${
+      className={`min-h-screen bg-[#F5F6FF] text-[#1A1D4E] flex flex-col selection:bg-[#E1E9FF] selection:text-[#0087A5] ${
         isRtl ? 'font-cairo' : 'font-sans'
       }`}
     >
       {/* Top Header Bar */}
-      <header className="w-full border-b border-[#E1E9FF] px-4 sm:px-8 py-3.5 flex items-center justify-between bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-[0_2px_12px_rgba(71,84,255,0.04)]">
+      <header className="w-full border-b border-[#E1E9FF] px-4 sm:px-8 py-3.5 flex items-center justify-between bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-[0_2px_12px_rgba(0,135,165,0.04)]">
         {/* School Crest & Identity */}
         <div 
           onClick={handleSwitchPortal}
@@ -603,10 +822,10 @@ export default function App() {
           <div className="relative" ref={langMenuRef}>
             <button
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#E1E9FF] hover:border-[#4754FF] bg-[#F5F6FF] hover:bg-white text-[#1A1D4E] rounded-xl text-xs font-semibold transition-all shadow-[0_2px_6px_rgba(71,84,255,0.04)] cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#E1E9FF] hover:border-[#0087A5] bg-[#F5F6FF] hover:bg-white text-[#1A1D4E] rounded-xl text-xs font-semibold transition-all shadow-[0_2px_6px_rgba(0,135,165,0.04)] cursor-pointer"
               title="Select Language / هلبژارتنا زمانی / اختيار اللغة"
             >
-              <Globe className="w-3.5 h-3.5 text-[#4754FF]" />
+              <Globe className="w-3.5 h-3.5 text-[#0087A5]" />
               <span className="hidden sm:inline font-medium">{activeLangOption.nativeLabel}</span>
               <span className="sm:hidden font-mono uppercase text-[11px]">{language}</span>
               <ChevronDown className={`w-3 h-3 text-[#7C85FF] transition-transform duration-150 ${isLangMenuOpen ? 'rotate-180' : ''}`} />
@@ -614,7 +833,7 @@ export default function App() {
 
             {isLangMenuOpen && (
               <div 
-                className={`absolute top-full mt-1.5 bg-white border border-[#E1E9FF] rounded-2xl shadow-[0_12px_32px_rgba(71,84,255,0.12)] z-50 py-1.5 w-52 sm:w-56 overflow-hidden ${
+                className={`absolute top-full mt-1.5 bg-white border border-[#E1E9FF] rounded-2xl shadow-[0_12px_32px_rgba(0,135,165,0.12)] z-50 py-1.5 w-52 sm:w-56 overflow-hidden ${
                   isRtl ? 'left-0 sm:left-auto sm:right-0' : 'right-0'
                 }`}
               >
@@ -632,7 +851,7 @@ export default function App() {
                       }}
                       className={`w-full px-3.5 py-2 text-xs flex items-center justify-between text-left transition-colors cursor-pointer ${
                         isSelected 
-                          ? 'bg-[#4754FF] text-white font-bold' 
+                          ? 'bg-[#0087A5] text-white font-bold' 
                           : 'hover:bg-[#F5F6FF] text-[#1A1D4E]'
                       }`}
                     >
@@ -667,7 +886,7 @@ export default function App() {
             <img 
               src={SCHOOL_LOGO_URL} 
               alt="Dasinya Private School Logo" 
-              className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(71,84,255,0.15)]" 
+              className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(0,135,165,0.15)]" 
             />
           </div>
 
@@ -684,7 +903,7 @@ export default function App() {
           </p>
 
           {/* LOGIN CARD */}
-          <div className="w-full max-w-md bg-white border border-[#E1E9FF] hover:border-[#FF7F2A]/50 rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(71,84,255,0.08)] text-left transition-all">
+          <div className="w-full max-w-md bg-white border border-[#E1E9FF] hover:border-[#FF7F2A]/50 rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(0,135,165,0.08)] text-left transition-all">
             {/* Header in Login Card */}
             <div className={`flex items-center gap-3 mb-5 pb-4 border-b border-[#E1E9FF] ${isRtl ? 'flex-row-reverse text-right' : ''}`}>
               <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] flex items-center justify-center text-white shrink-0 shadow-[0_4px_12px_rgba(255,127,42,0.35)]">
@@ -777,7 +996,7 @@ export default function App() {
       {isPortalAuthenticated && currentStudent && (
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-6 space-y-6">
           {/* Student Account Top Banner */}
-          <div className="bg-gradient-to-r from-[#FF7F2A] via-[#FF5599] to-[#4754FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(255,127,42,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#FF7F2A] via-[#FF5599] to-[#0087A5] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(255,127,42,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className={`flex items-center gap-4 ${isRtl ? 'text-right' : 'text-left'}`}>
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/25 shadow-xs">
                 <HeartHandshake className="w-7 h-7 text-white" />
@@ -842,18 +1061,18 @@ export default function App() {
                 {/* 1. INFO */}
                 <button
                   onClick={() => setActivePortalTab('info')}
-                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#4754FF] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(71,84,255,0.12)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#0087A5] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,135,165,0.12)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
                 >
                   <div className="flex items-start justify-between w-full mb-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2AD4FF] to-[#4754FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(42,212,255,0.35)] group-hover:scale-105 transition-transform">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2AD4FF] to-[#0087A5] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(42,212,255,0.35)] group-hover:scale-105 transition-transform">
                       <UserCheck className="w-7 h-7" />
                     </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1E9FF] text-[#4754FF]">
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1E9FF] text-[#0087A5]">
                       01
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#4754FF] transition-colors mb-1">
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#0087A5] transition-colors mb-1">
                       {t.tabInfo}
                     </h4>
                     <p className="text-xs text-[#6B70A6] line-clamp-2">
@@ -865,7 +1084,7 @@ export default function App() {
                 {/* 2. MARKSHEET */}
                 <button
                   onClick={() => setActivePortalTab('marksheet')}
-                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#FF5599] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(255,85,153,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#FF5599] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(255,85,153,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
                 >
                   <div className="flex items-start justify-between w-full mb-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(255,127,42,0.35)] group-hover:scale-105 transition-transform">
@@ -888,7 +1107,7 @@ export default function App() {
                 {/* 3. FOOD MENU */}
                 <button
                   onClick={() => setActivePortalTab('food_menu')}
-                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#00D4AA] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,212,170,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#00D4AA] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,212,170,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
                 >
                   <div className="flex items-start justify-between w-full mb-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D4AA] to-[#2CC9A7] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,212,170,0.35)] group-hover:scale-105 transition-transform">
@@ -911,18 +1130,18 @@ export default function App() {
                 {/* 4. CLASSES TIMETABLE */}
                 <button
                   onClick={() => setActivePortalTab('timetable')}
-                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#4754FF] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(71,84,255,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#0087A5] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,135,165,0.14)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
                 >
                   <div className="flex items-start justify-between w-full mb-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4754FF] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(71,84,255,0.35)] group-hover:scale-105 transition-transform">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0087A5] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,135,165,0.35)] group-hover:scale-105 transition-transform">
                       <CalendarDays className="w-7 h-7" />
                     </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1E9FF] text-[#4754FF]">
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1E9FF] text-[#0087A5]">
                       04
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#4754FF] transition-colors mb-1">
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#0087A5] transition-colors mb-1">
                       {t.tabClassesTimetable}
                     </h4>
                     <p className="text-xs text-[#6B70A6] line-clamp-2">
@@ -934,7 +1153,7 @@ export default function App() {
                 {/* 5. BEHAVIOUR REPORT */}
                 <button
                   onClick={() => setActivePortalTab('behaviour')}
-                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#BB8FFF] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(187,143,255,0.18)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)] sm:col-span-2 lg:col-span-1"
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#BB8FFF] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(187,143,255,0.18)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
                 >
                   <div className="flex items-start justify-between w-full mb-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#BB8FFF] to-[#FF7F2A] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(187,143,255,0.35)] group-hover:scale-105 transition-transform">
@@ -953,6 +1172,29 @@ export default function App() {
                     </p>
                   </div>
                 </button>
+
+                {/* 6. ACADEMIC CALENDAR */}
+                <button
+                  onClick={() => setActivePortalTab('calendar')}
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#0087A5] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,135,165,0.18)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
+                >
+                  <div className="flex items-start justify-between w-full mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0087A5] to-[#2AD4FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,135,165,0.35)] group-hover:scale-105 transition-transform">
+                      <Calendar className="w-7 h-7" />
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1E9FF] text-[#0087A5]">
+                      06
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#0087A5] transition-colors mb-1">
+                      {t.tabCalendar}
+                    </h4>
+                    <p className="text-xs text-[#6B70A6] line-clamp-2">
+                      {language === 'ku' ? 'ساڵنامەی فەرمی یێ وانان، ئەزموون و پشوویێن ٢٠٢٦-٢٠٢٧ ب کوردی و ئینگلیزی' : language === 'ar' ? 'التقويم السنوي المعتمد للامتحانات، مواعيد الحصص والعطلات الرسمية' : 'Official 2026-2027 calendar of classes, exam dates & school breaks'}
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
           )}
@@ -966,7 +1208,7 @@ export default function App() {
               <div className="flex items-center justify-between bg-white border border-[#E1E9FF] rounded-2xl p-3.5 shadow-xs">
                 <button
                   onClick={() => setActivePortalTab(null)}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-[#4754FF] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#0087A5] hover:underline cursor-pointer"
                 >
                   {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
                   <span>{t.backToPortalMenu}</span>
@@ -977,7 +1219,7 @@ export default function App() {
                   <button
                     onClick={() => setActivePortalTab('info')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activePortalTab === 'info' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                      activePortalTab === 'info' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
                     }`}
                   >
                     {t.tabInfo}
@@ -985,7 +1227,7 @@ export default function App() {
                   <button
                     onClick={() => setActivePortalTab('marksheet')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activePortalTab === 'marksheet' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                      activePortalTab === 'marksheet' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
                     }`}
                   >
                     {t.tabMarksheet}
@@ -993,7 +1235,7 @@ export default function App() {
                   <button
                     onClick={() => setActivePortalTab('food_menu')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activePortalTab === 'food_menu' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                      activePortalTab === 'food_menu' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
                     }`}
                   >
                     {t.tabFoodMenu}
@@ -1001,7 +1243,7 @@ export default function App() {
                   <button
                     onClick={() => setActivePortalTab('timetable')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activePortalTab === 'timetable' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                      activePortalTab === 'timetable' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
                     }`}
                   >
                     {t.tabClassesTimetable}
@@ -1009,10 +1251,18 @@ export default function App() {
                   <button
                     onClick={() => setActivePortalTab('behaviour')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activePortalTab === 'behaviour' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                      activePortalTab === 'behaviour' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
                     }`}
                   >
                     {t.tabBehaviourReport}
+                  </button>
+                  <button
+                    onClick={() => setActivePortalTab('calendar')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      activePortalTab === 'calendar' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                    }`}
+                  >
+                    {t.tabCalendar}
                   </button>
                 </div>
               </div>
@@ -1021,13 +1271,13 @@ export default function App() {
               {/* SECTION 1: INFO                                      */}
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'info' && (
-                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-6">
+                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-6">
                   <div className="flex items-center justify-between pb-4 border-b border-[#E1E9FF]">
                     <div>
                       <h3 className="text-lg font-bold text-[#1A1D4E]">{t.tabInfo}</h3>
                       <p className="text-xs text-[#6B70A6]">{t.infoSubtitle}</p>
                     </div>
-                    <span className="px-3.5 py-1 bg-[#E1E9FF] text-[#4754FF] font-mono font-bold text-xs rounded-full">
+                    <span className="px-3.5 py-1 bg-[#E1E9FF] text-[#0087A5] font-mono font-bold text-xs rounded-full">
                       {currentStudent.rollNumber}
                     </span>
                   </div>
@@ -1059,7 +1309,7 @@ export default function App() {
                       <span className="block text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
                         {language === 'ku' ? 'رێزبەندیا پۆلێ' : language === 'ar' ? 'الترتيب في الصف' : 'Class Rank'}
                       </span>
-                      <span className="font-bold text-[#4754FF] text-sm">{currentStudent.classRank}</span>
+                      <span className="font-bold text-[#0087A5] text-sm">{currentStudent.classRank}</span>
                     </div>
                     {currentStudent.motherName && (
                       <div className="p-4 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
@@ -1085,7 +1335,7 @@ export default function App() {
                   {/* Marksheet Action Strip */}
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#E1E9FF] p-3.5 rounded-2xl shadow-xs print:hidden">
                     <div className="flex items-center gap-2">
-                      <FileSpreadsheet className="w-5 h-5 text-[#4754FF]" />
+                      <FileSpreadsheet className="w-5 h-5 text-[#0087A5]" />
                       <span className="text-xs font-bold text-[#1A1D4E]">
                         {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
                       </span>
@@ -1093,7 +1343,7 @@ export default function App() {
                     <button
                       onClick={() => handleDownloadPdf('printable-marksheet')}
                       disabled={isGeneratingPdf}
-                      className="px-4 py-2 bg-[#4754FF] hover:bg-[#3843D0] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(71,84,255,0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isGeneratingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
                       <span>{t.downloadPdf}</span>
@@ -1101,7 +1351,7 @@ export default function App() {
                   </div>
 
                   {/* Printable Marksheet Container */}
-                  <div id="printable-marksheet" className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_24px_rgba(71,84,255,0.06)] space-y-6">
+                  <div id="printable-marksheet" className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-6">
                     {/* Marksheet Header */}
                     <div className="flex items-center justify-between border-b border-[#E1E9FF] pb-5">
                       <div className="flex items-center gap-3.5">
@@ -1112,7 +1362,7 @@ export default function App() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="inline-block bg-[#E1E9FF] text-[#4754FF] font-bold text-xs px-3.5 py-1 rounded-full font-mono">
+                        <span className="inline-block bg-[#E1E9FF] text-[#0087A5] font-bold text-xs px-3.5 py-1 rounded-full font-mono">
                           {currentStudent.rollNumber}
                         </span>
                         <p className="text-[11px] text-[#8C90C2] mt-1">{currentStudent.academicYear}</p>
@@ -1137,49 +1387,98 @@ export default function App() {
                       </div>
                       <div>
                         <span className="text-[#8C90C2] block">{t.termContribution}:</span>
-                        <span className="font-bold text-[#4754FF]">{isPrimary25 ? '25% Weight' : '20% Weight'}</span>
+                        <span className="font-bold text-[#0087A5]">{isPrimary25 ? '25% Weight' : '20% Weight'}</span>
                       </div>
                     </div>
 
-                    {/* Marksheet Subject Table */}
-                    <div className="border border-[#E1E9FF] rounded-2xl overflow-hidden">
-                      <table className="w-full text-left text-xs sm:text-sm">
-                        <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E]">
-                          <tr>
-                            <th className="py-3 px-4 text-center w-12">#</th>
-                            <th className="py-3 px-4">{t.subject}</th>
-                            <th className={`py-3 px-6 ${isRtl ? 'text-left' : 'text-right'}`}>
-                              {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#E1E9FF]">
-                          {displayedSubjects.map((sub, idx) => {
-                            const mark = getSubjectTerm1Mark(sub.obtainedMarks);
-                            return (
-                              <tr key={idx} className="hover:bg-[#F5F6FF]/60 transition-colors">
-                                <td className="py-3 px-4 text-center font-mono text-[#8C90C2]">{idx + 1}</td>
-                                <td className="py-3 px-4 font-semibold text-[#1A1D4E]">
+                    {/* Marksheet Subject Table - Keeps all subjects on report with no mark (empty) for un-uploaded ones */}
+                    <div className="space-y-4">
+                      <div className="border border-[#C8E5EC] rounded-2xl overflow-hidden shadow-xs">
+                        <table className="w-full text-left text-xs sm:text-sm">
+                          <thead className="bg-[#F0F8FA] border-b border-[#C8E5EC] font-bold text-[#0D2D35]">
+                            <tr>
+                              <th className="py-3 px-4 text-center w-12">#</th>
+                              <th className="py-3 px-4">{t.subject}</th>
+                              <th className="py-3 px-4 text-center">{language === 'ku' ? 'پشکنین' : language === 'ar' ? 'التوثيق' : 'Status'}</th>
+                              <th className={`py-3 px-6 ${isRtl ? 'text-left' : 'text-right'}`}>
+                                {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#C8E5EC]">
+                            {displayedReportSubjects.map((sub, idx) => (
+                              <tr key={idx} className="hover:bg-[#F0F8FA]/60 transition-colors">
+                                <td className="py-3 px-4 text-center font-mono text-[#76A5B8]">{idx + 1}</td>
+                                <td className="py-3 px-4 font-bold text-[#0D2D35]">
                                   {getTranslatedSubject(sub.subject, language)}
                                 </td>
-                                <td className={`py-3 px-6 font-bold text-[#1A1D4E] font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
-                                  <span>{mark}</span>
-                                  <span className="text-xs text-[#8C90C2] font-normal font-mono ml-1">/ {maxTermMark}</span>
+                                <td className="py-3 px-4 text-center">
+                                  {sub.hasMark ? (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                      <span>{language === 'ku' ? 'فەرمی و پشتڕاستکراو' : language === 'ar' ? 'رسمي ومعتمد' : 'Verified'}</span>
+                                    </span>
+                                  ) : (
+                                    <span className="text-[11px] text-[#8C90C2] font-medium">
+                                      {language === 'ku' ? 'چاوەڕوانی بارکردنە' : language === 'ar' ? 'بانتظار الرفع' : 'Awaiting upload'}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className={`py-3 px-6 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
+                                  {sub.hasMark ? (
+                                    <span className="font-bold">
+                                      <span className="text-sm sm:text-base font-black text-[#0087A5]">{sub.obtainedMarks}</span>
+                                      <span className="text-xs text-[#76A5B8] font-normal font-mono ml-1">/ {sub.maxMarks}</span>
+                                    </span>
+                                  ) : (
+                                    /* Subjects without marks: keep on report with NO mark, just empty */
+                                    <span className="inline-block min-h-[1.25rem]"></span>
+                                  )}
                                 </td>
                               </tr>
-                            );
-                          })}
-                        </tbody>
-                        <tfoot>
-                          <tr className="bg-[#F5F6FF] font-bold border-t-2 border-[#1A1D4E]">
-                            <td className="py-3.5 px-4 text-center">#</td>
-                            <td className="py-3.5 px-4">{t.totalMarks}</td>
-                            <td className={`py-3.5 px-6 font-mono font-black text-[#4754FF] ${isRtl ? 'text-left' : 'text-right'}`}>
-                              {reportTotals.totalObtained} / {reportTotals.totalMax}
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
+                            ))}
+                          </tbody>
+                          <tfoot>
+                            <tr className="bg-[#F0F8FA] font-bold border-t-2 border-[#0087A5]">
+                              <td className="py-3.5 px-4 text-center">#</td>
+                              <td className="py-3.5 px-4" colSpan={2}>{t.totalMarks}</td>
+                              <td className={`py-3.5 px-6 font-mono font-black text-[#0087A5] text-sm sm:text-base ${isRtl ? 'text-left' : 'text-right'}`}>
+                                {reportTotals.hasAnyMark ? (
+                                  <span>
+                                    {reportTotals.totalObtained}
+                                    <span className="text-xs text-[#76A5B8] font-normal font-mono ml-1">
+                                      / {reportTotals.totalRecordedMax}
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span className="inline-block min-h-[1.25rem]"></span>
+                                )}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+
+                      {/* Official Marksheet Verification Notice */}
+                      <div className="p-4 bg-[#F0F8FA] border border-[#C8E5EC] rounded-2xl flex items-start gap-3">
+                        <ShieldCheck className="w-5 h-5 text-[#0087A5] shrink-0 mt-0.5" />
+                        <div className="text-xs text-[#0D2D35] leading-relaxed">
+                          <p className="font-bold mb-1">
+                            {language === 'ku' 
+                              ? 'پشتڕاستکردنەوەی فەرمی: نمرە ڕاستەقینەکانی تاقیکردنەوە' 
+                              : language === 'ar' 
+                              ? 'توثيق رسمي: درجات الامتحانات المعتمدة فقط' 
+                              : 'Official Evaluation Record: Authentic Marks Only'}
+                          </p>
+                          <p className="text-[#355B66]">
+                            {language === 'ku'
+                              ? 'نمرەی فەرمی ئەو بابەتانەی لە کەشف نمرە بارکراون تۆمار کراون. ئەو بابەتانەی هێشتا نمرەکانیان بارنەکراون بە بەتاڵی لە کەشف نمرە دەمێننەوە هەتا لە لایەن مامۆستایانەوە بە فەرمی پەسەند دەکرێن.'
+                              : language === 'ar'
+                              ? 'الدرجات المرفوعة من كشوف الامتحانات الرسمية مسجلة ومعتمدة. المواد التي لم تُرفع درجاتها بعد تظهر في التقرير بدون علامة (فارغة) لحين اعتمادها رسمياً من المدرسة.'
+                              : 'Authentic examination marks uploaded from official school marksheets are recorded above. Subjects without uploaded marks are kept on the report with no mark (blank) until officially submitted by the school.'}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1190,7 +1489,7 @@ export default function App() {
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'food_menu' && (
                 <div className="space-y-4">
-                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)]">
+                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
                     <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-[#E1E9FF]">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D4AA] to-[#2CC9A7] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,212,170,0.3)]">
                         <Utensils className="w-6 h-6" />
@@ -1203,12 +1502,12 @@ export default function App() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {WEEKLY_FOOD_MENU.map((item) => (
-                        <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/40 hover:bg-white hover:border-[#4754FF] transition-all hover:shadow-[0_4px_16px_rgba(71,84,255,0.08)]">
+                        <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/40 hover:bg-white hover:border-[#0087A5] transition-all hover:shadow-[0_4px_16px_rgba(0,135,165,0.08)]">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="font-bold text-[#4754FF] text-sm">
+                            <span className="font-bold text-[#0087A5] text-sm">
                               {language === 'ku' ? item.dayKu : language === 'ar' ? item.dayAr : item.dayEn}
                             </span>
-                            <span className="text-[10px] font-mono bg-[#E1E9FF] text-[#4754FF] font-bold px-2.5 py-0.5 rounded-full">
+                            <span className="text-[10px] font-mono bg-[#E1E9FF] text-[#0087A5] font-bold px-2.5 py-0.5 rounded-full">
                               {item.calories}
                             </span>
                           </div>
@@ -1237,10 +1536,10 @@ export default function App() {
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'timetable' && (
                 <div className="space-y-4">
-                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)]">
+                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3 mb-6">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#4754FF] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(71,84,255,0.3)]">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0087A5] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,135,165,0.3)]">
                           <CalendarDays className="w-6 h-6" />
                         </div>
                         <div>
@@ -1256,7 +1555,7 @@ export default function App() {
                         <button
                           onClick={() => setSelectedTimetableDay('all')}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            selectedTimetableDay === 'all' ? 'bg-[#4754FF] text-white shadow-xs' : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                            selectedTimetableDay === 'all' ? 'bg-[#0087A5] text-white shadow-xs' : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
                           }`}
                         >
                           All
@@ -1266,7 +1565,7 @@ export default function App() {
                             key={d.key}
                             onClick={() => setSelectedTimetableDay(d.key)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                              selectedTimetableDay === d.key ? 'bg-[#4754FF] text-white shadow-xs' : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                              selectedTimetableDay === d.key ? 'bg-[#0087A5] text-white shadow-xs' : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
                             }`}
                           >
                             {d.label}
@@ -1287,7 +1586,7 @@ export default function App() {
                               {day.periods.map(period => (
                                 <div key={period.period} className="p-3 flex items-center justify-between text-xs sm:text-sm hover:bg-[#F5F6FF]/50 transition-colors">
                                   <div className="flex items-center gap-3">
-                                    <span className="w-7 h-7 rounded-lg bg-[#E1E9FF] text-[#4754FF] flex items-center justify-center font-mono font-bold text-xs">
+                                    <span className="w-7 h-7 rounded-lg bg-[#E1E9FF] text-[#0087A5] flex items-center justify-center font-mono font-bold text-xs">
                                       {period.period}
                                     </span>
                                     <div>
@@ -1312,7 +1611,7 @@ export default function App() {
               {/* SECTION 5: BEHAVIOUR REPORT                          */}
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'behaviour' && (
-                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-6">
+                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-6">
                   {/* Header */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3">
                     <div className="flex items-center gap-3.5">
@@ -1347,8 +1646,8 @@ export default function App() {
                         )}
                         {currentStudent.behaviourReport.attendanceRate && (
                           <div className="p-4 bg-[#E1E9FF] border border-[#7C85FF]/30 rounded-2xl text-center">
-                            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#4754FF] mb-1">{t.attendance}</span>
-                            <span className="text-lg font-black text-[#4754FF]">{currentStudent.behaviourReport.attendanceRate}</span>
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#0087A5] mb-1">{t.attendance}</span>
+                            <span className="text-lg font-black text-[#0087A5]">{currentStudent.behaviourReport.attendanceRate}</span>
                           </div>
                         )}
                         {currentStudent.behaviourReport.counselorName && (
@@ -1374,7 +1673,7 @@ export default function App() {
                     /* Clean authentic state when no behaviour report has been uploaded yet */
                     <div className="space-y-6">
                       <div className="p-8 rounded-3xl border-2 border-dashed border-[#E1E9FF] bg-[#F5F6FF]/60 text-center flex flex-col items-center justify-center space-y-3">
-                        <div className="w-14 h-14 rounded-2xl bg-[#E1E9FF] text-[#4754FF] flex items-center justify-center shadow-xs">
+                        <div className="w-14 h-14 rounded-2xl bg-[#E1E9FF] text-[#0087A5] flex items-center justify-center shadow-xs">
                           <FileText className="w-7 h-7" />
                         </div>
                         <div className="space-y-1.5 max-w-lg">
@@ -1412,7 +1711,7 @@ export default function App() {
                         </div>
                         <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
                           <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">{t.idNumber}</span>
-                          <span className="text-xs font-mono font-bold text-[#4754FF]">{currentStudent.id}</span>
+                          <span className="text-xs font-mono font-bold text-[#0087A5]">{currentStudent.id}</span>
                         </div>
                         <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
                           <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
@@ -1428,6 +1727,362 @@ export default function App() {
                   )}
                 </div>
               )}
+
+              {/* ---------------------------------------------------- */}
+              {/* SECTION 6: ACADEMIC CALENDAR                         */}
+              {/* ---------------------------------------------------- */}
+              {activePortalTab === 'calendar' && (
+                <div className="space-y-5">
+                  {/* Calendar Top Action Strip */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#E1E9FF] p-3.5 rounded-2xl shadow-xs print:hidden">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#F0F8FA] text-[#0087A5] flex items-center justify-center">
+                        <Calendar className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-[#1A1D4E] block">
+                          {t.calendarTitle}
+                        </span>
+                        <span className="text-[11px] text-[#6B70A6]">
+                          {language === 'ku' ? 'ساڵنامەی فەرمی ب زمانێن کوردی و ئینگلیزی' : language === 'ar' ? 'التقويم السنوي المعتمد باللغتين الكردية والإنجليزية' : 'Official Ministry Schedule in Kurdish & English'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {/* Original PDF links */}
+                      <a
+                        href={OFFICIAL_CALENDAR_PDF_URLS.english}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 bg-[#F0F8FA] hover:bg-[#E6F4F7] text-[#0087A5] border border-[#C8E5EC] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
+                        title="Open English Calendar PDF"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>English PDF</span>
+                        <ExternalLink className="w-3 h-3 opacity-60" />
+                      </a>
+                      <a
+                        href={OFFICIAL_CALENDAR_PDF_URLS.kurdish}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 bg-[#F0F8FA] hover:bg-[#E6F4F7] text-[#0087A5] border border-[#C8E5EC] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
+                        title="Open Kurdish Calendar PDF"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>کوردی PDF</span>
+                        <ExternalLink className="w-3 h-3 opacity-60" />
+                      </a>
+                      {/* PDF Download Button */}
+                      <button
+                        onClick={() => handleDownloadPdf('printable-calendar', 'Academic_Calendar_2026-2027')}
+                        disabled={isGeneratingPdf}
+                        className="px-3.5 py-1.5 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      >
+                        {isGeneratingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                        <span>{t.downloadPdf}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Highlights Summary Cards (Key Academic Milestones) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 print:hidden">
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-[#0087A5] mb-0.5">
+                        {language === 'ku' ? 'دەستپێکی خوێندن' : language === 'ar' ? 'بداية العام' : 'School Starts'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">2026-09-20</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? 'هەفتەی ١' : 'Week 1'}</span>
+                    </div>
+
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-amber-600 mb-0.5">
+                        {language === 'ku' ? 'خولی ١ هەڵسەنگاندن' : language === 'ar' ? 'تقييم جولة ١' : 'Assessment 1'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">Dec 9–12, 2026</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? '٣ ڕۆژ' : '3 days'}</span>
+                    </div>
+
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-purple-600 mb-0.5">
+                        {language === 'ku' ? 'تاقیکردنەوەی وەرزی ١' : language === 'ar' ? 'امتحانات الفصل ١' : 'Term 1 Finals'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">Dec 15–24, 2026</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? '٩ ڕۆژ' : '9 days'}</span>
+                    </div>
+
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-rose-600 mb-0.5">
+                        {language === 'ku' ? 'پشووی نەورۆز' : language === 'ar' ? 'عطلة نوروز' : 'Newroz Break'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">Mar 9–23, 2027</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? '١٥ ڕۆژ' : '15 days'}</span>
+                    </div>
+
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-[#0087A5] mb-0.5">
+                        {language === 'ku' ? 'تاقیکردنەوەی وەرزی ٢' : language === 'ar' ? 'امتحانات الفصل ٢' : 'Term 2 Finals'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">May 2–12, 2027</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? '٩ ڕۆژ' : '9 days'}</span>
+                    </div>
+
+                    <div className="p-3 bg-white border border-[#E1E9FF] rounded-2xl shadow-2xs">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-indigo-600 mb-0.5">
+                        {language === 'ku' ? 'پۆلی ١٢ وەزاری' : language === 'ar' ? 'بكالوريا الصف ١٢' : 'Grade 12 Finals'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-[#1A1D4E] block">May 21–24, 2027</span>
+                      <span className="text-[10px] text-[#6B70A6]">{language === 'ku' ? 'خولی یەکەم' : 'Round 1'}</span>
+                    </div>
+                  </div>
+
+                  {/* Filter and Search Bar */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-[#E1E9FF] p-3 rounded-2xl shadow-xs print:hidden">
+                    {/* Semester Switcher Pills */}
+                    <div className="flex items-center gap-1 overflow-x-auto py-0.5">
+                      <button
+                        onClick={() => setCalendarSemesterFilter('all')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          calendarSemesterFilter === 'all'
+                            ? 'bg-[#0087A5] text-white shadow-xs'
+                            : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                        }`}
+                      >
+                        {language === 'ku' ? 'هەموو بەروارەکان' : language === 'ar' ? 'جميع المواعيد' : 'All Events'}
+                        <span className="ml-1.5 text-[10px] opacity-80 font-mono">({SCHOOL_CALENDAR_2026_2027.length})</span>
+                      </button>
+
+                      <button
+                        onClick={() => setCalendarSemesterFilter('first')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          calendarSemesterFilter === 'first'
+                            ? 'bg-[#0087A5] text-white shadow-xs'
+                            : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                        }`}
+                      >
+                        {language === 'ku' ? 'وەرزی یەکەم' : language === 'ar' ? 'الفصل الأول' : 'First Semester'}
+                      </button>
+
+                      <button
+                        onClick={() => setCalendarSemesterFilter('second')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          calendarSemesterFilter === 'second'
+                            ? 'bg-[#0087A5] text-white shadow-xs'
+                            : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                        }`}
+                      >
+                        {language === 'ku' ? 'وەرزی دووەم' : language === 'ar' ? 'الفصل الثاني' : 'Second Semester'}
+                      </button>
+
+                      <button
+                        onClick={() => setCalendarSemesterFilter('exams')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          calendarSemesterFilter === 'exams'
+                            ? 'bg-[#0087A5] text-white shadow-xs'
+                            : 'bg-[#F5F6FF] text-[#454A87] hover:bg-[#E1E9FF]'
+                        }`}
+                      >
+                        {language === 'ku' ? 'ئەزموون و پشوویەکان' : language === 'ar' ? 'الامتحانات والعطلات' : 'Exams & Breaks'}
+                      </button>
+                    </div>
+
+                    {/* Search Field */}
+                    <div className="relative w-full sm:w-64">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-[#8C90C2]">
+                        <Search className="w-3.5 h-3.5" />
+                      </div>
+                      <input
+                        type="text"
+                        value={calendarSearchQuery}
+                        onChange={(e) => setCalendarSearchQuery(e.target.value)}
+                        placeholder={
+                          language === 'ku' ? 'گەڕان بەپێی بەروار یان چالاکی...' : language === 'ar' ? 'بحث بالتاريخ أو الحدث...' : 'Search dates or events...'
+                        }
+                        className="w-full pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs text-[#1A1D4E] placeholder:text-[#8C90C2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Printable Calendar Container */}
+                  <div id="printable-calendar" className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between border-b border-[#E1E9FF] pb-5">
+                      <div className="flex items-center gap-3.5">
+                        <img src={SCHOOL_LOGO_URL} alt="Logo" className="w-12 h-12 object-contain" />
+                        <div>
+                          <h4 className="text-base sm:text-lg font-black text-[#1A1D4E]">{t.schoolName}</h4>
+                          <p className="text-xs text-[#6B70A6] font-medium">{t.calendarTitle}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="inline-block bg-[#F0F8FA] border border-[#C8E5EC] text-[#0087A5] font-bold text-xs px-3.5 py-1 rounded-full font-mono">
+                          2026 – 2027
+                        </span>
+                        <p className="text-[11px] text-[#8C90C2] mt-1">
+                          {language === 'ku' ? 'ساڵنامەی فەرمی خوێندن' : language === 'ar' ? 'التقويم السنوي المعتمد' : 'Official Academic Year'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Official Table with Both Kurdish and English Following Official PDFs */}
+                    <div className="border border-[#C8E5EC] rounded-2xl overflow-x-auto shadow-xs">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[#F0F8FA] border-b border-[#C8E5EC] font-bold text-[#0D2D35]">
+                          <tr>
+                            <th className="py-3 px-3 text-center w-10">#</th>
+                            <th className="py-3 px-3 whitespace-nowrap">
+                              {language === 'ku' ? 'وەرز' : language === 'ar' ? 'الفصل' : 'Semester'}
+                            </th>
+                            <th className="py-3 px-3 whitespace-nowrap">
+                              {language === 'ku' ? 'بەروار' : language === 'ar' ? 'التاريخ' : 'Date / Date Range'}
+                            </th>
+                            <th className="py-3 px-3 whitespace-nowrap">
+                              {language === 'ku' ? 'هەفتە' : language === 'ar' ? 'الأسبوع' : 'Week'}
+                            </th>
+                            <th className="py-3 px-4">
+                              <span className="text-[#0087A5] font-black">چالاکی ب کوردی</span>
+                              <span className="text-[11px] font-normal text-[#6B70A6] ml-1">(Kurdish Description)</span>
+                            </th>
+                            <th className="py-3 px-4">
+                              <span className="text-[#1A1D4E] font-black">Activity / Description</span>
+                              <span className="text-[11px] font-normal text-[#6B70A6] ml-1">(English)</span>
+                            </th>
+                            <th className="py-3 px-3 text-center whitespace-nowrap">
+                              {language === 'ku' ? 'ماوە' : language === 'ar' ? 'المدة' : 'Duration'}
+                            </th>
+                            <th className="py-3 px-3 text-center whitespace-nowrap">
+                              {language === 'ku' ? 'جۆر' : language === 'ar' ? 'النوع' : 'Type'}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#C8E5EC]">
+                          {filteredCalendarEvents.map((evt, idx) => {
+                            const isFirstSem = evt.semester === 'first';
+                            return (
+                              <tr 
+                                key={evt.id} 
+                                className={`transition-colors ${
+                                  evt.type === 'exam' 
+                                    ? 'bg-purple-50/40 hover:bg-purple-50/70' 
+                                    : evt.type === 'break' 
+                                    ? 'bg-rose-50/40 hover:bg-rose-50/70' 
+                                    : evt.type === 'assessment'
+                                    ? 'bg-amber-50/40 hover:bg-amber-50/70'
+                                    : evt.type === 'start'
+                                    ? 'bg-emerald-50/40 hover:bg-emerald-50/70'
+                                    : 'hover:bg-[#F0F8FA]/60'
+                                }`}
+                              >
+                                <td className="py-2.5 px-3 text-center font-mono text-[#76A5B8]">{idx + 1}</td>
+                                <td className="py-2.5 px-3 whitespace-nowrap">
+                                  <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                    isFirstSem 
+                                      ? 'bg-sky-50 text-sky-700 border border-sky-200' 
+                                      : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                                  }`}>
+                                    {language === 'ku' ? evt.semesterLabelKu : language === 'ar' ? evt.semesterLabelAr : evt.semesterLabelEn}
+                                  </span>
+                                </td>
+                                <td className="py-2.5 px-3 font-mono font-bold text-[#0D2D35] whitespace-nowrap">
+                                  {evt.dateRange}
+                                </td>
+                                <td className="py-2.5 px-3 font-semibold text-[#454A87] whitespace-nowrap">
+                                  {evt.weekEn ? (
+                                    <span>{language === 'ku' ? evt.weekKu : language === 'ar' ? evt.weekAr : evt.weekEn}</span>
+                                  ) : (
+                                    <span className="text-[#8C90C2]">—</span>
+                                  )}
+                                </td>
+                                <td className="py-2.5 px-4 font-bold text-[#0087A5] text-right" dir="rtl">
+                                  {evt.activityKu}
+                                  {evt.notesKu && (
+                                    <span className="block text-[10px] text-purple-700 font-normal mt-0.5">
+                                      * {evt.notesKu}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-2.5 px-4 font-semibold text-[#1A1D4E]" dir="ltr">
+                                  {evt.activityEn}
+                                  {evt.notesEn && (
+                                    <span className="block text-[10px] text-purple-700 font-normal mt-0.5">
+                                      * {evt.notesEn}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-2.5 px-3 text-center font-mono font-semibold text-[#454A87] whitespace-nowrap">
+                                  {language === 'ku' ? evt.durationKu : language === 'ar' ? evt.durationAr : evt.durationEn}
+                                </td>
+                                <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                                  {evt.type === 'exam' && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                                      {language === 'ku' ? 'تاقیکردنەوە' : language === 'ar' ? 'امتحان' : 'Exam'}
+                                    </span>
+                                  )}
+                                  {evt.type === 'break' && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                      {language === 'ku' ? 'پشوو' : language === 'ar' ? 'عطلة' : 'Break'}
+                                    </span>
+                                  )}
+                                  {evt.type === 'assessment' && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                      {language === 'ku' ? 'هەڵسەنگاندن' : language === 'ar' ? 'تقييم' : 'Assessment'}
+                                    </span>
+                                  )}
+                                  {evt.type === 'start' && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                      {language === 'ku' ? 'دەستپێک' : language === 'ar' ? 'بداية' : 'Start'}
+                                    </span>
+                                  )}
+                                  {evt.type === 'classes' && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                                      {language === 'ku' ? 'خوێندن' : language === 'ar' ? 'دوام' : 'Classes'}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Official Notes from Kurdish & English Ministry PDFs */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                      <div className="p-4 bg-[#F0F8FA] border border-[#C8E5EC] rounded-2xl flex items-start gap-3">
+                        <ShieldCheck className="w-5 h-5 text-[#0087A5] shrink-0 mt-0.5" />
+                        <div className="text-xs text-[#0D2D35] leading-relaxed space-y-1">
+                          <p className="font-bold text-[#0087A5]">
+                            {language === 'ku' ? 'تێبینییا فەرمی یا ئەزموونێن شەمبیێ' : language === 'ar' ? 'ملاحظة امتحانات أيام السبت' : 'Saturday Examination Schedule Note'}
+                          </p>
+                          <p className="text-[#355B66]">
+                            {language === 'ku'
+                              ? 'ڕۆژانی شەممەش تاقیکردنەوەکانی تیادا ئەنجام دەدرێت لە ماوەی تاقیکردنەوە فەرمییەکاندا (کۆتایی وەرزی یەکەم و دووەم).'
+                              : language === 'ar'
+                              ? 'تُجرى الامتحانات في أيام السبت أيضاً خلال فترات الامتحانات النهائية للفصلين الأول والثاني.'
+                              : 'Saturday sessions are included for examination schedules during official first and second semester finals.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-[#F0F8FA] border border-[#C8E5EC] rounded-2xl flex items-start gap-3">
+                        <FileSpreadsheet className="w-5 h-5 text-[#0087A5] shrink-0 mt-0.5" />
+                        <div className="text-xs text-[#0D2D35] leading-relaxed space-y-1">
+                          <p className="font-bold text-[#0087A5]">
+                            {language === 'ku' ? 'تەواوکەری ساڵنامەی فەرمی' : language === 'ar' ? 'التوثيق الرسمي للتقويم' : 'Official Ministry Alignment'}
+                          </p>
+                          <p className="text-[#355B66]">
+                            {language === 'ku'
+                              ? 'ئەم ساڵنامەیە تەواو بەپێی بەڵگەنامەی فەرمی وەزارەت و قوتابخانەیە، وەرگێڕدراو و پەسەندکراو بە هەردوو زمانی کوردی و ئینگلیزی.'
+                              : language === 'ar'
+                              ? 'هذا التقويم متطابق تماماً مع الوثائق الرسمية الصادرة عن إدارة المدرسة ووزارة التربية، باللغتين الكردية والإنجليزية.'
+                              : 'This schedule follows the official Kurdish ministry calendar and verified English translation documents for academic year 2026–2027.'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>
@@ -1439,7 +2094,7 @@ export default function App() {
       {selectedPortal === 'teacher' && isPortalAuthenticated && authStaff && (
         <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 space-y-6">
           {/* Teacher Portal Top Banner */}
-          <div className="bg-gradient-to-r from-[#BB8FFF] via-[#7C85FF] to-[#4754FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(187,143,255,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#BB8FFF] via-[#7C85FF] to-[#0087A5] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(187,143,255,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs">
                 <GraduationCap className="w-7 h-7 text-white" />
@@ -1482,7 +2137,7 @@ export default function App() {
                     const classes = SCHOOL_STRUCTURE[e.target.value] || ['Class A'];
                     setStaffClass(classes[0]);
                   }}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                 >
                   {officialGrades.map(g => (
                     <option key={g} value={g}>{g}</option>
@@ -1497,7 +2152,7 @@ export default function App() {
                 <select
                   value={staffClass}
                   onChange={(e) => setStaffClass(e.target.value)}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                 >
                   {staffClasses.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -1510,7 +2165,7 @@ export default function App() {
               <button
                 onClick={() => setTeacherTab('roster')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'roster' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                  teacherTab === 'roster' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
                 Class Roster & Marks
@@ -1518,7 +2173,7 @@ export default function App() {
               <button
                 onClick={() => setTeacherTab('timetable')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'timetable' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                  teacherTab === 'timetable' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
                 Class Timetable
@@ -1528,7 +2183,7 @@ export default function App() {
 
           {/* Teacher Tab 1: Class Roster & Grades */}
           {teacherTab === 'roster' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-4">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
                 <div>
                   <h3 className="text-base font-bold text-[#1A1D4E]">
@@ -1543,7 +2198,7 @@ export default function App() {
                     value={staffSearchQuery}
                     onChange={(e) => setStaffSearchQuery(e.target.value)}
                     placeholder="Search student..."
-                    className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                    className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                   />
                 </div>
               </div>
@@ -1556,17 +2211,14 @@ export default function App() {
                       <th className="py-3 px-3">Student Name</th>
                       <th className="py-3 px-3">Roll No</th>
                       <th className="py-3 px-3">Attendance</th>
-                      <th className="py-3 px-3">English</th>
-                      <th className="py-3 px-3">Kurdish</th>
+                      <th className="py-3 px-3">Kurdish (Term 1)</th>
+                      <th className="py-3 px-3">Other Subjects</th>
                       <th className="py-3 px-3 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E1E9FF]">
                     {staffFilteredStudents.map((s, idx) => {
-                      const eng = s.subjects.find(sub => sub.subject === 'English');
                       const kur = s.subjects.find(sub => sub.subject === 'Kurdish');
-                      const isG13 = parseInt(s.grade.replace(/\D/g, ''), 10) <= 3;
-                      const maxMark = isG13 ? 25 : 20;
 
                       return (
                         <tr key={s.id} className="hover:bg-[#F5F6FF]/60 transition-colors">
@@ -1574,16 +2226,16 @@ export default function App() {
                           <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
                           <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
                           <td className="py-2.5 px-3 text-[#00A887] font-semibold">{s.attendance}</td>
-                          <td className="py-2.5 px-3 font-mono font-bold text-[#1A1D4E]">
-                            {eng ? `${((eng.obtainedMarks / 100) * maxMark).toFixed(0)}/${maxMark}` : '-'}
+                          <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
+                            {kur ? `${kur.obtainedMarks} / ${kur.maxMarks}` : <span className="text-[#8C90C2] font-normal">Pending</span>}
                           </td>
-                          <td className="py-2.5 px-3 font-mono font-bold text-[#1A1D4E]">
-                            {kur ? `${((kur.obtainedMarks / 100) * maxMark).toFixed(0)}/${maxMark}` : '-'}
+                          <td className="py-2.5 px-3 text-[#8C90C2] text-xs">
+                            Awaiting upload
                           </td>
                           <td className="py-2.5 px-3 text-center">
                             <button
                               onClick={() => setModalStudent(s)}
-                              className="px-3 py-1 bg-[#4754FF] hover:bg-[#3843D0] text-white rounded-lg text-[11px] font-bold cursor-pointer transition-all shadow-xs"
+                              className="px-3 py-1 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-lg text-[11px] font-bold cursor-pointer transition-all shadow-xs"
                             >
                               View Marksheet
                             </button>
@@ -1599,7 +2251,7 @@ export default function App() {
 
           {/* Teacher Tab 2: Class Timetable */}
           {teacherTab === 'timetable' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)]">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
               <h3 className="text-base font-bold text-[#1A1D4E] mb-4">
                 Weekly Class Timetable ({staffGrade} - {staffClass})
               </h3>
@@ -1630,7 +2282,7 @@ export default function App() {
       {/* ======================================================== */}
       {selectedPortal === 'staff' && isPortalAuthenticated && authStaff && (
         <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-          <div className="bg-gradient-to-r from-[#00D4AA] via-[#2CC9A7] to-[#4754FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,212,170,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#00D4AA] via-[#2CC9A7] to-[#0087A5] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,212,170,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs">
                 <Building className="w-7 h-7 text-white" />
@@ -1665,7 +2317,7 @@ export default function App() {
               <button
                 onClick={() => setStaffTab('students')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  staffTab === 'students' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                  staffTab === 'students' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
                 Student Directory
@@ -1673,7 +2325,7 @@ export default function App() {
               <button
                 onClick={() => setStaffTab('timetables')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  staffTab === 'timetables' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                  staffTab === 'timetables' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
                 Class Timetables
@@ -1681,7 +2333,7 @@ export default function App() {
               <button
                 onClick={() => setStaffTab('food_menu')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  staffTab === 'food_menu' ? 'bg-[#4754FF] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                  staffTab === 'food_menu' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
                 Food Menu
@@ -1697,7 +2349,7 @@ export default function App() {
                     const classes = SCHOOL_STRUCTURE[e.target.value] || ['Class A'];
                     setStaffClass(classes[0]);
                   }}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                 >
                   {officialGrades.map(g => (
                     <option key={g} value={g}>{g}</option>
@@ -1706,7 +2358,7 @@ export default function App() {
                 <select
                   value={staffClass}
                   onChange={(e) => setStaffClass(e.target.value)}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                 >
                   {staffClasses.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -1718,7 +2370,7 @@ export default function App() {
 
           {/* Staff Tab Content */}
           {staffTab === 'students' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-4">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#E1E9FF]">
                 <h3 className="text-base font-bold text-[#1A1D4E]">
                   {staffGrade} {staffClass} Directory ({staffAvailableStudents.length} Students)
@@ -1743,11 +2395,11 @@ export default function App() {
                         <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
                         <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
                         <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.guardianEmail || '-'}</td>
-                        <td className="py-2.5 px-3 font-mono font-bold text-[#4754FF]">{s.guardianPassword}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">{s.guardianPassword}</td>
                         <td className="py-2.5 px-3 text-center">
                           <button
                             onClick={() => setModalStudent(s)}
-                            className="px-3 py-1 bg-[#4754FF] text-white rounded-lg text-[11px] font-bold cursor-pointer hover:bg-[#3843D0] transition-colors shadow-xs"
+                            className="px-3 py-1 bg-[#0087A5] text-white rounded-lg text-[11px] font-bold cursor-pointer hover:bg-[#00738D] transition-colors shadow-xs"
                           >
                             Preview
                           </button>
@@ -1761,7 +2413,7 @@ export default function App() {
           )}
 
           {staffTab === 'timetables' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-4">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
               <h3 className="text-base font-bold text-[#1A1D4E] mb-2">Class Timetable View</h3>
               <div className="space-y-4">
                 {timetableSchedule.map(day => (
@@ -1782,12 +2434,12 @@ export default function App() {
           )}
 
           {staffTab === 'food_menu' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-4">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
               <h3 className="text-base font-bold text-[#1A1D4E]">Weekly Cafeteria Schedule</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {WEEKLY_FOOD_MENU.map(item => (
-                  <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/30 hover:bg-white hover:border-[#4754FF] transition-all">
-                    <span className="font-bold text-[#4754FF] text-sm block mb-1">{item.dayEn}</span>
+                  <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/30 hover:bg-white hover:border-[#0087A5] transition-all">
+                    <span className="font-bold text-[#0087A5] text-sm block mb-1">{item.dayEn}</span>
                     <p className="text-xs font-semibold text-[#1A1D4E]">{item.mainDishEn}</p>
                     <p className="text-xs text-[#6B70A6] mt-1">{item.sideDishEn}</p>
                   </div>
@@ -1803,7 +2455,7 @@ export default function App() {
       {/* ======================================================== */}
       {selectedPortal === 'admin' && isPortalAuthenticated && authStaff && (
         <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-          <div className="bg-gradient-to-r from-[#4754FF] via-[#5F6DFF] to-[#7C85FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(71,84,255,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#0087A5] via-[#5F6DFF] to-[#7C85FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,135,165,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs">
                 <ShieldCheck className="w-7 h-7 text-white" />
@@ -1853,7 +2505,7 @@ export default function App() {
             </div>
             <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] block mb-1">Class Sections</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#4754FF]">18</span>
+              <span className="text-2xl sm:text-3xl font-black text-[#0087A5]">18</span>
               <span className="text-[11px] text-[#6B70A6] block mt-1">Classes A, B, C, E</span>
             </div>
             <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
@@ -1864,7 +2516,7 @@ export default function App() {
           </div>
 
           {/* Admin Master Directory */}
-          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-4">
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
               <div>
                 <h3 className="text-base font-bold text-[#1A1D4E]">
@@ -1879,7 +2531,7 @@ export default function App() {
                   value={staffSearchQuery}
                   onChange={(e) => setStaffSearchQuery(e.target.value)}
                   placeholder="Search student or ID..."
-                  className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-56 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#4754FF]"
+                  className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-56 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                 />
               </div>
             </div>
@@ -1912,11 +2564,11 @@ export default function App() {
                         <td className="py-2.5 px-3 font-semibold text-[#454A87]">{s.grade} - {s.section}</td>
                         <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
                         <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
-                        <td className="py-2.5 px-3 font-mono font-bold text-[#4754FF]">{s.guardianPassword}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">{s.guardianPassword}</td>
                         <td className="py-2.5 px-3 text-center">
                           <button
                             onClick={() => setModalStudent(s)}
-                            className="px-3 py-1 bg-[#4754FF] text-white rounded-lg text-[11px] font-bold cursor-pointer hover:bg-[#3843D0] transition-colors shadow-xs"
+                            className="px-3 py-1 bg-[#0087A5] text-white rounded-lg text-[11px] font-bold cursor-pointer hover:bg-[#00738D] transition-colors shadow-xs"
                           >
                             Audit
                           </button>
@@ -1938,7 +2590,7 @@ export default function App() {
       {/* ======================================================== */}
       {modalStudent && (
         <div className="fixed inset-0 bg-neutral-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white border border-[#E1E9FF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-[0_20px_60px_rgba(71,84,255,0.25)] relative space-y-5">
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,135,165,0.25)] relative space-y-5">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E1E9FF]">
               <div>
@@ -1951,46 +2603,70 @@ export default function App() {
               </div>
               <button
                 onClick={() => setModalStudent(null)}
-                className="w-8 h-8 rounded-full bg-[#F5F6FF] hover:bg-[#E1E9FF] flex items-center justify-center text-[#4754FF] transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#F5F6FF] hover:bg-[#E1E9FF] flex items-center justify-center text-[#0087A5] transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Marksheet Subject List */}
-            <div className="border border-[#E1E9FF] rounded-2xl overflow-hidden">
-              <table className="w-full text-left text-xs sm:text-sm">
-                <thead className="bg-[#F5F6FF] font-bold text-[#1A1D4E]">
-                  <tr>
-                    <th className="py-3 px-3.5">Subject</th>
-                    <th className="py-3 px-3.5 text-right">Term 1 Exam Mark</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E1E9FF]">
-                  {modalStudent.subjects.map((sub, i) => {
-                    const isG13 = parseInt(modalStudent.grade.replace(/\D/g, ''), 10) <= 3;
-                    const maxM = isG13 ? 25 : 20;
-                    const mark = ((sub.obtainedMarks / 100) * maxM).toFixed(1);
-                    return (
-                      <tr key={i} className="hover:bg-[#F5F6FF]/50 transition-colors">
-                        <td className="py-2.5 px-3.5 font-semibold text-[#1A1D4E]">
-                          {getTranslatedSubject(sub.subject, language)}
-                        </td>
-                        <td className="py-2.5 px-3.5 font-mono font-bold text-[#4754FF] text-right">
-                          {mark} / {maxM}
-                        </td>
+            {(() => {
+              const curriculum = GRADE_CURRICULUM[modalStudent.grade] || OFFICIAL_SUBJECTS;
+              const isG13 = parseInt(modalStudent.grade.replace(/\D/g, ''), 10) <= 3;
+              const defaultMax = isG13 ? 25 : 20;
+
+              return (
+                <div className="border border-[#C8E5EC] rounded-2xl overflow-hidden">
+                  <table className="w-full text-left text-xs sm:text-sm">
+                    <thead className="bg-[#F0F8FA] font-bold text-[#0D2D35]">
+                      <tr>
+                        <th className="py-3 px-3.5">#</th>
+                        <th className="py-3 px-3.5">Subject</th>
+                        <th className="py-3 px-3.5 text-center">Status</th>
+                        <th className="py-3 px-3.5 text-right">Term 1 Exam Mark</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody className="divide-y divide-[#C8E5EC]">
+                      {curriculum.map((cSub, i) => {
+                        const uploaded = modalStudent.subjects?.find(
+                          s => s.subject.toLowerCase() === cSub.name.toLowerCase()
+                        );
+                        const hasMark = Boolean(uploaded && typeof uploaded.obtainedMarks === 'number');
+
+                        return (
+                          <tr key={i} className="hover:bg-[#F0F8FA]/50 transition-colors">
+                            <td className="py-2.5 px-3.5 font-mono text-[#76A5B8]">{i + 1}</td>
+                            <td className="py-2.5 px-3.5 font-semibold text-[#0D2D35]">
+                              {getTranslatedSubject(cSub.name, language)}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-center">
+                              {hasMark ? (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  Verified
+                                </span>
+                              ) : (
+                                <span className="text-[11px] text-[#8C90C2]">
+                                  Awaiting upload
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3.5 font-mono font-bold text-[#0087A5] text-right">
+                              {hasMark ? `${uploaded!.obtainedMarks} / ${uploaded!.maxMarks || defaultMax}` : ''}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
 
             {/* Modal Actions */}
             <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E1E9FF]">
               <button
                 onClick={() => setModalStudent(null)}
-                className="px-4 py-2 bg-[#F5F6FF] hover:bg-[#E1E9FF] text-[#4754FF] rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-2 bg-[#F5F6FF] hover:bg-[#E1E9FF] text-[#0087A5] rounded-xl text-xs font-bold transition-colors cursor-pointer"
               >
                 Close
               </button>
