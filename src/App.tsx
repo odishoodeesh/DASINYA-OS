@@ -229,8 +229,8 @@ export default function App() {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
-  // FIRST PAGE: Portal Selection (null = portal selection landing page)
-  const [selectedPortal, setSelectedPortal] = useState<PortalRole | null>(null);
+  // Dedicated to Parents Portal ONLY (other portals hidden)
+  const [selectedPortal, setSelectedPortal] = useState<PortalRole>('parent');
 
   // Authentication State for Parent & Student (Password Only)
   const [authGuardian, setAuthGuardian] = useState<AuthenticatedGuardian | null>(null);
@@ -294,120 +294,69 @@ export default function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle Login
+  // Handle Login: Parents log in by password only
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoginError('');
     setIsLoggingIn(true);
 
-    if (selectedPortal === 'parent' || selectedPortal === 'student') {
-      // PARENTS & STUDENTS: LOG IN BY PASSWORD ONLY
-      const pwdToVerify = loginPassword.trim();
-      if (!pwdToVerify) {
-        setLoginError(
-          language === 'ku'
-            ? 'تکایە وشەی تێپەڕبوون بنووسە'
-            : language === 'ar'
-            ? 'يرجى إدخال كلمة المرور'
-            : 'Please enter your password'
-        );
-        setIsLoggingIn(false);
-        return;
-      }
-
-      const matched = students.filter(s => 
-        (s.guardianPassword && s.guardianPassword.trim() === pwdToVerify) ||
-        (s.guardianPasswordAlt && s.guardianPasswordAlt.trim() === pwdToVerify)
+    const pwdToVerify = loginPassword.trim();
+    if (!pwdToVerify) {
+      setLoginError(
+        language === 'ku'
+          ? 'تکایە وشەی تێپەڕبوون بنووسە'
+          : language === 'ar'
+          ? 'يرجى إدخال كلمة المرور'
+          : 'Please enter your password'
       );
+      setIsLoggingIn(false);
+      return;
+    }
 
-      if (matched.length > 0) {
-        const session: AuthenticatedGuardian = {
-          password: pwdToVerify,
-          email: matched[0].guardianEmail || '',
-          students: matched
-        };
-        setAuthGuardian(session);
-        setSelectedChildId(matched[0].id);
-        setActivePortalTab(null); // When log in, user ONLY sees the 5 buttons first!
-        setLoginError('');
-        setLoginPassword('');
-        setSelectedCategory('All');
-      } else {
-        setLoginError(
-          language === 'ku'
-            ? 'وشەی تێپەڕبوون هەڵەیە. تکایە وشەی تێپەڕبوونەکەت بپشکنە و دووبارە هەوڵبدەوە.'
-            : language === 'ar'
-            ? 'كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والمحاولة مرة أخرى.'
-            : 'Invalid password. Please check your password and try again.'
-        );
-      }
+    const matched = students.filter(s => 
+      (s.guardianPassword && s.guardianPassword.trim() === pwdToVerify) ||
+      (s.guardianPasswordAlt && s.guardianPasswordAlt.trim() === pwdToVerify)
+    );
+
+    if (matched.length > 0) {
+      const session: AuthenticatedGuardian = {
+        password: pwdToVerify,
+        email: matched[0].guardianEmail || '',
+        students: matched
+      };
+      setAuthGuardian(session);
+      setSelectedChildId(matched[0].id);
+      setActivePortalTab(null); // When log in, parent ONLY sees the 5 buttons first!
+      setLoginError('');
+      setLoginPassword('');
+      setSelectedCategory('All');
     } else {
-      // ADMIN, STAFF, TEACHER: LOG IN WITH USERNAME AND PASSWORD
-      const u = loginUsername.trim().toLowerCase();
-      const p = loginPassword.trim();
-
-      if (!u || !p) {
-        setLoginError(
-          language === 'ku'
-            ? 'تکایە ناڤێ بەکارهێنەری و وشەی تێپەڕبوون بنووسە'
-            : language === 'ar'
-            ? 'يرجى إدخال اسم المستخدم وكلمة المرور'
-            : 'Please enter both username and password'
-        );
-        setIsLoggingIn(false);
-        return;
-      }
-
-      if (selectedPortal === 'admin') {
-        if ((u === 'admin' || u === 'dasinya.admin') && (p === 'admin123' || p === 'dasinya2025' || p === 'admin')) {
-          setAuthStaff({ role: 'admin', username: u, name: 'Principal / School Administrator' });
-          setLoginError('');
-          setLoginUsername('');
-          setLoginPassword('');
-        } else {
-          setLoginError(t.invalidUsernameOrPassword);
-        }
-      } else if (selectedPortal === 'staff') {
-        if ((u === 'staff' || u === 'office' || u === 'dasinya.staff') && (p === 'staff123' || p === 'office123' || p === 'staff')) {
-          setAuthStaff({ role: 'staff', username: u, name: 'Academic Affairs & Registrar' });
-          setLoginError('');
-          setLoginUsername('');
-          setLoginPassword('');
-        } else {
-          setLoginError(t.invalidUsernameOrPassword);
-        }
-      } else if (selectedPortal === 'teacher') {
-        if ((u === 'teacher' || u === 'farhad' || u === 'delsoz' || u === 'dasinya.teacher') && (p === 'teacher123' || p === 'teacher')) {
-          setAuthStaff({ role: 'teacher', username: u, name: 'Mr. Farhad Harki (Faculty)' });
-          setLoginError('');
-          setLoginUsername('');
-          setLoginPassword('');
-        } else {
-          setLoginError(t.invalidUsernameOrPassword);
-        }
-      }
+      setLoginError(
+        language === 'ku'
+          ? 'وشەی تێپەڕبوون هەڵەیە. تکایە وشەی تێپەڕبوونەکەت بپشکنە و دووبارە هەوڵبدەوە.'
+          : language === 'ar'
+          ? 'كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والمحاولة مرة أخرى.'
+          : 'Invalid password. Please check your password and try again.'
+      );
     }
     setIsLoggingIn(false);
   };
 
-  // Sign out / Back to Portal Selection
+  // Sign out: returns to Parent login screen
   const handleSignOut = () => {
     setAuthGuardian(null);
     setAuthStaff(null);
     setSelectedChildId('');
     setActivePortalTab(null);
-    setSelectedPortal(null);
+    setSelectedPortal('parent');
     setLoginUsername('');
     setLoginPassword('');
     setLoginError('');
   };
 
-  // Switch Portal (returns to selection screen without clearing sessions)
+  // Return to Parent Hub
   const handleSwitchPortal = () => {
-    setSelectedPortal(null);
-    setLoginUsername('');
-    setLoginPassword('');
-    setLoginError('');
+    setActivePortalTab(null);
   };
 
   // Active student in Parent/Student portal
@@ -594,25 +543,10 @@ export default function App() {
 
   const activeLangOption = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
 
-  // Helper check if current selected portal is authenticated
+  // Helper check if current parent session is authenticated
   const isPortalAuthenticated = useMemo(() => {
-    if (!selectedPortal) return false;
-    if (selectedPortal === 'parent' || selectedPortal === 'student') {
-      return Boolean(authGuardian);
-    }
-    return Boolean(authStaff && authStaff.role === selectedPortal);
-  }, [selectedPortal, authGuardian, authStaff]);
-
-  // Portal label helper
-  const getPortalLabel = (role: PortalRole) => {
-    switch (role) {
-      case 'admin': return t.portalAdmin;
-      case 'staff': return t.portalStaff;
-      case 'teacher': return t.portalTeacher;
-      case 'parent': return t.portalParent;
-      case 'student': return t.portalStudent;
-    }
-  };
+    return Boolean(authGuardian);
+  }, [authGuardian]);
 
   return (
     <div 
@@ -640,11 +574,9 @@ export default function App() {
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-[#1A1D4E] leading-tight">
                 {t.schoolName}
               </h1>
-              {selectedPortal && (
-                <span className="hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-[#E1E9FF] text-[#4754FF]">
-                  {getPortalLabel(selectedPortal)}
-                </span>
-              )}
+              <span className="hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-[#FFF2E8] text-[#FF6D00]">
+                {t.portalParent}
+              </span>
             </div>
             <p className="text-[11px] text-[#6B70A6] font-medium">
               {t.departmentName}
@@ -654,17 +586,6 @@ export default function App() {
 
         {/* Header Right Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Switch Portal Button (shown whenever a portal is selected) */}
-          {selectedPortal && (
-            <button
-              onClick={handleSwitchPortal}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#E1E9FF] hover:border-[#4754FF] bg-white text-[#454A87] hover:text-[#4754FF] rounded-xl text-xs font-semibold transition-all shadow-[0_2px_6px_rgba(71,84,255,0.04)] cursor-pointer"
-              title={t.switchPortal}
-            >
-              <Layers className="w-3.5 h-3.5 text-[#4754FF]" />
-              <span className="hidden sm:inline">{t.switchPortal}</span>
-            </button>
-          )}
 
           {/* If Logged In, display Sign Out button */}
           {isPortalAuthenticated && (
@@ -737,207 +658,10 @@ export default function App() {
       </header>
 
       {/* ======================================================== */}
-      {/* FIRST PAGE: PORTAL SELECTION (When selectedPortal === null) */}
+      {/* PARENTS PORTAL LOGIN (PASSWORD ONLY)                     */}
       {/* ======================================================== */}
-      {selectedPortal === null && (
-        <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12 flex flex-col items-center justify-start text-center">
-          {/* School Crest */}
-          <div className="w-32 h-32 sm:w-44 sm:h-44 md:w-48 md:h-48 max-w-full flex items-center justify-center mb-4 sm:mb-6">
-            <img 
-              src={SCHOOL_LOGO_URL} 
-              alt="Dasinya Private School Logo" 
-              className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(71,84,255,0.15)]" 
-            />
-          </div>
-
-          {/* School Title & Portal Selection Heading */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-[#1A1D4E] mb-2">
-            {t.schoolName}
-          </h2>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E1E9FF] text-[#4754FF] text-xs font-bold mb-2 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{t.portalSelectionTitle}</span>
-          </div>
-          <p className="text-xs sm:text-sm text-[#6B70A6] max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-            {t.portalSelectionSubtitle}
-          </p>
-
-          {/* 5 Portals Grid: Admin, Staff, Teacher, Parent, Student */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 text-left">
-            {/* 1. ADMIN PORTAL */}
-            <button
-              onClick={() => {
-                setSelectedPortal('admin');
-                setLoginError('');
-              }}
-              className="group bg-white border-2 border-[#E1E9FF] hover:border-[#4754FF] rounded-3xl p-6 transition-all duration-200 hover:shadow-[0_16px_36px_rgba(71,84,255,0.12)] cursor-pointer flex flex-col justify-between text-left hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4754FF] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(71,84,255,0.35)] group-hover:scale-105 transition-transform">
-                    <ShieldCheck className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#E1E9FF] text-[#4754FF] uppercase tracking-wider flex items-center gap-1 font-mono">
-                    <User className="w-2.5 h-2.5" />
-                    {t.authUsernamePassword}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-[#1A1D4E] mb-1.5 group-hover:text-[#4754FF] transition-colors">
-                  {t.portalAdmin}
-                </h3>
-                <p className="text-xs text-[#6B70A6] leading-relaxed mb-4">
-                  {t.portalAdminDesc}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#4754FF] pt-3 border-t border-[#E1E9FF]">
-                <span>{language === 'ku' ? 'چوونەژوورێ' : language === 'ar' ? 'دخول' : 'Sign In'}</span>
-                {isRtl ? <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1.5 transition-transform" /> : <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />}
-              </div>
-            </button>
-
-            {/* 2. STAFF PORTAL */}
-            <button
-              onClick={() => {
-                setSelectedPortal('staff');
-                setLoginError('');
-              }}
-              className="group bg-white border-2 border-[#E1E9FF] hover:border-[#00D4AA] rounded-3xl p-6 transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,212,170,0.15)] cursor-pointer flex flex-col justify-between text-left hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D4AA] to-[#2CC9A7] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,212,170,0.35)] group-hover:scale-105 transition-transform">
-                    <Building className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#E6FAF6] text-[#00A887] uppercase tracking-wider flex items-center gap-1 font-mono">
-                    <User className="w-2.5 h-2.5" />
-                    {t.authUsernamePassword}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-[#1A1D4E] mb-1.5 group-hover:text-[#00A887] transition-colors">
-                  {t.portalStaff}
-                </h3>
-                <p className="text-xs text-[#6B70A6] leading-relaxed mb-4">
-                  {t.portalStaffDesc}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#00A887] pt-3 border-t border-[#E1E9FF]">
-                <span>{language === 'ku' ? 'چوونەژوورێ' : language === 'ar' ? 'دخول' : 'Sign In'}</span>
-                {isRtl ? <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1.5 transition-transform" /> : <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />}
-              </div>
-            </button>
-
-            {/* 3. TEACHER PORTAL */}
-            <button
-              onClick={() => {
-                setSelectedPortal('teacher');
-                setLoginError('');
-              }}
-              className="group bg-white border-2 border-[#E1E9FF] hover:border-[#BB8FFF] rounded-3xl p-6 transition-all duration-200 hover:shadow-[0_16px_36px_rgba(187,143,255,0.18)] cursor-pointer flex flex-col justify-between text-left hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#BB8FFF] to-[#7C85FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(187,143,255,0.35)] group-hover:scale-105 transition-transform">
-                    <GraduationCap className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#F5EFFF] text-[#8C52FF] uppercase tracking-wider flex items-center gap-1 font-mono">
-                    <User className="w-2.5 h-2.5" />
-                    {t.authUsernamePassword}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-[#1A1D4E] mb-1.5 group-hover:text-[#8C52FF] transition-colors">
-                  {t.portalTeacher}
-                </h3>
-                <p className="text-xs text-[#6B70A6] leading-relaxed mb-4">
-                  {t.portalTeacherDesc}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#8C52FF] pt-3 border-t border-[#E1E9FF]">
-                <span>{language === 'ku' ? 'چوونەژوورێ' : language === 'ar' ? 'دخول' : 'Sign In'}</span>
-                {isRtl ? <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1.5 transition-transform" /> : <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />}
-              </div>
-            </button>
-
-            {/* 4. PARENT PORTAL (PASSWORD ONLY) */}
-            <button
-              onClick={() => {
-                setSelectedPortal('parent');
-                setLoginError('');
-              }}
-              className="group bg-white border-2 border-[#E1E9FF] hover:border-[#FF7F2A] rounded-3xl p-6 transition-all duration-200 hover:shadow-[0_16px_36px_rgba(255,127,42,0.18)] cursor-pointer flex flex-col justify-between text-left hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)]"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(255,127,42,0.35)] group-hover:scale-105 transition-transform">
-                    <HeartHandshake className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#FFF2E8] text-[#FF6D00] uppercase tracking-wider flex items-center gap-1 font-mono">
-                    <Lock className="w-2.5 h-2.5" />
-                    {t.authPasswordOnly}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-[#1A1D4E] mb-1.5 group-hover:text-[#FF6D00] transition-colors">
-                  {t.portalParent}
-                </h3>
-                <p className="text-xs text-[#6B70A6] leading-relaxed mb-4">
-                  {t.portalParentDesc}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#FF6D00] pt-3 border-t border-[#E1E9FF]">
-                <span>{language === 'ku' ? 'چوونەژوورێ ب پاسوۆردێ' : language === 'ar' ? 'دخول بكلمة المرور' : 'Log In by Password'}</span>
-                {isRtl ? <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1.5 transition-transform" /> : <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />}
-              </div>
-            </button>
-
-            {/* 5. STUDENT PORTAL (PASSWORD ONLY) */}
-            <button
-              onClick={() => {
-                setSelectedPortal('student');
-                setLoginError('');
-              }}
-              className="group bg-white border-2 border-[#E1E9FF] hover:border-[#4754FF] rounded-3xl p-6 transition-all duration-200 hover:shadow-[0_16px_36px_rgba(71,84,255,0.18)] cursor-pointer flex flex-col justify-between text-left hover:-translate-y-1 shadow-[0_6px_20px_rgba(71,84,255,0.05)] sm:col-span-2 lg:col-span-1"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2AD4FF] to-[#8080FF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(42,212,255,0.4)] group-hover:scale-105 transition-transform">
-                    <Award className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#E1E9FF] text-[#4754FF] uppercase tracking-wider flex items-center gap-1 font-mono">
-                    <Lock className="w-2.5 h-2.5" />
-                    {t.authPasswordOnly}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-[#1A1D4E] mb-1.5 group-hover:text-[#4754FF] transition-colors">
-                  {t.portalStudent}
-                </h3>
-                <p className="text-xs text-[#6B70A6] leading-relaxed mb-4">
-                  {t.portalStudentDesc}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#4754FF] pt-3 border-t border-[#E1E9FF]">
-                <span>{language === 'ku' ? 'چوونەژوورێ ب پاسوۆردێ' : language === 'ar' ? 'دخول بكلمة المرور' : 'Log In by Password'}</span>
-                {isRtl ? <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1.5 transition-transform" /> : <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />}
-              </div>
-            </button>
-          </div>
-        </main>
-      )}
-
-      {/* ======================================================== */}
-      {/* VIEW 1: DEDICATED LOGIN SCREEN FOR SELECTED PORTAL       */}
-      {/* ======================================================== */}
-      {selectedPortal !== null && !isPortalAuthenticated && (
+      {!isPortalAuthenticated && (
         <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col items-center justify-start text-center">
-          {/* Back button to Portal Selection */}
-          <div className="w-full max-w-md flex items-center justify-start mb-6">
-            <button
-              onClick={handleSwitchPortal}
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#454A87] hover:text-[#4754FF] transition-colors cursor-pointer"
-            >
-              {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-              <span>{t.backToPortals}</span>
-            </button>
-          </div>
-
           {/* School Crest */}
           <div className="w-28 h-28 sm:w-36 sm:h-36 max-w-full flex items-center justify-center mb-3">
             <img 
@@ -948,46 +672,30 @@ export default function App() {
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1A1D4E] mb-1">
-            {selectedPortal === 'admin' && t.adminLoginTitle}
-            {selectedPortal === 'staff' && t.staffLoginTitle}
-            {selectedPortal === 'teacher' && t.teacherLoginTitle}
-            {selectedPortal === 'parent' && t.parentLoginTitle}
-            {selectedPortal === 'student' && t.studentLoginTitle}
+            {t.parentLoginTitle}
           </h2>
 
           <p className="text-xs sm:text-sm text-[#6B70A6] max-w-md mx-auto mb-6 leading-relaxed">
-            {selectedPortal === 'parent' || selectedPortal === 'student'
-              ? (language === 'ku' 
-                  ? 'ب رێکا وشەی تێپەڕبوون (پاسوۆرد) بچۆ ژوورڤە بۆ بینینا نمرەیان و خشتەی' 
-                  : language === 'ar' 
-                  ? 'تسجيل الدخول بكلمة المرور فقط لعرض البيانات والدرجات الرسمية' 
-                  : 'Sign in using your password to view academic records, marksheets & timetable')
-              : (language === 'ku'
-                  ? 'ناڤێ بەکارهێنەری و وشەی تێپەڕبوون بنووسە'
-                  : language === 'ar'
-                  ? 'سجل الدخول باستخدام اسم المستخدم وكلمة المرور'
-                  : 'Sign in with your authorized username and password')}
+            {language === 'ku' 
+              ? 'ب رێکا وشەی تێپەڕبوون (پاسوۆرد) بچۆ ژوورڤە بۆ بینینا نمرەیان، خشتەیێ وانان و راپۆرتا رەوشتی' 
+              : language === 'ar' 
+              ? 'سجل الدخول بكلمة المرور فقط لعرض بيانات الطالب وكشف الدرجات والجدول الدراسي' 
+              : 'Sign in using student password to access academic evaluations, marksheet & timetable'}
           </p>
 
           {/* LOGIN CARD */}
-          <div className="w-full max-w-md bg-white border border-[#E1E9FF] hover:border-[#4754FF]/50 rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(71,84,255,0.08)] text-left transition-all">
+          <div className="w-full max-w-md bg-white border border-[#E1E9FF] hover:border-[#FF7F2A]/50 rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(71,84,255,0.08)] text-left transition-all">
             {/* Header in Login Card */}
             <div className={`flex items-center gap-3 mb-5 pb-4 border-b border-[#E1E9FF] ${isRtl ? 'flex-row-reverse text-right' : ''}`}>
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#4754FF] to-[#7C85FF] flex items-center justify-center text-white shrink-0 shadow-[0_4px_12px_rgba(71,84,255,0.3)]">
-                {selectedPortal === 'admin' && <ShieldCheck className="w-5 h-5" />}
-                {selectedPortal === 'staff' && <Building className="w-5 h-5" />}
-                {selectedPortal === 'teacher' && <GraduationCap className="w-5 h-5" />}
-                {selectedPortal === 'parent' && <HeartHandshake className="w-5 h-5" />}
-                {selectedPortal === 'student' && <Award className="w-5 h-5" />}
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] flex items-center justify-center text-white shrink-0 shadow-[0_4px_12px_rgba(255,127,42,0.35)]">
+                <HeartHandshake className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-[#1A1D4E]">
-                  {getPortalLabel(selectedPortal)}
+                  {t.portalParent}
                 </h3>
-                <span className="inline-block text-[10px] font-bold text-[#4754FF] bg-[#E1E9FF] px-2.5 py-0.5 rounded-full font-mono">
-                  {selectedPortal === 'parent' || selectedPortal === 'student'
-                    ? t.authPasswordOnly
-                    : t.authUsernamePassword}
+                <span className="inline-block text-[10px] font-bold text-[#FF6D00] bg-[#FFF2E8] px-2.5 py-0.5 rounded-full font-mono">
+                  {t.authPasswordOnly}
                 </span>
               </div>
             </div>
@@ -1002,47 +710,14 @@ export default function App() {
 
             {/* LOGIN FORM */}
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* If Admin, Staff, Teacher: SHOW USERNAME FIELD */}
-              {(selectedPortal === 'admin' || selectedPortal === 'staff' || selectedPortal === 'teacher') && (
-                <div className="space-y-1.5">
-                  <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
-                    {t.usernameLabel}
-                  </label>
-                  <div className="relative">
-                    <div className={`absolute inset-y-0 flex items-center pointer-events-none text-[#7C85FF] ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
-                      <User className="w-4 h-4 text-[#4754FF]" />
-                    </div>
-                    <input 
-                      type="text"
-                      required
-                      value={loginUsername}
-                      onChange={(e) => {
-                        setLoginUsername(e.target.value);
-                        setLoginError('');
-                      }}
-                      placeholder={
-                        selectedPortal === 'admin' 
-                          ? 'admin' 
-                          : selectedPortal === 'staff' 
-                          ? 'staff' 
-                          : 'teacher'
-                      }
-                      className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4754FF] focus:border-transparent transition-all ${
-                        isRtl ? 'pr-10 pl-3.5 text-right' : 'pl-10 pr-3.5 text-left'
-                      }`}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* PASSWORD FIELD (FOR ALL PORTALS) */}
+              {/* PASSWORD FIELD (PASSWORD ONLY) */}
               <div className="space-y-1.5">
                 <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t.passwordLabel}
                 </label>
                 <div className="relative">
                   <div className={`absolute inset-y-0 flex items-center pointer-events-none text-[#7C85FF] ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
-                    <Lock className="w-4 h-4 text-[#4754FF]" />
+                    <Lock className="w-4 h-4 text-[#FF7F2A]" />
                   </div>
                   <input 
                     type={showPassword ? 'text' : 'password'}
@@ -1053,18 +728,16 @@ export default function App() {
                       setLoginError('');
                     }}
                     placeholder={
-                      selectedPortal === 'parent' || selectedPortal === 'student'
-                        ? (language === 'ku' ? 'وشەی تێپەڕبوون بنووسە' : language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password')
-                        : '••••••••'
+                      language === 'ku' ? 'وشەی تێپەڕبوون بنووسە' : language === 'ar' ? 'أدخل كلمة المرور' : 'Enter student password'
                     }
-                    className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4754FF] focus:border-transparent transition-all ${
+                    className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FF7F2A] focus:border-transparent transition-all ${
                       isRtl ? 'pr-10 pl-11 text-right' : 'pl-10 pr-11 text-left'
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute inset-y-0 flex items-center text-[#7C85FF] hover:text-[#4754FF] px-3 cursor-pointer ${
+                    className={`absolute inset-y-0 flex items-center text-[#7C85FF] hover:text-[#FF7F2A] px-3 cursor-pointer ${
                       isRtl ? 'left-1' : 'right-1'
                     }`}
                   >
@@ -1073,40 +746,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Demo Credentials Helper for Admin/Staff/Teacher */}
-              {(selectedPortal === 'admin' || selectedPortal === 'staff' || selectedPortal === 'teacher') && (
-                <div className="p-3 bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl text-[11px] text-[#6B70A6] flex items-center justify-between">
-                  <span className="font-mono">
-                    {selectedPortal === 'admin' && 'Demo: admin / admin123'}
-                    {selectedPortal === 'staff' && 'Demo: staff / staff123'}
-                    {selectedPortal === 'teacher' && 'Demo: teacher / teacher123'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (selectedPortal === 'admin') {
-                        setLoginUsername('admin');
-                        setLoginPassword('admin123');
-                      } else if (selectedPortal === 'staff') {
-                        setLoginUsername('staff');
-                        setLoginPassword('staff123');
-                      } else {
-                        setLoginUsername('teacher');
-                        setLoginPassword('teacher123');
-                      }
-                    }}
-                    className="text-[#4754FF] font-bold hover:underline cursor-pointer"
-                  >
-                    Auto-Fill
-                  </button>
-                </div>
-              )}
-
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full bg-[#4754FF] hover:bg-[#3843D0] text-white py-3.5 px-4 rounded-2xl text-xs font-bold transition-all shadow-[0_4px_14px_rgba(71,84,255,0.35)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2 active:scale-[0.99]"
+                className="w-full bg-[#FF7F2A] hover:bg-[#E56E20] text-white py-3.5 px-4 rounded-2xl text-xs font-bold transition-all shadow-[0_4px_14px_rgba(255,127,42,0.35)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2 active:scale-[0.99]"
               >
                 {isLoggingIn ? (
                   <>
@@ -1126,22 +770,22 @@ export default function App() {
       )}
 
       {/* ======================================================== */}
-      {/* VIEW 2: PARENT & STUDENT ACCOUNT (AUTHENTICATED)         */}
+      {/* VIEW: PARENT ACCOUNT (AUTHENTICATED)                     */}
       {/* ONLY SEES THE 5 BUTTONS: INFO, MARKSHEET, FOOD MENU,     */}
       {/* CLASSES TIMETABLE, BEHAVIOUR REPORT                      */}
       {/* ======================================================== */}
-      {(selectedPortal === 'parent' || selectedPortal === 'student') && isPortalAuthenticated && currentStudent && (
+      {isPortalAuthenticated && currentStudent && (
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-6 space-y-6">
           {/* Student Account Top Banner */}
-          <div className="bg-gradient-to-r from-[#4754FF] via-[#5F6DFF] to-[#2AD4FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(71,84,255,0.2)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#FF7F2A] via-[#FF5599] to-[#4754FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(255,127,42,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className={`flex items-center gap-4 ${isRtl ? 'text-right' : 'text-left'}`}>
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/25 shadow-xs">
-                {selectedPortal === 'parent' ? <HeartHandshake className="w-7 h-7 text-white" /> : <Award className="w-7 h-7 text-white" />}
+                <HeartHandshake className="w-7 h-7 text-white" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono uppercase tracking-wider bg-white/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full font-bold text-white">
-                    {selectedPortal === 'parent' ? t.portalParent : t.portalStudent}
+                    {t.portalParent}
                   </span>
                   <span className="text-[10px] font-mono bg-white/15 px-2.5 py-0.5 rounded-full text-white/90">
                     {currentStudent.rollNumber}
@@ -1156,51 +800,19 @@ export default function App() {
               </div>
             </div>
 
-            {/* Return / Switch buttons */}
+            {/* Sign Out Button in Banner */}
             <div className="flex items-center gap-2 self-end sm:self-center">
               <button
-                onClick={handleSwitchPortal}
+                onClick={handleSignOut}
                 className="px-3.5 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-xs rounded-xl text-xs font-semibold text-white transition-all cursor-pointer flex items-center gap-1.5 border border-white/30 shadow-xs"
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>{t.switchPortal}</span>
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{t.logoutButtonLabel}</span>
               </button>
             </div>
           </div>
 
-          {/* Sibling Switcher (if parent has multiple registered children) */}
-          {selectedPortal === 'parent' && authGuardian && authGuardian.students.length > 1 && (
-            <div className="bg-white border border-[#E1E9FF] rounded-2xl p-3.5 shadow-xs flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-[#454A87] px-1">
-                {t.registeredChildrenLabel} ({authGuardian.students.length}):
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {authGuardian.students.map((child) => {
-                  const isCurrent = child.id === currentStudent.id;
-                  return (
-                    <button
-                      key={child.id}
-                      onClick={() => {
-                        setSelectedChildId(child.id);
-                        setActivePortalTab(null);
-                      }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                        isCurrent 
-                          ? 'bg-[#4754FF] text-white shadow-[0_2px_8px_rgba(71,84,255,0.25)]' 
-                          : 'bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] hover:border-[#4754FF]'
-                      }`}
-                    >
-                      <User className="w-3.5 h-3.5" />
-                      <span>{child.name}</span>
-                      <span className={`text-[10px] font-mono px-1 rounded ${isCurrent ? 'bg-white/20 text-white' : 'bg-white text-[#6B70A6]'}`}>
-                        {child.grade}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+
 
           {/* ======================================================== */}
           {/* THE 5 BUTTONS MENU: WHEN USER LOGS IN, USER ONLY SEES THESE: */}
@@ -1337,7 +949,7 @@ export default function App() {
                       {t.tabBehaviourReport}
                     </h4>
                     <p className="text-xs text-[#6B70A6] line-clamp-2">
-                      {language === 'ku' ? 'هەڵسەنگاندنا رەوشتی و ئامادەبوونا قوتابی' : language === 'ar' ? 'تقرير السلوك، الانضباط والمواظبة في المدرسة' : 'Conduct evaluation, disciplinary report & moral rating'}
+                      {language === 'ku' ? 'راپۆرتا فەرمی یا سلوک و دەوامی (د دەمێ بارکرنێ دا)' : language === 'ar' ? 'السجل الرسمي للسلوك والمواظبة (يُعرض فور رفعه)' : 'Official conduct & attendance records (published when uploaded)'}
                     </p>
                   </div>
                 </button>
@@ -1701,35 +1313,119 @@ export default function App() {
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'behaviour' && (
                 <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(71,84,255,0.05)] space-y-6">
-                  <div className="flex items-center gap-3.5 pb-4 border-b border-[#E1E9FF]">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#BB8FFF] to-[#FF7F2A] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(187,143,255,0.3)]">
-                      <Heart className="w-6 h-6" />
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#BB8FFF] to-[#FF7F2A] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(187,143,255,0.3)] shrink-0">
+                        <Heart className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">{t.tabBehaviourReport}</h3>
+                        <p className="text-xs text-[#6B70A6]">
+                          {language === 'ku' 
+                            ? 'راپۆرتا فەرمی یا سلوک، رەوشت و ئامادەبوونا قوتابی' 
+                            : language === 'ar' 
+                            ? 'سجل السلوك والمواظبة والانضباط المدرسي الرسمي' 
+                            : 'Official Student Conduct, Discipline & Attendance Record'}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">{t.tabBehaviourReport}</h3>
-                      <p className="text-xs text-[#6B70A6]">Student Conduct, Discipline & Core Values</p>
-                    </div>
+                    <span className="self-start sm:self-center px-3.5 py-1 bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] font-mono text-xs rounded-xl font-bold">
+                      {currentStudent.rollNumber}
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="p-4 bg-[#E6FAF6] border border-[#00D4AA]/30 rounded-2xl text-center">
-                      <span className="block text-[11px] font-bold uppercase tracking-wider text-[#00A887] mb-1">{t.conduct}</span>
-                      <span className="text-lg font-black text-[#00A887]">{currentStudent.conduct}</span>
-                    </div>
-                    <div className="p-4 bg-[#E1E9FF] border border-[#7C85FF]/30 rounded-2xl text-center">
-                      <span className="block text-[11px] font-bold uppercase tracking-wider text-[#4754FF] mb-1">{t.attendance}</span>
-                      <span className="text-lg font-black text-[#4754FF]">{currentStudent.attendance}</span>
-                    </div>
-                    <div className="p-4 bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl text-center">
-                      <span className="block text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">Class Teacher</span>
-                      <span className="text-sm font-bold text-[#1A1D4E]">{currentStudent.classTeacher}</span>
-                    </div>
-                  </div>
+                  {/* Real uploaded behaviour data check */}
+                  {currentStudent.behaviourReport?.uploaded ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {currentStudent.behaviourReport.conductStanding && (
+                          <div className="p-4 bg-[#E6FAF6] border border-[#00D4AA]/30 rounded-2xl text-center">
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#00A887] mb-1">{t.conduct}</span>
+                            <span className="text-lg font-black text-[#00A887]">{currentStudent.behaviourReport.conductStanding}</span>
+                          </div>
+                        )}
+                        {currentStudent.behaviourReport.attendanceRate && (
+                          <div className="p-4 bg-[#E1E9FF] border border-[#7C85FF]/30 rounded-2xl text-center">
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#4754FF] mb-1">{t.attendance}</span>
+                            <span className="text-lg font-black text-[#4754FF]">{currentStudent.behaviourReport.attendanceRate}</span>
+                          </div>
+                        )}
+                        {currentStudent.behaviourReport.counselorName && (
+                          <div className="p-4 bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl text-center">
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                              {language === 'ku' ? 'چاڤدێرێ پەروەردەیی' : language === 'ar' ? 'المرشد التربوي' : 'Counselor'}
+                            </span>
+                            <span className="text-sm font-bold text-[#1A1D4E]">{currentStudent.behaviourReport.counselorName}</span>
+                          </div>
+                        )}
+                      </div>
 
-                  <div className="border border-[#E1E9FF] bg-[#F5F6FF] rounded-2xl p-4 text-xs leading-relaxed text-[#454A87]">
-                    <span className="font-bold text-[#1A1D4E] block mb-1">Teacher's Behavioural Assessment:</span>
-                    {currentStudent.name} demonstrates respectful, disciplined conduct across all classes and actively participates in classroom discussions while maintaining an exemplary attitude with peers and teachers.
-                  </div>
+                      {currentStudent.behaviourReport.remarks && (
+                        <div className="border border-[#E1E9FF] bg-[#F5F6FF] rounded-2xl p-4 text-xs leading-relaxed text-[#454A87]">
+                          <span className="font-bold text-[#1A1D4E] block mb-1">
+                            {language === 'ku' ? 'تێبینیا فەرمی یا سلوکی:' : language === 'ar' ? 'الملاحظة السلوكية المعتمدة:' : 'Official Behavioural Evaluation:'}
+                          </span>
+                          {currentStudent.behaviourReport.remarks}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Clean authentic state when no behaviour report has been uploaded yet */
+                    <div className="space-y-6">
+                      <div className="p-8 rounded-3xl border-2 border-dashed border-[#E1E9FF] bg-[#F5F6FF]/60 text-center flex flex-col items-center justify-center space-y-3">
+                        <div className="w-14 h-14 rounded-2xl bg-[#E1E9FF] text-[#4754FF] flex items-center justify-center shadow-xs">
+                          <FileText className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-1.5 max-w-lg">
+                          <span className="inline-block px-3 py-1 rounded-full bg-[#FFF2E8] text-[#FF6D00] text-[10px] font-bold uppercase tracking-wider">
+                            {language === 'ku' ? 'هێشتا نەهاتیە بارکرن' : language === 'ar' ? 'لم يتم الرفع بعد' : 'Awaiting Official Upload'}
+                          </span>
+                          <h4 className="text-base font-bold text-[#1A1D4E] pt-1">
+                            {language === 'ku' 
+                              ? 'چ راپۆرتێن سلوکی بۆ ڤی قوتابی نەهاتینە بارکرن' 
+                              : language === 'ar' 
+                              ? 'لا يوجد تقرير سلوك مرفوع لهذا الطالب حالياً' 
+                              : 'No Official Behaviour Report Uploaded Yet'}
+                          </h4>
+                          <p className="text-xs text-[#6B70A6] leading-relaxed">
+                            {language === 'ku' 
+                              ? 'راپۆرتا سلوکی، ئامادەبوون و رەوشتێ قوتابی دێ ل ڤێرێ دەربکەڤیت پشتی کو ژ لایێ کارگێریا قوتابخانێ و چاڤدێرێ پەروەردەیی ڤە بهێتە پەسەندکرن و بارکرن.' 
+                              : language === 'ar' 
+                              ? 'سيتم عرض تقرير السلوك والمواظبة والملاحظات التربوية المعتمدة هنا مباشرة فور اعتمادها ورفعها من إدارة المدرسة.' 
+                              : 'Official student conduct records, counselor evaluations, and attendance summaries will be published here directly once officially approved and uploaded by the school administration.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Authentic Student Record Details */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">{t.studentName}</span>
+                          <span className="text-xs font-bold text-[#1A1D4E]">{currentStudent.name}</span>
+                        </div>
+                        <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                            {language === 'ku' ? 'پۆل و هۆبە' : language === 'ar' ? 'الصف والشعبة' : 'Grade & Section'}
+                          </span>
+                          <span className="text-xs font-bold text-[#1A1D4E]">{formatGradeLabel(currentStudent.grade, language)} - {formatClassLabel(currentStudent.section, language)}</span>
+                        </div>
+                        <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">{t.idNumber}</span>
+                          <span className="text-xs font-mono font-bold text-[#4754FF]">{currentStudent.id}</span>
+                        </div>
+                        <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                            {language === 'ku' ? 'بارێ پەروەردەیی' : language === 'ar' ? 'الحالة الانضباطية' : 'Disciplinary Record'}
+                          </span>
+                          <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            {language === 'ku' ? 'چ سەرپێچی تۆمار نینن' : language === 'ar' ? 'لا توجد مخالفات مسجلة' : 'No Incidents on Record'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -2306,10 +2002,14 @@ export default function App() {
       {/* Footer */}
       <footer className="w-full border-t border-[#E1E9FF] py-6 px-4 text-center text-xs text-[#8C90C2] bg-white">
         <p className="font-semibold text-[#454A87]">
-          {t.schoolName} • {t.schoolSubtitle}
+          {t.schoolName} • {t.portalParent}
         </p>
         <p className="mt-1 text-[11px] text-[#A9ABD2]">
-          Official Portal System: Admin • Staff • Teacher • Parent • Student
+          {language === 'ku'
+            ? 'سیستەمێ فەرمی یێ دەوازەیا دایکوبابان • قوتابخانەیا داسنیا یا تایبەت'
+            : language === 'ar'
+            ? 'البوابة الرسمية لأولياء الأمور • مدرسة داسنيا الأهلية'
+            : 'Official Parents Portal System • Dasinya Private School'}
         </p>
       </footer>
     </div>

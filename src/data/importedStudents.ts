@@ -36,6 +36,15 @@ export interface StudentRecord {
   guardianPassword?: string;
   guardianPasswordAlt?: string;
   subjects: SubjectMark[];
+  behaviourReport?: {
+    uploaded: boolean;
+    date?: string;
+    conductStanding?: string;
+    attendanceRate?: string;
+    remarks?: string;
+    counselorName?: string;
+    officialDocumentUrl?: string;
+  };
 }
 
 export const IMPORTED_STUDENTS: StudentRecord[] = [
