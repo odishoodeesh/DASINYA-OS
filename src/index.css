@@ -49,6 +49,19 @@ html {
     padding: 20px;
     border: none !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
+  #printable-marksheet table,
+  #printable-timetable table,
+  #printable-behaviour table,
+  #printable-calendar table {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Touch scrolling enhancements for mobile phones */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }
 

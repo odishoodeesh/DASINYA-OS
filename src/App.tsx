@@ -16,6 +16,7 @@ import {
   CheckCircle2, 
   ArrowLeft,
   ArrowRight,
+  ArrowLeftRight,
   ChevronRight,
   ChevronLeft,
   User,
@@ -1351,56 +1352,70 @@ export default function App() {
                   </div>
 
                   {/* Printable Marksheet Container */}
-                  <div id="printable-marksheet" className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-6">
+                  <div id="printable-marksheet" className="bg-white border border-[#E1E9FF] rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-5 sm:space-y-6 w-full max-w-full overflow-hidden">
                     {/* Marksheet Header */}
-                    <div className="flex items-center justify-between border-b border-[#E1E9FF] pb-5">
-                      <div className="flex items-center gap-3.5">
-                        <img src={SCHOOL_LOGO_URL} alt="Logo" className="w-12 h-12 object-contain" />
-                        <div>
-                          <h4 className="text-base sm:text-lg font-black text-[#1A1D4E]">{t.schoolName}</h4>
-                          <p className="text-xs text-[#6B70A6]">{t.studentMarksheetTitle}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#E1E9FF] pb-4 sm:pb-5 gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <img src={SCHOOL_LOGO_URL} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0" />
+                        <div className="min-w-0">
+                          <h4 className="text-sm sm:text-lg font-black text-[#1A1D4E] truncate">{t.schoolName}</h4>
+                          <p className="text-[11px] sm:text-xs text-[#6B70A6]">{t.studentMarksheetTitle}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <span className="inline-block bg-[#E1E9FF] text-[#0087A5] font-bold text-xs px-3.5 py-1 rounded-full font-mono">
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E1E9FF]/60">
+                        <span className="inline-block bg-[#E1E9FF] text-[#0087A5] font-bold text-xs px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full font-mono">
                           {currentStudent.rollNumber}
                         </span>
-                        <p className="text-[11px] text-[#8C90C2] mt-1">{currentStudent.academicYear}</p>
+                        <p className="text-[10px] sm:text-[11px] text-[#8C90C2] sm:mt-1">{currentStudent.academicYear}</p>
                       </div>
                     </div>
 
                     {/* Student Snapshot */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-[#F5F6FF] p-4 rounded-2xl border border-[#E1E9FF]">
-                      <div>
-                        <span className="text-[#8C90C2] block">{t.studentName}:</span>
-                        <span className="font-bold text-[#1A1D4E]">{currentStudent.name}</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs bg-[#F5F6FF] p-3 sm:p-4 rounded-2xl border border-[#E1E9FF]">
+                      <div className="min-w-0">
+                        <span className="text-[#8C90C2] text-[10px] sm:text-xs block">{t.studentName}:</span>
+                        <span className="font-bold text-[#1A1D4E] block truncate">{currentStudent.name}</span>
                       </div>
-                      <div>
-                        <span className="text-[#8C90C2] block">{t.idNumber}:</span>
-                        <span className="font-bold font-mono text-[#1A1D4E]">{currentStudent.id}</span>
+                      <div className="min-w-0">
+                        <span className="text-[#8C90C2] text-[10px] sm:text-xs block">{t.idNumber}:</span>
+                        <span className="font-bold font-mono text-[#1A1D4E] block truncate">{currentStudent.id}</span>
                       </div>
-                      <div>
-                        <span className="text-[#8C90C2] block">
+                      <div className="min-w-0">
+                        <span className="text-[#8C90C2] text-[10px] sm:text-xs block">
                           {language === 'ku' ? 'پۆل و دەستە' : language === 'ar' ? 'الصف والشعبة' : 'Grade & Class'}:
                         </span>
-                        <span className="font-bold text-[#1A1D4E]">{currentStudent.grade} - {currentStudent.section}</span>
+                        <span className="font-bold text-[#1A1D4E] block truncate">{currentStudent.grade} - {currentStudent.section}</span>
                       </div>
-                      <div>
-                        <span className="text-[#8C90C2] block">{t.termContribution}:</span>
-                        <span className="font-bold text-[#0087A5]">{isPrimary25 ? '25% Weight' : '20% Weight'}</span>
+                      <div className="min-w-0">
+                        <span className="text-[#8C90C2] text-[10px] sm:text-xs block">{t.termContribution}:</span>
+                        <span className="font-bold text-[#0087A5] block truncate">{isPrimary25 ? '25% Weight' : '20% Weight'}</span>
                       </div>
                     </div>
 
                     {/* Marksheet Subject Table - Keeps all subjects on report with no mark (empty) for un-uploaded ones */}
-                    <div className="space-y-4">
-                      <div className="border border-[#C8E5EC] rounded-2xl overflow-hidden shadow-xs">
-                        <table className="w-full text-left text-xs sm:text-sm">
+                    <div className="space-y-3">
+                      {/* Mobile Scroll Indicator Helper */}
+                      <div className="sm:hidden flex items-center justify-between text-[11px] text-[#0087A5] bg-[#F0F8FA] px-3 py-2 rounded-xl border border-[#C8E5EC]">
+                        <span className="flex items-center gap-1.5 font-medium">
+                          <ArrowLeftRight className="w-3.5 h-3.5 shrink-0" />
+                          <span>
+                            {language === 'ku' 
+                              ? 'بۆ بینینا هەمی خانە و نمران، خشتەی بۆ لای ڕاست و چەپ ڕابکێشە' 
+                              : language === 'ar' 
+                              ? 'اسحب الجدول يميناً ويساراً لعرض كافة الدرجات' 
+                              : 'Swipe table horizontally to view all marks'}
+                          </span>
+                        </span>
+                      </div>
+
+                      <div className="border border-[#C8E5EC] rounded-2xl overflow-x-auto shadow-xs w-full max-w-full touch-pan-x">
+                        <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
                           <thead className="bg-[#F0F8FA] border-b border-[#C8E5EC] font-bold text-[#0D2D35]">
                             <tr>
-                              <th className="py-3 px-4 text-center w-12">#</th>
-                              <th className="py-3 px-4">{t.subject}</th>
-                              <th className="py-3 px-4 text-center">{language === 'ku' ? 'پشکنین' : language === 'ar' ? 'التوثيق' : 'Status'}</th>
-                              <th className={`py-3 px-6 ${isRtl ? 'text-left' : 'text-right'}`}>
+                              <th className="py-3 px-3 text-center w-10">#</th>
+                              <th className="py-3 px-4 min-w-[150px]">{t.subject}</th>
+                              <th className="py-3 px-3 text-center min-w-[130px]">{language === 'ku' ? 'پشکنین' : language === 'ar' ? 'التوثيق' : 'Status'}</th>
+                              <th className={`py-3 px-5 min-w-[140px] whitespace-nowrap ${isRtl ? 'text-left' : 'text-right'}`}>
                                 {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
                               </th>
                             </tr>
@@ -1408,25 +1423,25 @@ export default function App() {
                           <tbody className="divide-y divide-[#C8E5EC]">
                             {displayedReportSubjects.map((sub, idx) => (
                               <tr key={idx} className="hover:bg-[#F0F8FA]/60 transition-colors">
-                                <td className="py-3 px-4 text-center font-mono text-[#76A5B8]">{idx + 1}</td>
-                                <td className="py-3 px-4 font-bold text-[#0D2D35]">
+                                <td className="py-2.5 sm:py-3 px-3 text-center font-mono text-[#76A5B8]">{idx + 1}</td>
+                                <td className="py-2.5 sm:py-3 px-4 font-bold text-[#0D2D35]">
                                   {getTranslatedSubject(sub.subject, language)}
                                 </td>
-                                <td className="py-3 px-4 text-center">
+                                <td className="py-2.5 sm:py-3 px-3 text-center">
                                   {sub.hasMark ? (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                       <span>{language === 'ku' ? 'فەرمی و پشتڕاستکراو' : language === 'ar' ? 'رسمي ومعتمد' : 'Verified'}</span>
                                     </span>
                                   ) : (
-                                    <span className="text-[11px] text-[#8C90C2] font-medium">
+                                    <span className="text-[11px] text-[#8C90C2] font-medium whitespace-nowrap">
                                       {language === 'ku' ? 'چاوەڕوانی بارکردنە' : language === 'ar' ? 'بانتظار الرفع' : 'Awaiting upload'}
                                     </span>
                                   )}
                                 </td>
-                                <td className={`py-3 px-6 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
+                                <td className={`py-2.5 sm:py-3 px-5 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
                                   {sub.hasMark ? (
-                                    <span className="font-bold">
+                                    <span className="font-bold whitespace-nowrap">
                                       <span className="text-sm sm:text-base font-black text-[#0087A5]">{sub.obtainedMarks}</span>
                                       <span className="text-xs text-[#76A5B8] font-normal font-mono ml-1">/ {sub.maxMarks}</span>
                                     </span>
@@ -1440,9 +1455,9 @@ export default function App() {
                           </tbody>
                           <tfoot>
                             <tr className="bg-[#F0F8FA] font-bold border-t-2 border-[#0087A5]">
-                              <td className="py-3.5 px-4 text-center">#</td>
-                              <td className="py-3.5 px-4" colSpan={2}>{t.totalMarks}</td>
-                              <td className={`py-3.5 px-6 font-mono font-black text-[#0087A5] text-sm sm:text-base ${isRtl ? 'text-left' : 'text-right'}`}>
+                              <td className="py-3 px-3 text-center">#</td>
+                              <td className="py-3 px-4" colSpan={2}>{t.totalMarks}</td>
+                              <td className={`py-3 px-5 font-mono font-black text-[#0087A5] text-sm sm:text-base whitespace-nowrap ${isRtl ? 'text-left' : 'text-right'}`}>
                                 {reportTotals.hasAnyMark ? (
                                   <span>
                                     {reportTotals.totalObtained}
@@ -2616,14 +2631,14 @@ export default function App() {
               const defaultMax = isG13 ? 25 : 20;
 
               return (
-                <div className="border border-[#C8E5EC] rounded-2xl overflow-hidden">
-                  <table className="w-full text-left text-xs sm:text-sm">
+                <div className="border border-[#C8E5EC] rounded-2xl overflow-x-auto shadow-xs w-full max-w-full touch-pan-x">
+                  <table className="w-full text-left text-xs sm:text-sm min-w-[480px]">
                     <thead className="bg-[#F0F8FA] font-bold text-[#0D2D35]">
                       <tr>
                         <th className="py-3 px-3.5">#</th>
-                        <th className="py-3 px-3.5">Subject</th>
-                        <th className="py-3 px-3.5 text-center">Status</th>
-                        <th className="py-3 px-3.5 text-right">Term 1 Exam Mark</th>
+                        <th className="py-3 px-3.5 min-w-[140px]">Subject</th>
+                        <th className="py-3 px-3.5 text-center min-w-[120px]">Status</th>
+                        <th className="py-3 px-3.5 text-right min-w-[130px]">Term 1 Exam Mark</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#C8E5EC]">
