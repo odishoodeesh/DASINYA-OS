@@ -49,7 +49,8 @@ import {
   BookOpen,
   UserCheck,
   Layers,
-  ExternalLink
+  ExternalLink,
+  Save
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -63,6 +64,24 @@ import {
   OFFICIAL_CALENDAR_PDF_URLS, 
   CalendarEvent 
 } from './data/schoolCalendar';
+import {
+  TeacherClassAssignment,
+  authenticateTeacher,
+  DailySubjectRecord,
+  loadStoredDailyRecords,
+  saveStoredDailyRecords,
+  makeDailyRecordKey,
+  getEffectiveDailyRecord,
+  isGrade13,
+  calcGrade13GrandTotal,
+  calcGrade49GrandTotal100,
+} from './data/teacherPortal';
+import {
+  Grade13DailyRecordTable,
+  Grade49DailyRecordTable,
+  DailyRecordRowItem,
+} from './components/DailyRecordTables';
+import { AdminSummaryPanel } from './components/AdminSummaryPanel';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -81,12 +100,12 @@ export type PortalRole = 'admin' | 'staff' | 'teacher' | 'parent' | 'student';
 export const SCHOOL_STRUCTURE: Record<string, string[]> = {
   'Grade 1': ['Class A', 'Class B', 'Class C'],
   'Grade 2': ['Class A', 'Class B', 'Class C'],
-  'Grade 3': ['Class A', 'Class B', 'Class E'],
+  'Grade 3': ['Class A', 'Class B'],
   'Grade 4': ['Class A', 'Class B'],
   'Grade 5': ['Class A', 'Class B'],
   'Grade 6': ['Class A'],
-  'Grade 7': ['Class A', 'Class B'],
-  'Grade 8': ['Class A', 'Class C'],
+  'Grade 7': ['Class A'],
+  'Grade 8': ['Class A'],
   'Grade 9': ['Class A'],
 };
 
@@ -252,6 +271,11 @@ interface AuthenticatedStaff {
   role: 'admin' | 'staff' | 'teacher';
   username: string;
   name: string;
+  email?: string;
+  subjectLabel?: string;
+  assignedClasses?: TeacherClassAssignment[];
+  assignedGrade?: string;
+  assignedSection?: string;
 }
 
 // Weekly Cafeteria Nutrition Schedule (Sunday to Thursday)
@@ -367,15 +391,23 @@ export default function App() {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
-  // Dedicated to Parents Portal ONLY (other portals hidden)
+  // Dedicated to Parents Portal, Teacher Portal & Admin Portal
   const [selectedPortal, setSelectedPortal] = useState<PortalRole>('parent');
 
-  // Authentication State for Parent & Student (Password Only)
+  // Authentication State for Parent (Password Only), Teacher (Email + Phone) & Admin (Username + Password)
   const [authGuardian, setAuthGuardian] = useState<AuthenticatedGuardian | null>(null);
-  const isPortalAuthenticated = Boolean(authGuardian);
-
-  // Authentication State for Admin, Staff, Teacher (Username & Password)
   const [authStaff, setAuthStaff] = useState<AuthenticatedStaff | null>(null);
+  const isPortalAuthenticated =
+    (selectedPortal === 'parent' && Boolean(authGuardian)) ||
+    (selectedPortal === 'teacher' && Boolean(authStaff && authStaff.role === 'teacher')) ||
+    (selectedPortal === 'admin' && Boolean(authStaff && authStaff.role === 'admin'));
+
+  // Persistent Teacher-entered Daily Student Records (localStorage + authentic Term 1 marks)
+  const [dailyRecords, setDailyRecords] = useState<Record<string, DailySubjectRecord>>(() =>
+    loadStoredDailyRecords()
+  );
+  const [teacherSubject, setTeacherSubject] = useState<string>('Kurdish');
+  const [teacherSavedNotice, setTeacherSavedNotice] = useState<boolean>(false);
 
   // Form input states
   const [loginUsername, setLoginUsername] = useState<string>('');
@@ -387,8 +419,7 @@ export default function App() {
   // Active student in parent/student account (when parent has multiple children)
   const [selectedChildId, setSelectedChildId] = useState<string>('');
 
-  // The 5 Options: When logging in, user ONLY sees these 5 buttons: INFO, MARKSHEET, FOOD MENU, CLASSES TIMETABLE, BEHAVIOUR REPORT
-  // Default is null so user sees ONLY the 5 buttons first!
+  // The Options: When logging in, user ONLY sees the portal buttons first
   const [activePortalTab, setActivePortalTab] = useState<PortalTab>(null);
 
   // Active day selection for Timetable
@@ -410,7 +441,7 @@ export default function App() {
   const [staffSearchQuery, setStaffSearchQuery] = useState<string>('');
 
   // Sub-tabs for Teacher / Staff
-  const [teacherTab, setTeacherTab] = useState<'roster' | 'timetable'>('roster');
+  const [teacherTab, setTeacherTab] = useState<'daily_record' | 'roster' | 'timetable'>('daily_record');
   const [staffTab, setStaffTab] = useState<'students' | 'timetables' | 'food_menu'>('students');
 
   // Quick modal for inspecting student marksheet in Staff/Teacher/Admin
@@ -454,10 +485,10 @@ export default function App() {
     }
   };
 
-  // Scroll to top on portal tab, active student, or authentication changes
+  // Scroll to top on portal tab, active student, teacher tab, or authentication changes
   useEffect(() => {
     scrollToTop(true);
-  }, [activePortalTab, selectedChildId, isPortalAuthenticated]);
+  }, [activePortalTab, teacherTab, selectedChildId, isPortalAuthenticated]);
 
   // Global listener: WHEN CLICKING ON ANY BUTTON, USER SHOULD SEE THE TOP OF THE PAGE, NOT BOTTOM.
   useEffect(() => {
@@ -474,13 +505,95 @@ export default function App() {
     return () => document.removeEventListener('click', handleButtonClick, true);
   }, []);
 
-  // Handle Login: Parents log in by password only
+  // Handle Login: Teachers log in by Email + Phone Number password; Parents log in by Password only
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoginError('');
     setIsLoggingIn(true);
 
     const pwdToVerify = loginPassword.trim();
+
+    if (selectedPortal === 'admin') {
+      const usernameToVerify = loginUsername.trim().toLowerCase();
+      const normalizedAdminPwd = pwdToVerify.replace(/[\s\-().]+/g, '');
+      if (usernameToVerify === 'admin' && normalizedAdminPwd === '07517340166') {
+        setAuthGuardian(null);
+        setAuthStaff({
+          role: 'admin',
+          username: 'admin',
+          name: 'School Administration',
+        });
+        setStaffSearchQuery('');
+        setLoginError('');
+        setLoginUsername('');
+        setLoginPassword('');
+      } else {
+        setLoginError(
+          language === 'ku'
+            ? 'ناڤێ بەکارهێنەری یان وشەی تێپەڕبوونا ئەدمین هەڵەیە.'
+            : language === 'ar'
+            ? 'اسم المستخدم أو كلمة المرور الخاصة بالإدارة غير صحيحة.'
+            : 'Invalid admin username or password.'
+        );
+      }
+      setIsLoggingIn(false);
+      return;
+    }
+
+    if (selectedPortal === 'teacher') {
+      const emailToVerify = loginUsername.trim();
+      if (!emailToVerify || !pwdToVerify) {
+        setLoginError(
+          language === 'ku'
+            ? 'تکایە ئیمەیڵ و ژمارا تەلەفۆنێ (وشەی تێپەڕبوون) بنووسە'
+            : language === 'ar'
+            ? 'يرجى إدخال البريد الإلكتروني ورقم الهاتف (كلمة المرور)'
+            : 'Please enter your email address and phone number (password)'
+        );
+        setIsLoggingIn(false);
+        return;
+      }
+
+      const teacherAcc = authenticateTeacher(emailToVerify, pwdToVerify);
+
+      if (teacherAcc) {
+        const firstAssignment = teacherAcc.assignedClasses[0] || {
+          grade: 'Grade 1',
+          section: 'Class A',
+          subjects: ['Kurdish'],
+        };
+        setAuthGuardian(null);
+        setAuthStaff({
+          role: 'teacher',
+          username: teacherAcc.id,
+          name: teacherAcc.name,
+          email: teacherAcc.email,
+          subjectLabel: teacherAcc.subjectLabel,
+          assignedClasses: teacherAcc.assignedClasses,
+          assignedGrade: firstAssignment.grade,
+          assignedSection: firstAssignment.section,
+        });
+        setStaffGrade(firstAssignment.grade);
+        setStaffClass(firstAssignment.section);
+        setTeacherSubject(firstAssignment.subjects[0] || 'Kurdish');
+        setTeacherTab('daily_record');
+        setStaffSearchQuery('');
+        setLoginError('');
+        setLoginUsername('');
+        setLoginPassword('');
+      } else {
+        setLoginError(
+          language === 'ku'
+            ? 'ئیمەیڵ یان ژمارا تەلەفۆنێ هەڵەیە. تکایە ئیمەیڵ و ژمارا تەلەفۆنا خۆ یا فەرمی بپشکنە.'
+            : language === 'ar'
+            ? 'البريد الإلكتروني أو رقم الهاتف غير صحيح. يرجى التأكد من البريد الإلكتروني ورقم الهاتف المعتمد.'
+            : 'Invalid email or phone number. Please check your official school email and phone number.'
+        );
+      }
+      setIsLoggingIn(false);
+      return;
+    }
+
     if (!pwdToVerify) {
       setLoginError(
         language === 'ku'
@@ -499,6 +612,7 @@ export default function App() {
     );
 
     if (matched.length > 0) {
+      setAuthStaff(null);
       const session: AuthenticatedGuardian = {
         password: pwdToVerify,
         email: matched[0].guardianEmail || '',
@@ -506,7 +620,7 @@ export default function App() {
       };
       setAuthGuardian(session);
       setSelectedChildId(matched[0].id);
-      setActivePortalTab(null); // When log in, parent ONLY sees the 5 buttons first!
+      setActivePortalTab(null); // When log in, parent ONLY sees the portal buttons first!
       setLoginError('');
       setLoginPassword('');
       setSelectedCategory('All');
@@ -522,21 +636,44 @@ export default function App() {
     setIsLoggingIn(false);
   };
 
-  // Sign out: returns to Parent login screen
+  // Sign out: returns to login screen
   const handleSignOut = () => {
     setAuthGuardian(null);
     setAuthStaff(null);
     setSelectedChildId('');
     setActivePortalTab(null);
-    setSelectedPortal('parent');
+    setTeacherTab('daily_record');
+    setModalStudent(null);
     setLoginUsername('');
     setLoginPassword('');
     setLoginError('');
   };
 
-  // Return to Parent Hub
+  // Return to portal home view
   const handleSwitchPortal = () => {
+    if (selectedPortal === 'teacher' && authStaff) {
+      setTeacherTab('daily_record');
+      setModalStudent(null);
+      return;
+    }
     setActivePortalTab(null);
+  };
+
+  // Teacher marks entry handler (updates state + persists to localStorage)
+  const handleTeacherRecordChange = (studentId: string, updated: DailySubjectRecord) => {
+    const key = makeDailyRecordKey(studentId, teacherSubject);
+    setDailyRecords((prev) => {
+      const next = { ...prev, [key]: updated };
+      saveStoredDailyRecords(next);
+      return next;
+    });
+    setTeacherSavedNotice(false);
+  };
+
+  const handleTeacherSaveAll = () => {
+    saveStoredDailyRecords(dailyRecords);
+    setTeacherSavedNotice(true);
+    setTimeout(() => setTeacherSavedNotice(false), 3000);
   };
 
   // Active student in Parent/Student portal
@@ -560,7 +697,7 @@ export default function App() {
   }, [staffStudentId, staffGrade, staffClass, students, modalStudent]);
 
   // Overall active student to display marksheet for
-  const currentStudent = (selectedPortal === 'parent' || selectedPortal === 'student')
+  const currentStudent = selectedPortal === 'parent'
     ? activeGuardianStudent 
     : activeStaffStudent;
 
@@ -670,7 +807,7 @@ export default function App() {
 
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: targetElementId === 'printable-marksheet' ? 'landscape' : 'portrait',
         unit: 'mm',
         format: 'a4',
       });
@@ -794,8 +931,24 @@ export default function App() {
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-[#1A1D4E] leading-tight">
                 {t.schoolName}
               </h1>
-              <span className="hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-[#FFF2E8] text-[#FF6D00]">
-                {t.portalParent}
+              <span
+                className={`hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full ${
+                  selectedPortal === 'admin'
+                    ? 'bg-[#EEF0FF] text-[#1A1D4E]'
+                    : selectedPortal === 'teacher'
+                    ? 'bg-[#E1F3F7] text-[#0087A5]'
+                    : 'bg-[#FFF2E8] text-[#FF6D00]'
+                }`}
+              >
+                {selectedPortal === 'admin'
+                  ? language === 'ku'
+                    ? 'پۆڕتاڵێ ئەدمین'
+                    : language === 'ar'
+                    ? 'بوابة الإدارة'
+                    : 'Admin Portal'
+                  : selectedPortal === 'teacher'
+                  ? t.portalTeacher
+                  : t.portalParent}
               </span>
             </div>
             <p className="text-[11px] text-[#6B70A6] font-medium">
@@ -878,12 +1031,12 @@ export default function App() {
       </header>
 
       {/* ======================================================== */}
-      {/* PARENTS PORTAL LOGIN (PASSWORD ONLY)                     */}
+      {/* PARENTS (PASSWORD ONLY) & TEACHER (EMAIL + PHONE) LOGIN  */}
       {/* ======================================================== */}
       {!isPortalAuthenticated && (
         <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col items-center justify-start text-center">
           {/* School Crest */}
-          <div className="w-28 h-28 sm:w-36 sm:h-36 max-w-full flex items-center justify-center mb-3">
+          <div className="w-24 h-24 sm:w-32 sm:h-32 max-w-full flex items-center justify-center mb-3">
             <img 
               src={SCHOOL_LOGO_URL} 
               alt="Dasinya Private School Logo" 
@@ -892,30 +1045,178 @@ export default function App() {
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1A1D4E] mb-1">
-            {t.parentLoginTitle}
+            {selectedPortal === 'admin'
+              ? language === 'ku'
+                ? 'پۆڕتاڵێ ئەدمین و پوختەیا گشتی'
+                : language === 'ar'
+                ? 'بوابة الإدارة والملخص الشامل'
+                : 'Admin Panel Portal'
+              : selectedPortal === 'teacher'
+              ? t.teacherLoginTitle
+              : t.parentLoginTitle}
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#6B70A6] max-w-md mx-auto mb-6 leading-relaxed">
-            {language === 'ku' 
+          <p className="text-xs sm:text-sm text-[#6B70A6] max-w-md mx-auto mb-5 leading-relaxed">
+            {selectedPortal === 'admin'
+              ? language === 'ku'
+                ? 'ب رێکا ناڤێ بەکارهێنەری و وشەی تێپەڕبوونێ بچۆ ژوورڤە بۆ بینینا پوختەیا گشتی یا نمرە و پۆلان'
+                : language === 'ar'
+                ? 'سجل الدخول باسم المستخدم وكلمة المرور لعرض الملخص الشامل للدرجات والصفوف'
+                : 'Sign in with administrator credentials to inspect entry progress, averages, pass rates & full school summary'
+              : selectedPortal === 'teacher'
+              ? language === 'ku'
+                ? 'ب رێکا ئیمەیڵ و ژمارا تەلەفۆنا خۆ (وەکی وشەی تێپەڕبوون) بچۆ ژوورڤە بۆ تۆمارکرنا نمرێن قوتابیان'
+                : language === 'ar'
+                ? 'سجل الدخول بالبريد الإلكتروني ورقم الهاتف (كلمة المرور) لإدخال درجات الطلاب في سجل المتابعة اليومية'
+                : 'Sign in using your official teacher email and phone number as password to enter marks'
+              : language === 'ku' 
               ? 'ب رێکا وشەی تێپەڕبوون (پاسوۆرد) بچۆ ژوورڤە بۆ بینینا نمرەیان، خشتەیێ وانان و راپۆرتا رەوشتی' 
               : language === 'ar' 
               ? 'سجل الدخول بكلمة المرور فقط لعرض بيانات الطالب وكشف الدرجات والجدول الدراسي' 
               : 'Sign in using student password to access academic evaluations, marksheet & timetable'}
           </p>
 
+          {/* Portal Switcher: Parents Portal vs Teacher Portal vs Admin Portal */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-xl mb-5">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedPortal('parent');
+                setLoginUsername('');
+                setLoginPassword('');
+                setLoginError('');
+              }}
+              className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-3 ${
+                selectedPortal === 'parent'
+                  ? 'bg-white border-[#FF7F2A] shadow-[0_8px_20px_rgba(255,127,42,0.16)]'
+                  : 'bg-white/70 border-[#E1E9FF] hover:border-[#FF7F2A]/50 opacity-85 hover:opacity-100'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] text-white flex items-center justify-center shrink-0">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="block text-xs font-extrabold text-[#1A1D4E] truncate">{t.portalParent}</span>
+                <span className="block text-[10px] font-mono text-[#FF6D00] truncate">{t.authPasswordOnly}</span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedPortal('teacher');
+                setLoginUsername('');
+                setLoginPassword('');
+                setLoginError('');
+              }}
+              className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-3 ${
+                selectedPortal === 'teacher'
+                  ? 'bg-white border-[#0087A5] shadow-[0_8px_20px_rgba(0,135,165,0.18)]'
+                  : 'bg-white/70 border-[#E1E9FF] hover:border-[#0087A5]/50 opacity-85 hover:opacity-100'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0087A5] to-[#2AD4FF] text-white flex items-center justify-center shrink-0">
+                <GraduationCap className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="block text-xs font-extrabold text-[#1A1D4E] truncate">{t.portalTeacher}</span>
+                <span className="block text-[10px] font-mono text-[#0087A5] truncate">
+                  {language === 'ku' ? 'ئیمەیڵ + تەلەفۆن' : language === 'ar' ? 'بريد + هاتف' : 'Email + Phone'}
+                </span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedPortal('admin');
+                setLoginUsername('');
+                setLoginPassword('');
+                setLoginError('');
+              }}
+              className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-3 ${
+                selectedPortal === 'admin'
+                  ? 'bg-white border-[#1A1D4E] shadow-[0_8px_20px_rgba(26,29,78,0.16)]'
+                  : 'bg-white/70 border-[#E1E9FF] hover:border-[#1A1D4E]/50 opacity-85 hover:opacity-100'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1D4E] to-[#0087A5] text-white flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="block text-xs font-extrabold text-[#1A1D4E] truncate">
+                  {language === 'ku' ? 'پۆڕتاڵێ ئەدمین' : language === 'ar' ? 'بوابة الإدارة' : 'Admin Portal'}
+                </span>
+                <span className="block text-[10px] font-mono text-[#454A87] truncate">
+                  {language === 'ku' ? 'پوختەیا گشتی' : language === 'ar' ? 'الملخص الشامل' : 'Full Summary'}
+                </span>
+              </div>
+            </button>
+          </div>
+
           {/* LOGIN CARD */}
-          <div className="w-full max-w-md bg-white border border-[#E1E9FF] hover:border-[#FF7F2A]/50 rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(0,135,165,0.08)] text-left transition-all">
+          <div
+            className={`w-full max-w-md bg-white border rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(0,135,165,0.08)] text-left transition-all ${
+              selectedPortal === 'admin'
+                ? 'border-[#C9D2F5] hover:border-[#1A1D4E]/50'
+                : selectedPortal === 'teacher'
+                ? 'border-[#C8E5EC] hover:border-[#0087A5]/60'
+                : 'border-[#E1E9FF] hover:border-[#FF7F2A]/50'
+            }`}
+          >
             {/* Header in Login Card */}
             <div className={`flex items-center gap-3 mb-5 pb-4 border-b border-[#E1E9FF] ${isRtl ? 'flex-row-reverse text-right' : ''}`}>
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] flex items-center justify-center text-white shrink-0 shadow-[0_4px_12px_rgba(255,127,42,0.35)]">
-                <HeartHandshake className="w-5 h-5" />
+              <div
+                className={`w-11 h-11 rounded-2xl flex items-center justify-center text-white shrink-0 ${
+                  selectedPortal === 'admin'
+                    ? 'bg-gradient-to-br from-[#1A1D4E] to-[#0087A5] shadow-[0_4px_12px_rgba(26,29,78,0.3)]'
+                    : selectedPortal === 'teacher'
+                    ? 'bg-gradient-to-br from-[#0087A5] to-[#2AD4FF] shadow-[0_4px_12px_rgba(0,135,165,0.35)]'
+                    : 'bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] shadow-[0_4px_12px_rgba(255,127,42,0.35)]'
+                }`}
+              >
+                {selectedPortal === 'admin' ? (
+                  <ShieldCheck className="w-5 h-5" />
+                ) : selectedPortal === 'teacher' ? (
+                  <GraduationCap className="w-5 h-5" />
+                ) : (
+                  <HeartHandshake className="w-5 h-5" />
+                )}
               </div>
               <div>
                 <h3 className="text-base font-bold text-[#1A1D4E]">
-                  {t.portalParent}
+                  {selectedPortal === 'admin'
+                    ? language === 'ku'
+                      ? 'پۆڕتاڵێ ئەدمین'
+                      : language === 'ar'
+                      ? 'بوابة الإدارة'
+                      : 'Admin Panel Portal'
+                    : selectedPortal === 'teacher'
+                    ? t.portalTeacher
+                    : t.portalParent}
                 </h3>
-                <span className="inline-block text-[10px] font-bold text-[#FF6D00] bg-[#FFF2E8] px-2.5 py-0.5 rounded-full font-mono">
-                  {t.authPasswordOnly}
+                <span
+                  className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono ${
+                    selectedPortal === 'admin'
+                      ? 'text-[#1A1D4E] bg-[#EEF0FF]'
+                      : selectedPortal === 'teacher'
+                      ? 'text-[#0087A5] bg-[#E1F3F7]'
+                      : 'text-[#FF6D00] bg-[#FFF2E8]'
+                  }`}
+                >
+                  {selectedPortal === 'admin'
+                    ? language === 'ku'
+                      ? 'بەکارهێنەر + وشەی تێپەڕبوون'
+                      : language === 'ar'
+                      ? 'اسم المستخدم + كلمة المرور'
+                      : 'Username + Password'
+                    : selectedPortal === 'teacher'
+                    ? language === 'ku'
+                      ? 'ئیمەیڵ + ژمارا تەلەفۆنێ'
+                      : language === 'ar'
+                      ? 'البريد الإلكتروني + رقم الهاتف'
+                      : 'Email + Phone Password'
+                    : t.authPasswordOnly}
                 </span>
               </div>
             </div>
@@ -930,14 +1231,73 @@ export default function App() {
 
             {/* LOGIN FORM */}
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* PASSWORD FIELD (PASSWORD ONLY) */}
+              {/* TEACHER EMAIL OR ADMIN USERNAME FIELD */}
+              {(selectedPortal === 'teacher' || selectedPortal === 'admin') && (
+                <div className="space-y-1.5">
+                  <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
+                    {selectedPortal === 'admin'
+                      ? language === 'ku'
+                        ? 'ناڤێ بەکارهێنەری'
+                        : language === 'ar'
+                        ? 'اسم المستخدم'
+                        : 'Username'
+                      : t.emailAddressLabel}
+                  </label>
+                  <div className="relative">
+                    <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
+                      {selectedPortal === 'admin' ? (
+                        <User className="w-4 h-4 text-[#1A1D4E]" />
+                      ) : (
+                        <Mail className="w-4 h-4 text-[#0087A5]" />
+                      )}
+                    </div>
+                    <input
+                      type={selectedPortal === 'admin' ? 'text' : 'email'}
+                      required
+                      value={loginUsername}
+                      onChange={(e) => {
+                        setLoginUsername(e.target.value);
+                        setLoginError('');
+                      }}
+                      placeholder={
+                        selectedPortal === 'admin'
+                          ? 'admin'
+                          : language === 'ku'
+                          ? 'ئیمەیڵێ خۆ بنووسە (example@gmail.com)'
+                          : language === 'ar'
+                          ? 'أدخل البريد الإلكتروني (example@gmail.com)'
+                          : 'Enter teacher email (example@gmail.com)'
+                      }
+                      className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 ${
+                        selectedPortal === 'admin' ? 'focus:ring-[#1A1D4E]' : 'focus:ring-[#0087A5]'
+                      } focus:border-transparent transition-all ${
+                        isRtl ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'
+                      }`}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* PASSWORD FIELD (ADMIN PASSWORD / TEACHER PHONE / PARENT PASSWORD) */}
               <div className="space-y-1.5">
                 <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
-                  {t.passwordLabel}
+                  {selectedPortal === 'teacher'
+                    ? language === 'ku'
+                      ? 'وشەی تێپەڕبوون (ژمارا تەلەفۆنێ)'
+                      : language === 'ar'
+                      ? 'كلمة المرور (رقم الهاتف)'
+                      : 'Password (Phone Number)'
+                    : t.passwordLabel}
                 </label>
                 <div className="relative">
-                  <div className={`absolute inset-y-0 flex items-center pointer-events-none text-[#7C85FF] ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
-                    <Lock className="w-4 h-4 text-[#FF7F2A]" />
+                  <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
+                    {selectedPortal === 'teacher' ? (
+                      <Phone className="w-4 h-4 text-[#0087A5]" />
+                    ) : selectedPortal === 'admin' ? (
+                      <KeyRound className="w-4 h-4 text-[#1A1D4E]" />
+                    ) : (
+                      <Lock className="w-4 h-4 text-[#FF7F2A]" />
+                    )}
                   </div>
                   <input 
                     type={showPassword ? 'text' : 'password'}
@@ -948,18 +1308,38 @@ export default function App() {
                       setLoginError('');
                     }}
                     placeholder={
-                      language === 'ku' ? 'وشەی تێپەڕبوون بنووسە' : language === 'ar' ? 'أدخل كلمة المرور' : 'Enter student password'
+                      selectedPortal === 'admin'
+                        ? language === 'ku'
+                          ? 'وشەی تێپەڕبوونا ئەدمین بنووسە'
+                          : language === 'ar'
+                          ? 'أدخل كلمة مرور الإدارة'
+                          : 'Enter admin password'
+                        : selectedPortal === 'teacher'
+                        ? '0750 XXX XXXX'
+                        : language === 'ku'
+                        ? 'وشەی تێپەڕبوون بنووسە'
+                        : language === 'ar'
+                        ? 'أدخل كلمة المرور'
+                        : 'Enter student password'
                     }
-                    className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FF7F2A] focus:border-transparent transition-all ${
-                      isRtl ? 'pr-10 pl-11 text-right' : 'pl-10 pr-11 text-left'
-                    }`}
+                    className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 border-transparent transition-all ${
+                      selectedPortal === 'admin'
+                        ? 'focus:ring-[#1A1D4E]'
+                        : selectedPortal === 'teacher'
+                        ? 'focus:ring-[#0087A5]'
+                        : 'focus:ring-[#FF7F2A]'
+                    } ${isRtl ? 'pr-10 pl-11 text-right' : 'pl-10 pr-11 text-left'}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute inset-y-0 flex items-center text-[#7C85FF] hover:text-[#FF7F2A] px-3 cursor-pointer ${
-                      isRtl ? 'left-1' : 'right-1'
-                    }`}
+                    className={`absolute inset-y-0 flex items-center text-[#7C85FF] px-3 cursor-pointer ${
+                      selectedPortal === 'admin'
+                        ? 'hover:text-[#1A1D4E]'
+                        : selectedPortal === 'teacher'
+                        ? 'hover:text-[#0087A5]'
+                        : 'hover:text-[#FF7F2A]'
+                    } ${isRtl ? 'left-1' : 'right-1'}`}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -970,7 +1350,13 @@ export default function App() {
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full bg-[#FF7F2A] hover:bg-[#E56E20] text-white py-3.5 px-4 rounded-2xl text-xs font-bold transition-all shadow-[0_4px_14px_rgba(255,127,42,0.35)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2 active:scale-[0.99]"
+                className={`w-full text-white py-3.5 px-4 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2 active:scale-[0.99] ${
+                  selectedPortal === 'admin'
+                    ? 'bg-[#1A1D4E] hover:bg-[#13163D] shadow-[0_4px_14px_rgba(26,29,78,0.3)]'
+                    : selectedPortal === 'teacher'
+                    ? 'bg-[#0087A5] hover:bg-[#00738D] shadow-[0_4px_14px_rgba(0,135,165,0.35)]'
+                    : 'bg-[#FF7F2A] hover:bg-[#E56E20] shadow-[0_4px_14px_rgba(255,127,42,0.35)]'
+                }`}
               >
                 {isLoggingIn ? (
                   <>
@@ -991,10 +1377,9 @@ export default function App() {
 
       {/* ======================================================== */}
       {/* VIEW: PARENT ACCOUNT (AUTHENTICATED)                     */}
-      {/* ONLY SEES THE 5 BUTTONS: INFO, MARKSHEET, FOOD MENU,     */}
-      {/* CLASSES TIMETABLE, BEHAVIOUR REPORT                      */}
+      {/* ONLY SEES THE PORTAL BUTTONS FIRST                       */}
       {/* ======================================================== */}
-      {isPortalAuthenticated && currentStudent && (
+      {selectedPortal === 'parent' && isPortalAuthenticated && authGuardian && currentStudent && (
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-6 space-y-6">
           {/* Student Account Top Banner */}
           <div className="bg-gradient-to-r from-[#FF7F2A] via-[#FF5599] to-[#0087A5] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(255,127,42,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1392,107 +1777,54 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Marksheet Subject Table - Keeps all subjects on report with no mark (empty) for un-uploaded ones */}
-                    <div className="space-y-3">
-                      {/* Mobile Scroll Indicator Helper */}
-                      <div className="sm:hidden flex items-center justify-between text-[11px] text-[#0087A5] bg-[#F0F8FA] px-3 py-2 rounded-xl border border-[#C8E5EC]">
-                        <span className="flex items-center gap-1.5 font-medium">
-                          <ArrowLeftRight className="w-3.5 h-3.5 shrink-0" />
-                          <span>
-                            {language === 'ku' 
-                              ? 'بۆ بینینا هەمی خانە و نمران، خشتەی بۆ لای ڕاست و چەپ ڕابکێشە' 
-                              : language === 'ar' 
-                              ? 'اسحب الجدول يميناً ويساراً لعرض كافة الدرجات' 
-                              : 'Swipe table horizontally to view all marks'}
-                          </span>
-                        </span>
-                      </div>
+                    {/* Official Daily Student Record Marksheet Table (Grades 1-3 or Grades 4-9) */}
+                    {(() => {
+                      const isPrimaryG13 = isGrade13(currentStudent.grade);
+                      const rows: DailyRecordRowItem[] = displayedReportSubjects.map((sub) => ({
+                        rowKey: sub.subject,
+                        label: getTranslatedSubject(sub.subject, language),
+                        record: getEffectiveDailyRecord(currentStudent, sub.subject, dailyRecords),
+                      }));
 
-                      <div className="border border-[#C8E5EC] rounded-2xl overflow-x-auto shadow-xs w-full max-w-full touch-pan-x">
-                        <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
-                          <thead className="bg-[#F0F8FA] border-b border-[#C8E5EC] font-bold text-[#0D2D35]">
-                            <tr>
-                              <th className="py-3 px-3 text-center w-10">#</th>
-                              <th className="py-3 px-4 min-w-[150px]">{t.subject}</th>
-                              <th className="py-3 px-3 text-center min-w-[130px]">{language === 'ku' ? 'پشکنین' : language === 'ar' ? 'التوثيق' : 'Status'}</th>
-                              <th className={`py-3 px-5 min-w-[140px] whitespace-nowrap ${isRtl ? 'text-left' : 'text-right'}`}>
-                                {isPrimary25 ? t.term1MarkOutOf25 : t.term1MarkOutOf20}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-[#C8E5EC]">
-                            {displayedReportSubjects.map((sub, idx) => (
-                              <tr key={idx} className="hover:bg-[#F0F8FA]/60 transition-colors">
-                                <td className="py-2.5 sm:py-3 px-3 text-center font-mono text-[#76A5B8]">{idx + 1}</td>
-                                <td className="py-2.5 sm:py-3 px-4 font-bold text-[#0D2D35]">
-                                  {getTranslatedSubject(sub.subject, language)}
-                                </td>
-                                <td className="py-2.5 sm:py-3 px-3 text-center">
-                                  {sub.hasMark ? (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
-                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                      <span>{language === 'ku' ? 'فەرمی و پشتڕاستکراو' : language === 'ar' ? 'رسمي ومعتمد' : 'Verified'}</span>
-                                    </span>
-                                  ) : (
-                                    <span className="text-[11px] text-[#8C90C2] font-medium whitespace-nowrap">
-                                      {language === 'ku' ? 'چاوەڕوانی بارکردنە' : language === 'ar' ? 'بانتظار الرفع' : 'Awaiting upload'}
-                                    </span>
-                                  )}
-                                </td>
-                                <td className={`py-2.5 sm:py-3 px-5 font-mono ${isRtl ? 'text-left' : 'text-right'}`}>
-                                  {sub.hasMark ? (
-                                    <span className="font-bold whitespace-nowrap">
-                                      <span className="text-sm sm:text-base font-black text-[#0087A5]">{sub.obtainedMarks}</span>
-                                      <span className="text-xs text-[#76A5B8] font-normal font-mono ml-1">/ {sub.maxMarks}</span>
-                                    </span>
-                                  ) : (
-                                    /* Subjects without marks: keep on report with NO mark, just empty */
-                                    <span className="inline-block min-h-[1.25rem]"></span>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                          <tfoot>
-                            <tr className="bg-[#F0F8FA] font-bold border-t-2 border-[#0087A5]">
-                              <td className="py-3 px-3 text-center">#</td>
-                              <td className="py-3 px-4" colSpan={2}>{t.totalMarks}</td>
-                              <td className={`py-3 px-5 font-mono font-black text-[#0087A5] text-sm sm:text-base whitespace-nowrap ${isRtl ? 'text-left' : 'text-right'}`}>
-                                {reportTotals.hasAnyMark ? (
-                                  <span>
-                                    {reportTotals.totalObtained}
-                                    <span className="text-xs text-[#76A5B8] font-normal font-mono ml-1">
-                                      / {reportTotals.totalRecordedMax}
-                                    </span>
-                                  </span>
-                                ) : (
-                                  <span className="inline-block min-h-[1.25rem]"></span>
-                                )}
-                              </td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
+                      return isPrimaryG13 ? (
+                        <Grade13DailyRecordTable
+                          mode="student"
+                          language={language}
+                          isRtl={isRtl}
+                          gradeLabel={formatGradeLabel(currentStudent.grade, language)}
+                          sectionLabel={formatClassLabel(currentStudent.section, language)}
+                          rows={rows}
+                        />
+                      ) : (
+                        <Grade49DailyRecordTable
+                          mode="student"
+                          language={language}
+                          isRtl={isRtl}
+                          gradeLabel={formatGradeLabel(currentStudent.grade, language)}
+                          sectionLabel={formatClassLabel(currentStudent.section, language)}
+                          rows={rows}
+                        />
+                      );
+                    })()}
 
-                      {/* Official Marksheet Verification Notice */}
-                      <div className="p-4 bg-[#F0F8FA] border border-[#C8E5EC] rounded-2xl flex items-start gap-3">
-                        <ShieldCheck className="w-5 h-5 text-[#0087A5] shrink-0 mt-0.5" />
-                        <div className="text-xs text-[#0D2D35] leading-relaxed">
-                          <p className="font-bold mb-1">
-                            {language === 'ku' 
-                              ? 'پشتڕاستکردنەوەی فەرمی: نمرە ڕاستەقینەکانی تاقیکردنەوە' 
-                              : language === 'ar' 
-                              ? 'توثيق رسمي: درجات الامتحانات المعتمدة فقط' 
-                              : 'Official Evaluation Record: Authentic Marks Only'}
-                          </p>
-                          <p className="text-[#355B66]">
-                            {language === 'ku'
-                              ? 'نمرەی فەرمی ئەو بابەتانەی لە کەشف نمرە بارکراون تۆمار کراون. ئەو بابەتانەی هێشتا نمرەکانیان بارنەکراون بە بەتاڵی لە کەشف نمرە دەمێننەوە هەتا لە لایەن مامۆستایانەوە بە فەرمی پەسەند دەکرێن.'
-                              : language === 'ar'
-                              ? 'الدرجات المرفوعة من كشوف الامتحانات الرسمية مسجلة ومعتمدة. المواد التي لم تُرفع درجاتها بعد تظهر في التقرير بدون علامة (فارغة) لحين اعتمادها رسمياً من المدرسة.'
-                              : 'Authentic examination marks uploaded from official school marksheets are recorded above. Subjects without uploaded marks are kept on the report with no mark (blank) until officially submitted by the school.'}
-                          </p>
-                        </div>
+                    {/* Official Marksheet Verification Notice */}
+                    <div className="p-4 bg-[#F0F8FA] border border-[#C8E5EC] rounded-2xl flex items-start gap-3">
+                      <ShieldCheck className="w-5 h-5 text-[#0087A5] shrink-0 mt-0.5" />
+                      <div className="text-xs text-[#0D2D35] leading-relaxed">
+                        <p className="font-bold mb-1">
+                          {language === 'ku' 
+                            ? 'پشتڕاستکردنەوەی فەرمی: نمرە ڕاستەقینەکانی تاقیکردنەوە' 
+                            : language === 'ar' 
+                            ? 'توثيق رسمي: درجات الامتحانات المعتمدة فقط' 
+                            : 'Official Evaluation Record: Authentic Marks Only'}
+                        </p>
+                        <p className="text-[#355B66]">
+                          {language === 'ku'
+                            ? 'نمرەی فەرمی ئەو بابەتانەی لە کەشف نمرە بارکراون یان لە لایەن مامۆستایێ پۆلێ تۆمارکراون ل سەرێ خشتەی دهێنە نیشاندان. ئەو خانە و بابەتێن هێشتا نمرە تێدا نینن ب بەتاڵی دمینن.'
+                            : language === 'ar'
+                            ? 'الدرجات الرسمية المعتمدة والمدخلة من معلم الصف تظهر في سجل المتابعة أعلاه. الحقول والمواد التي لم تُرفع درجاتها بعد تبقى فارغة لحين اعتمادها.'
+                            : 'Authentic marks uploaded from official records and entered by your class teacher appear in the Daily Student Record above. Any subjects or fields without marks remain blank until submitted.'}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -2104,86 +2436,130 @@ export default function App() {
       )}
 
       {/* ======================================================== */}
-      {/* VIEW 3: TEACHER PORTAL (AUTHENTICATED)                   */}
+      {/* VIEW 3: TEACHER PORTAL (AUTHENTICATED, CLASS-LOCKED)     */}
       {/* ======================================================== */}
-      {selectedPortal === 'teacher' && isPortalAuthenticated && authStaff && (
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 space-y-6">
+      {selectedPortal === 'teacher' && isPortalAuthenticated && authStaff && (() => {
+        const teacherAssignments = authStaff.assignedClasses || [];
+        const activeAssignment =
+          teacherAssignments.find(
+            (a) => a.grade === staffGrade && a.section === staffClass
+          ) || teacherAssignments[0];
+        const allowedSubjects = activeAssignment?.subjects || [];
+
+        return (
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
           {/* Teacher Portal Top Banner */}
-          <div className="bg-gradient-to-r from-[#BB8FFF] via-[#7C85FF] to-[#0087A5] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(187,143,255,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-[#0087A5] via-[#0099B8] to-[#2AD4FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,135,165,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs shrink-0">
                 <GraduationCap className="w-7 h-7 text-white" />
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider bg-white/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full font-bold text-white">
-                  Teacher Faculty Portal
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-wider bg-white/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full font-bold text-white">
+                    {t.portalTeacher}
+                  </span>
+                  {authStaff.subjectLabel && (
+                    <span className="text-[10px] font-mono bg-white/20 px-2.5 py-0.5 rounded-full font-bold text-white">
+                      {authStaff.subjectLabel}
+                    </span>
+                  )}
+                  <span className="text-[10px] font-mono bg-white/20 px-2.5 py-0.5 rounded-full font-bold text-white flex items-center gap-1">
+                    <Lock className="w-3 h-3" />
+                    {formatGradeLabel(staffGrade, language)} • {formatClassLabel(staffClass, language)}
+                  </span>
+                </div>
                 <h2 className="text-xl sm:text-2xl font-black mt-1">
                   {authStaff.name}
                 </h2>
                 <p className="text-xs text-white/90">
-                  Academic Year 2024–2025 • Official Course & Grade Management
+                  {authStaff.email ? `${authStaff.email} • ` : ''}
+                  {language === 'ku'
+                    ? `ساڵا خوێندنێ ٢٠٢٦–٢٠٢٧ (${teacherAssignments.length} پۆلێن تۆمارکری)`
+                    : language === 'ar'
+                    ? `السنة الدراسية ٢٠٢٦–٢٠٢٧ (${teacherAssignments.length} صفوف مخصصة)`
+                    : `Academic Year 2026–2027 • ${teacherAssignments.length} Assigned Class${teacherAssignments.length === 1 ? '' : 'es'}`}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-end sm:self-center">
               <button
-                onClick={handleSwitchPortal}
+                onClick={handleSignOut}
                 className="px-3.5 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-xs rounded-xl text-xs font-semibold text-white transition-all cursor-pointer flex items-center gap-1.5 border border-white/30 shadow-xs"
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>{t.switchPortal}</span>
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{t.logoutButtonLabel}</span>
               </button>
             </div>
           </div>
 
-          {/* Teacher Controls: Class Selector & Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-[#E1E9FF] p-4 rounded-2xl shadow-xs">
+          {/* Teacher Controls: Scoped Assigned Classes Selector & Tabs */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-[#E1E9FF] p-4 rounded-2xl shadow-xs">
             <div className="flex flex-wrap items-center gap-3">
-              <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
-                  Select Grade
-                </label>
-                <select
-                  value={staffGrade}
-                  onChange={(e) => {
-                    setStaffGrade(e.target.value);
-                    const classes = SCHOOL_STRUCTURE[e.target.value] || ['Class A'];
-                    setStaffClass(classes[0]);
-                  }}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
-                >
-                  {officialGrades.map(g => (
-                    <option key={g} value={g}>{g}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
-                  Select Section
-                </label>
-                <select
-                  value={staffClass}
-                  onChange={(e) => setStaffClass(e.target.value)}
-                  className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
-                >
-                  {staffClasses.map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
+              {teacherAssignments.length > 1 ? (
+                <div className="flex items-center gap-2.5 bg-[#F0F8FA] border border-[#C8E5EC] px-3 py-1.5 rounded-xl">
+                  <Lock className="w-4 h-4 text-[#0087A5] shrink-0" />
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#76A5B8]">
+                      {language === 'ku' ? 'پۆلێن تە یێن دیارکری' : language === 'ar' ? 'الصفوف المخصصة لك' : 'Your Assigned Classes'}
+                    </label>
+                    <select
+                      value={`${staffGrade}|${staffClass}`}
+                      onChange={(e) => {
+                        const [nextGrade, nextSection] = e.target.value.split('|');
+                        setStaffGrade(nextGrade);
+                        setStaffClass(nextSection);
+                        const matchAssign = teacherAssignments.find(
+                          (a) => a.grade === nextGrade && a.section === nextSection
+                        );
+                        if (matchAssign && !matchAssign.subjects.includes(teacherSubject)) {
+                          setTeacherSubject(matchAssign.subjects[0] || teacherSubject);
+                        }
+                        setTeacherSavedNotice(false);
+                      }}
+                      className="bg-transparent text-xs font-black text-[#0D2D35] focus:outline-none cursor-pointer pr-2"
+                    >
+                      {teacherAssignments.map((assign) => (
+                        <option key={`${assign.grade}|${assign.section}`} value={`${assign.grade}|${assign.section}`}>
+                          {formatGradeLabel(assign.grade, language)} — {formatClassLabel(assign.section, language)} ({assign.subjects.join(', ')})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2.5 bg-[#F0F8FA] border border-[#C8E5EC] px-3.5 py-2 rounded-xl">
+                  <Lock className="w-4 h-4 text-[#0087A5] shrink-0" />
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-[#76A5B8]">
+                      {language === 'ku' ? 'پۆلا دیارکری' : language === 'ar' ? 'الصف المخصص للمعلم' : 'Assigned Class'}
+                    </span>
+                    <span className="text-xs font-black text-[#0D2D35]">
+                      {formatGradeLabel(staffGrade, language)} — {formatClassLabel(staffClass, language)} ({staffAvailableStudents.length}{' '}
+                      {language === 'ku' ? 'قوتابی' : language === 'ar' ? 'طالب' : 'Students'})
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-1.5 bg-[#F5F6FF] p-1 rounded-xl border border-[#E1E9FF]">
+            <div className="flex flex-wrap items-center gap-1.5 bg-[#F5F6FF] p-1 rounded-xl border border-[#E1E9FF]">
+              <button
+                onClick={() => setTeacherTab('daily_record')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  teacherTab === 'daily_record' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                }`}
+              >
+                {language === 'ku' ? 'تۆمارا رۆژانە (نمرە دانان)' : language === 'ar' ? 'سجل المتابعة اليومية (إدخال الدرجات)' : 'Daily Student Record (Insert Marks)'}
+              </button>
               <button
                 onClick={() => setTeacherTab('roster')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   teacherTab === 'roster' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
-                Class Roster & Marks
+                {language === 'ku' ? 'لیستا قوتابیان و کەشف' : language === 'ar' ? 'قائمة الطلاب وكشف الدرجات' : 'Class Roster & Marksheets'}
               </button>
               <button
                 onClick={() => setTeacherTab('timetable')}
@@ -2191,29 +2567,144 @@ export default function App() {
                   teacherTab === 'timetable' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
                 }`}
               >
-                Class Timetable
+                {language === 'ku' ? 'خشتەیێ وانان' : language === 'ar' ? 'الجدول الدراسي' : 'Class Timetable'}
               </button>
             </div>
           </div>
 
-          {/* Teacher Tab 1: Class Roster & Grades */}
+          {/* Teacher Tab 1: Daily Student Record Mark Entry */}
+          {teacherTab === 'daily_record' && (
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
+              {/* Toolbar: Subject Selector, Student Search, Save Marks Button */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 pb-4 border-b border-[#E1E9FF]">
+                <div className="flex flex-wrap items-end gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                      {t.subject}
+                    </label>
+                    <select
+                      value={teacherSubject}
+                      onChange={(e) => {
+                        setTeacherSubject(e.target.value);
+                        setTeacherSavedNotice(false);
+                      }}
+                      className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3.5 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5] min-w-[170px]"
+                    >
+                      {(allowedSubjects.length > 0
+                        ? allowedSubjects
+                        : (GRADE_CURRICULUM[staffGrade] || OFFICIAL_SUBJECTS).map((s) => s.name)
+                      ).map((subName) => (
+                        <option key={subName} value={subName}>
+                          {getTranslatedSubject(subName, language)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                      {language === 'ku' ? 'گەڕان ل قوتابی' : language === 'ar' ? 'بحث عن طالب' : 'Search Student'}
+                    </label>
+                    <div className="relative">
+                      <Search className={`w-3.5 h-3.5 text-[#8C90C2] absolute top-2.5 ${isRtl ? 'right-3' : 'left-3'}`} />
+                      <input
+                        type="text"
+                        value={staffSearchQuery}
+                        onChange={(e) => setStaffSearchQuery(e.target.value)}
+                        placeholder={language === 'ku' ? 'ناڤ یان کۆد...' : language === 'ar' ? 'الاسم أو الرقم...' : 'Name or ID...'}
+                        className={`py-2 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5] ${
+                          isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  {teacherSavedNotice && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>
+                        {language === 'ku' ? 'نمرە هاتنە تۆمارکرن' : language === 'ar' ? 'تم حفظ الدرجات بنجاح' : 'Marks Saved'}
+                      </span>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleTeacherSaveAll}
+                    className="px-4 py-2.5 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>
+                      {language === 'ku' ? 'پاشەکەفتکرنا نمران' : language === 'ar' ? 'حفظ الدرجات' : 'Save Marks'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Official Daily Student Record Entry Table (1-3 or 4-9 matching PDFs) */}
+              {(() => {
+                const isPrimaryG13 = isGrade13(staffGrade);
+                const rows: DailyRecordRowItem[] = staffFilteredStudents.map((student) => ({
+                  rowKey: student.id,
+                  label: student.name,
+                  subLabel: `${student.rollNumber} • ${student.id}`,
+                  record: getEffectiveDailyRecord(student, teacherSubject, dailyRecords),
+                }));
+
+                return isPrimaryG13 ? (
+                  <Grade13DailyRecordTable
+                    mode="teacher"
+                    language={language}
+                    isRtl={isRtl}
+                    gradeLabel={formatGradeLabel(staffGrade, language)}
+                    sectionLabel={formatClassLabel(staffClass, language)}
+                    subjectLabel={getTranslatedSubject(teacherSubject, language)}
+                    rows={rows}
+                    onChangeRecord={handleTeacherRecordChange}
+                  />
+                ) : (
+                  <Grade49DailyRecordTable
+                    mode="teacher"
+                    language={language}
+                    isRtl={isRtl}
+                    gradeLabel={formatGradeLabel(staffGrade, language)}
+                    sectionLabel={formatClassLabel(staffClass, language)}
+                    subjectLabel={getTranslatedSubject(teacherSubject, language)}
+                    rows={rows}
+                    onChangeRecord={handleTeacherRecordChange}
+                  />
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Teacher Tab 2: Class Roster & Individual Marksheets */}
           {teacherTab === 'roster' && (
             <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
                 <div>
                   <h3 className="text-base font-bold text-[#1A1D4E]">
-                    {staffGrade} - {staffClass} Student Roster ({staffAvailableStudents.length} Students)
+                    {formatGradeLabel(staffGrade, language)} - {formatClassLabel(staffClass, language)} ({staffAvailableStudents.length} Students)
                   </h3>
-                  <p className="text-xs text-[#6B70A6]">Official Term 1 Subject Evaluations & Scores</p>
+                  <p className="text-xs text-[#6B70A6]">
+                    {language === 'ku'
+                      ? 'کلیک ل سەر کەشف نمرەی بکە بۆ بینینا هەمی بابەتێن قوتابی'
+                      : language === 'ar'
+                      ? 'اضغط على عرض الشهادة لمعاينة كشف درجات الطالب الكامل'
+                      : 'Click View Marksheet to inspect any student’s full Daily Student Record report'}
+                  </p>
                 </div>
                 <div className="relative">
-                  <Search className="w-3.5 h-3.5 text-[#8C90C2] absolute left-3 top-2.5" />
+                  <Search className={`w-3.5 h-3.5 text-[#8C90C2] absolute top-2.5 ${isRtl ? 'right-3' : 'left-3'}`} />
                   <input
                     type="text"
                     value={staffSearchQuery}
                     onChange={(e) => setStaffSearchQuery(e.target.value)}
-                    placeholder="Search student..."
-                    className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                    placeholder={language === 'ku' ? 'گەڕان ل قوتابی...' : language === 'ar' ? 'بحث عن طالب...' : 'Search student...'}
+                    className={`py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5] ${
+                      isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'
+                    }`}
                   />
                 </div>
               </div>
@@ -2223,36 +2714,38 @@ export default function App() {
                   <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E]">
                     <tr>
                       <th className="py-3 px-3 text-center">#</th>
-                      <th className="py-3 px-3">Student Name</th>
-                      <th className="py-3 px-3">Roll No</th>
-                      <th className="py-3 px-3">Attendance</th>
-                      <th className="py-3 px-3">Kurdish (Term 1)</th>
-                      <th className="py-3 px-3">Other Subjects</th>
-                      <th className="py-3 px-3 text-center">Actions</th>
+                      <th className="py-3 px-3">{t.studentName}</th>
+                      <th className="py-3 px-3">{t.rollNumber}</th>
+                      <th className="py-3 px-3">{t.idNumber}</th>
+                      <th className="py-3 px-3">
+                        {getTranslatedSubject(teacherSubject, language)} ({isGrade13(staffGrade) ? '100' : '100%'})
+                      </th>
+                      <th className="py-3 px-3 text-center">Marksheet</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E1E9FF]">
                     {staffFilteredStudents.map((s, idx) => {
-                      const kur = s.subjects.find(sub => sub.subject === 'Kurdish');
+                      const rec = getEffectiveDailyRecord(s, teacherSubject, dailyRecords);
+                      const grand =
+                        rec.kind === 'g13'
+                          ? calcGrade13GrandTotal(rec)
+                          : calcGrade49GrandTotal100(rec);
 
                       return (
                         <tr key={s.id} className="hover:bg-[#F5F6FF]/60 transition-colors">
                           <td className="py-2.5 px-3 text-center font-mono text-[#8C90C2]">{idx + 1}</td>
                           <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
                           <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
-                          <td className="py-2.5 px-3 text-[#00A887] font-semibold">{s.attendance}</td>
+                          <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
                           <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
-                            {kur ? `${kur.obtainedMarks} / ${kur.maxMarks}` : <span className="text-[#8C90C2] font-normal">Pending</span>}
-                          </td>
-                          <td className="py-2.5 px-3 text-[#8C90C2] text-xs">
-                            Awaiting upload
+                            {typeof grand === 'number' ? grand : ''}
                           </td>
                           <td className="py-2.5 px-3 text-center">
                             <button
                               onClick={() => setModalStudent(s)}
                               className="px-3 py-1 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-lg text-[11px] font-bold cursor-pointer transition-all shadow-xs"
                             >
-                              View Marksheet
+                              {language === 'ku' ? 'کەشف نمرە' : language === 'ar' ? 'عرض الكشف' : 'View Marksheet'}
                             </button>
                           </td>
                         </tr>
@@ -2264,11 +2757,11 @@ export default function App() {
             </div>
           )}
 
-          {/* Teacher Tab 2: Class Timetable */}
+          {/* Teacher Tab 3: Class Timetable */}
           {teacherTab === 'timetable' && (
             <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
               <h3 className="text-base font-bold text-[#1A1D4E] mb-4">
-                Weekly Class Timetable ({staffGrade} - {staffClass})
+                {t.timetableTitle} ({formatGradeLabel(staffGrade, language)} - {formatClassLabel(staffClass, language)})
               </h3>
               <div className="space-y-4">
                 {timetableSchedule.map(day => (
@@ -2290,7 +2783,8 @@ export default function App() {
             </div>
           )}
         </main>
-      )}
+        );
+      })()}
 
       {/* ======================================================== */}
       {/* VIEW 4: STAFF PORTAL (AUTHENTICATED)                     */}
@@ -2466,138 +2960,21 @@ export default function App() {
       )}
 
       {/* ======================================================== */}
-      {/* VIEW 5: ADMIN PORTAL (AUTHENTICATED)                     */}
+      {/* VIEW 5: ADMIN PANEL PORTAL (AUTHENTICATED)               */}
       {/* ======================================================== */}
-      {selectedPortal === 'admin' && isPortalAuthenticated && authStaff && (
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-          <div className="bg-gradient-to-r from-[#0087A5] via-[#5F6DFF] to-[#7C85FF] text-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,135,165,0.25)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center border border-white/25 shadow-xs">
-                <ShieldCheck className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider bg-white/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full font-bold text-white">
-                  Executive Admin Portal
-                </span>
-                <h2 className="text-xl sm:text-2xl font-black mt-1">
-                  School Governance & Master Registry
-                </h2>
-                <p className="text-xs text-white/90">
-                  Full Administrative Control • Dasinya Private School
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleExportCsv}
-                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export CSV</span>
-              </button>
-              <button
-                onClick={handleSwitchPortal}
-                className="px-3.5 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-xs rounded-xl text-xs font-semibold text-white transition-all cursor-pointer flex items-center gap-1.5 border border-white/30 shadow-xs"
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span>{t.switchPortal}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Admin KPI Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] block mb-1">Total Enrolled</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#1A1D4E]">{students.length}</span>
-              <span className="text-[11px] text-[#00A887] block mt-1 font-semibold">100% Active</span>
-            </div>
-            <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] block mb-1">Grades</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#1A1D4E]">9</span>
-              <span className="text-[11px] text-[#6B70A6] block mt-1">Grades 1 through 9</span>
-            </div>
-            <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] block mb-1">Class Sections</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#0087A5]">18</span>
-              <span className="text-[11px] text-[#6B70A6] block mt-1">Classes A, B, C, E</span>
-            </div>
-            <div className="bg-white border border-[#E1E9FF] rounded-2xl p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C90C2] block mb-1">Attendance Rate</span>
-              <span className="text-2xl sm:text-3xl font-black text-[#00A887]">97.8%</span>
-              <span className="text-[11px] text-[#00A887] block mt-1 font-semibold">Exemplary</span>
-            </div>
-          </div>
-
-          {/* Admin Master Directory */}
-          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
-              <div>
-                <h3 className="text-base font-bold text-[#1A1D4E]">
-                  Master Student Registry ({students.length} Total Records)
-                </h3>
-                <p className="text-xs text-[#6B70A6]">Access credentials, student information, and marksheet audit</p>
-              </div>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-[#8C90C2] absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={staffSearchQuery}
-                  onChange={(e) => setStaffSearchQuery(e.target.value)}
-                  placeholder="Search student or ID..."
-                  className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-56 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
-                />
-              </div>
-            </div>
-
-            <div className="border border-[#E1E9FF] rounded-2xl overflow-x-auto max-h-[500px]">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E] sticky top-0 z-10">
-                  <tr>
-                    <th className="py-3 px-3">#</th>
-                    <th className="py-3 px-3">Student Name</th>
-                    <th className="py-3 px-3">Grade & Section</th>
-                    <th className="py-3 px-3">ID</th>
-                    <th className="py-3 px-3">Roll No</th>
-                    <th className="py-3 px-3">Guardian Password</th>
-                    <th className="py-3 px-3 text-center">Marksheet</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E1E9FF]">
-                  {students
-                    .filter(s => {
-                      if (!staffSearchQuery.trim()) return true;
-                      const q = staffSearchQuery.toLowerCase().trim();
-                      return s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q) || s.rollNumber.toLowerCase().includes(q);
-                    })
-                    .slice(0, 50)
-                    .map((s, idx) => (
-                      <tr key={s.id} className="hover:bg-[#F5F6FF]/50 transition-colors">
-                        <td className="py-2.5 px-3 font-mono text-[#8C90C2]">{s.serial || idx + 1}</td>
-                        <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
-                        <td className="py-2.5 px-3 font-semibold text-[#454A87]">{s.grade} - {s.section}</td>
-                        <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
-                        <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
-                        <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">{s.guardianPassword}</td>
-                        <td className="py-2.5 px-3 text-center">
-                          <button
-                            onClick={() => setModalStudent(s)}
-                            className="px-3 py-1 bg-[#0087A5] text-white rounded-lg text-[11px] font-bold cursor-pointer hover:bg-[#00738D] transition-colors shadow-xs"
-                          >
-                            Audit
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-[11px] text-[#8C90C2] text-center">
-              Showing first 50 results. Use search filter or Export CSV to retrieve full database.
-            </p>
-          </div>
-        </main>
+      {selectedPortal === 'admin' && isPortalAuthenticated && authStaff && authStaff.role === 'admin' && (
+        <AdminSummaryPanel
+          students={students}
+          dailyRecords={dailyRecords}
+          schoolStructure={SCHOOL_STRUCTURE}
+          gradeCurriculum={GRADE_CURRICULUM}
+          officialSubjects={OFFICIAL_SUBJECTS}
+          language={language}
+          isRtl={isRtl}
+          onSelectModalStudent={(s) => setModalStudent(s)}
+          onExportStudentsCsv={handleExportCsv}
+          onSignOut={handleSignOut}
+        />
       )}
 
       {/* ======================================================== */}
@@ -2605,7 +2982,7 @@ export default function App() {
       {/* ======================================================== */}
       {modalStudent && (
         <div className="fixed inset-0 bg-neutral-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white border border-[#E1E9FF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,135,165,0.25)] relative space-y-5">
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-y-auto p-5 sm:p-7 shadow-[0_20px_60px_rgba(0,135,165,0.25)] relative space-y-5">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E1E9FF]">
               <div>
@@ -2613,7 +2990,7 @@ export default function App() {
                   {modalStudent.name} • {t.studentMarksheetTitle}
                 </h3>
                 <p className="text-xs text-[#6B70A6]">
-                  {modalStudent.grade} - {modalStudent.section} • Roll No: {modalStudent.rollNumber}
+                  {formatGradeLabel(modalStudent.grade, language)} - {formatClassLabel(modalStudent.section, language)} • Roll No: {modalStudent.rollNumber} • ID: {modalStudent.id}
                 </p>
               </div>
               <button
@@ -2624,56 +3001,34 @@ export default function App() {
               </button>
             </div>
 
-            {/* Marksheet Subject List */}
+            {/* Official Daily Student Record Marksheet */}
             {(() => {
               const curriculum = GRADE_CURRICULUM[modalStudent.grade] || OFFICIAL_SUBJECTS;
-              const isG13 = parseInt(modalStudent.grade.replace(/\D/g, ''), 10) <= 3;
-              const defaultMax = isG13 ? 25 : 20;
+              const isG13 = isGrade13(modalStudent.grade);
+              const rows: DailyRecordRowItem[] = curriculum.map((cSub) => ({
+                rowKey: cSub.name,
+                label: getTranslatedSubject(cSub.name, language),
+                record: getEffectiveDailyRecord(modalStudent, cSub.name, dailyRecords),
+              }));
 
-              return (
-                <div className="border border-[#C8E5EC] rounded-2xl overflow-x-auto shadow-xs w-full max-w-full touch-pan-x">
-                  <table className="w-full text-left text-xs sm:text-sm min-w-[480px]">
-                    <thead className="bg-[#F0F8FA] font-bold text-[#0D2D35]">
-                      <tr>
-                        <th className="py-3 px-3.5">#</th>
-                        <th className="py-3 px-3.5 min-w-[140px]">Subject</th>
-                        <th className="py-3 px-3.5 text-center min-w-[120px]">Status</th>
-                        <th className="py-3 px-3.5 text-right min-w-[130px]">Term 1 Exam Mark</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#C8E5EC]">
-                      {curriculum.map((cSub, i) => {
-                        const uploaded = modalStudent.subjects?.find(
-                          s => s.subject.toLowerCase() === cSub.name.toLowerCase()
-                        );
-                        const hasMark = Boolean(uploaded && typeof uploaded.obtainedMarks === 'number');
-
-                        return (
-                          <tr key={i} className="hover:bg-[#F0F8FA]/50 transition-colors">
-                            <td className="py-2.5 px-3.5 font-mono text-[#76A5B8]">{i + 1}</td>
-                            <td className="py-2.5 px-3.5 font-semibold text-[#0D2D35]">
-                              {getTranslatedSubject(cSub.name, language)}
-                            </td>
-                            <td className="py-2.5 px-3.5 text-center">
-                              {hasMark ? (
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                  Verified
-                                </span>
-                              ) : (
-                                <span className="text-[11px] text-[#8C90C2]">
-                                  Awaiting upload
-                                </span>
-                              )}
-                            </td>
-                            <td className="py-2.5 px-3.5 font-mono font-bold text-[#0087A5] text-right">
-                              {hasMark ? `${uploaded!.obtainedMarks} / ${uploaded!.maxMarks || defaultMax}` : ''}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+              return isG13 ? (
+                <Grade13DailyRecordTable
+                  mode="student"
+                  language={language}
+                  isRtl={isRtl}
+                  gradeLabel={formatGradeLabel(modalStudent.grade, language)}
+                  sectionLabel={formatClassLabel(modalStudent.section, language)}
+                  rows={rows}
+                />
+              ) : (
+                <Grade49DailyRecordTable
+                  mode="student"
+                  language={language}
+                  isRtl={isRtl}
+                  gradeLabel={formatGradeLabel(modalStudent.grade, language)}
+                  sectionLabel={formatClassLabel(modalStudent.section, language)}
+                  rows={rows}
+                />
               );
             })()}
 
@@ -2683,7 +3038,7 @@ export default function App() {
                 onClick={() => setModalStudent(null)}
                 className="px-4 py-2 bg-[#F5F6FF] hover:bg-[#E1E9FF] text-[#0087A5] rounded-xl text-xs font-bold transition-colors cursor-pointer"
               >
-                Close
+                {language === 'ku' ? 'داخستن' : language === 'ar' ? 'إغلاق' : 'Close'}
               </button>
             </div>
           </div>
@@ -2693,10 +3048,31 @@ export default function App() {
       {/* Footer */}
       <footer className="w-full border-t border-[#E1E9FF] py-6 px-4 text-center text-xs text-[#8C90C2] bg-white">
         <p className="font-semibold text-[#454A87]">
-          {t.schoolName} • {t.portalParent}
+          {t.schoolName} •{' '}
+          {selectedPortal === 'admin'
+            ? language === 'ku'
+              ? 'پۆڕتاڵێ ئەدمین'
+              : language === 'ar'
+              ? 'بوابة الإدارة'
+              : 'Admin Portal'
+            : selectedPortal === 'teacher'
+            ? t.portalTeacher
+            : t.portalParent}
         </p>
         <p className="mt-1 text-[11px] text-[#A9ABD2]">
-          {language === 'ku'
+          {selectedPortal === 'admin'
+            ? language === 'ku'
+              ? 'پوختەیا گشتی و چاڤدێریا قوتابخانێ • قوتابخانەیا داسنیا یا تایبەت'
+              : language === 'ar'
+              ? 'لوحة الإدارة والملخص الشامل • مدرسة داسنيا الأهلية'
+              : 'Official Admin Panel & Academic Summary • Dasinya Private School'
+            : selectedPortal === 'teacher'
+            ? language === 'ku'
+              ? 'دەروازەیا فەرمی یا مامۆستایان • قوتابخانەیا داسنیا یا تایبەت'
+              : language === 'ar'
+              ? 'البوابة الرسمية للمعلمين • مدرسة داسنيا الأهلية'
+              : 'Official Teacher Portal System • Dasinya Private School'
+            : language === 'ku'
             ? 'سیستەمێ فەرمی یێ دەوازەیا دایکوبابان • قوتابخانەیا داسنیا یا تایبەت'
             : language === 'ar'
             ? 'البوابة الرسمية لأولياء الأمور • مدرسة داسنيا الأهلية'

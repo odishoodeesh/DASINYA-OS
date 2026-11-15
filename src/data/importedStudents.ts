@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * Official Dasinya Private School Student Roster (303 Students)
+ * Official Dasinya Private School Student Roster (304 Students)
  * Contains ONLY authentic uploaded student records and verified Kurdish exam marksheets.
  * No mock or fabricated marks.
  */
@@ -73,6 +73,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -100,6 +108,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -127,6 +143,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -154,6 +178,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -181,6 +213,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -208,6 +248,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -235,6 +283,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 22,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -262,6 +318,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -289,6 +353,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -310,12 +382,12 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPassword": "123465",
     "subjects": [
       {
-        "subject": "Kurdish",
-        "code": "KUR",
+        "subject": "English",
+        "code": "ENG",
         "maxMarks": 25,
-        "obtainedMarks": 25,
-        "grade": "A+",
-        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -343,6 +415,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -370,6 +450,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -394,9 +482,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 24,
+        "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -421,9 +517,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 19,
-        "grade": "B+",
+        "obtainedMarks": 24,
+        "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -448,9 +552,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 25,
-        "grade": "A+",
+        "obtainedMarks": 19,
+        "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -478,6 +590,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -505,6 +625,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -532,6 +660,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -559,6 +695,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -583,9 +727,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 23,
+        "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -613,6 +765,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -637,9 +797,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 24,
+        "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -664,9 +832,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 25,
+        "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -686,7 +862,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "O+",
     "guardianEmail": "Difid.Yousif@Dasinya.com",
     "guardianPassword": "123479",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Kurdish",
+        "code": "KUR",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 25,
@@ -712,6 +905,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -739,6 +940,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -766,6 +975,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -787,12 +1004,12 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPassword": "123483",
     "subjects": [
       {
-        "subject": "Kurdish",
-        "code": "KUR",
+        "subject": "English",
+        "code": "ENG",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -820,6 +1037,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -847,6 +1072,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -871,9 +1104,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 24,
+        "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -898,9 +1139,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 25,
+        "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -928,6 +1177,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -955,6 +1212,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -982,6 +1247,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1009,6 +1282,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1036,6 +1317,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1063,6 +1352,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1087,9 +1384,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 24,
+        "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1114,9 +1419,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 25,
+        "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1144,6 +1457,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1171,6 +1492,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1198,6 +1527,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1222,9 +1559,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 24,
+        "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1252,6 +1597,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1276,9 +1629,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "subject": "Kurdish",
         "code": "KUR",
         "maxMarks": 25,
-        "obtainedMarks": 25,
+        "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1306,6 +1667,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1333,6 +1702,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1360,6 +1737,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1379,7 +1764,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Azl.Aslam@Dasinya.com",
     "guardianPassword": "123505",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Kurdish",
+        "code": "KUR",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 51,
@@ -1405,6 +1807,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1432,6 +1842,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1446,7 +1864,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07502462590",
+    "phone": "07504111719",
     "dob": "8/1/2020",
     "bloodGroup": "O+",
     "guardianEmail": "Ilin.Dilzhan@dasinya.com",
@@ -1459,6 +1877,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1486,6 +1912,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1513,6 +1947,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1540,6 +1982,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1567,6 +2017,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1594,6 +2052,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1621,6 +2087,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1648,6 +2122,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 22,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1675,6 +2157,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 21,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1702,6 +2192,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1729,6 +2227,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 20,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1756,6 +2262,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 22,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1783,6 +2297,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1810,6 +2332,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 23,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1837,6 +2367,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 19,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1864,6 +2402,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1891,13 +2437,21 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
     "serial": 70,
     "id": "DPS-5685651",
-    "name": "علي نیجیرڤان محمدعلي .",
+    "name": "علي نیجیرڤان محمدعلي",
     "motherName": "كنیر عادل یونس",
     "rollNumber": "DPS-070",
     "grade": "Grade 1",
@@ -1918,6 +2472,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1945,6 +2507,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1972,6 +2542,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -1999,6 +2577,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -2022,28 +2608,10 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
   },
   {
     "serial": 75,
-    "id": "DPS-5603021",
-    "name": "ئارا نشوان حسین عثمان",
-    "motherName": "وازین انور خورسید",
-    "rollNumber": "DPS-075",
-    "grade": "Grade 2",
-    "section": "Class A",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07504122877",
-    "dob": "7/9/2019",
-    "bloodGroup": "A+",
-    "guardianEmail": "Zirvan.Mohammed@dasinya.com",
-    "guardianPassword": "123530",
-    "subjects": []
-  },
-  {
-    "serial": 76,
     "id": "DPS-5310731",
     "name": "ئانا فرید وحید عبدالعزیز",
     "motherName": "ژیمان محسن اسلام",
-    "rollNumber": "DPS-076",
+    "rollNumber": "DPS-075",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2057,11 +2625,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 77,
+    "serial": 76,
     "id": "DPS-4787610",
     "name": "آدم دیار ھشیار نصر الدین",
     "motherName": "دعاء عبدالخالق",
-    "rollNumber": "DPS-077",
+    "rollNumber": "DPS-076",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2075,11 +2643,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 78,
+    "serial": 77,
     "id": "DPS-4907069",
     "name": "أرجان زیاد علي جانگیر",
     "motherName": "خالده حسن سیدو",
-    "rollNumber": "DPS-078",
+    "rollNumber": "DPS-077",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2094,11 +2662,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 79,
+    "serial": 78,
     "id": "DPS-5221838",
     "name": "أیلا مصطفی شوکة عزیز",
     "motherName": "دلال عارف صادق",
-    "rollNumber": "DPS-079",
+    "rollNumber": "DPS-078",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2112,11 +2680,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 80,
+    "serial": 79,
     "id": "DPS-5334688",
     "name": "ئیڤا بوتان برھان محمد أمین",
     "motherName": "فاطمھ بلند احمد",
-    "rollNumber": "DPS-080",
+    "rollNumber": "DPS-079",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2130,11 +2698,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 81,
+    "serial": 80,
     "id": "DPS-4943989",
     "name": "احمد علاء ناطق كمال الدین",
     "motherName": "كوفند حكمت محمد",
-    "rollNumber": "DPS-081",
+    "rollNumber": "DPS-080",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2148,11 +2716,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 82,
+    "serial": 81,
     "id": "DPS-5305151",
     "name": "ایوب علي جھور رشید",
     "motherName": "رند حكمت محمد",
-    "rollNumber": "DPS-082",
+    "rollNumber": "DPS-081",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2166,11 +2734,49 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
+    "serial": 82,
+    "id": "DPS-5526405",
+    "name": "ایلاف عمر صدیق عبداللھ",
+    "motherName": "لیزان جانان محمد جسیم",
+    "rollNumber": "DPS-082",
+    "grade": "Grade 2",
+    "section": "Class A",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504595468",
+    "dob": "10/5/2019",
+    "bloodGroup": "O+",
+    "guardianEmail": "Tariq.Ahmed@dasinya.com",
+    "guardianPassword": "123579",
+    "guardianPasswordAlt": "123580",
+    "subjects": []
+  },
+  {
     "serial": 83,
+    "id": "DPS-4975564",
+    "name": "ایھان احمد جعفر فرحان",
+    "motherName": "دعاء یحیى حسین",
+    "rollNumber": "DPS-083",
+    "grade": "Grade 2",
+    "section": "Class A",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07503191588",
+    "dob": "10/29/2019",
+    "bloodGroup": "A-",
+    "guardianEmail": "Shivan.Sadiq2@dasinya.com",
+    "guardianPassword": "123580",
+    "guardianPasswordAlt": "123581",
+    "subjects": []
+  },
+  {
+    "serial": 84,
     "id": "DPS-5659301",
     "name": "باران بیلال زیرک خالد",
     "motherName": "ئھڤین عبداللھ حجي",
-    "rollNumber": "DPS-083",
+    "rollNumber": "DPS-084",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2185,11 +2791,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 84,
+    "serial": 85,
     "id": "DPS-5360778",
     "name": "بیلین نوزاد خالد صوفي",
     "motherName": "سندس اسماعیل بشیر",
-    "rollNumber": "DPS-084",
+    "rollNumber": "DPS-085",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2203,11 +2809,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 85,
+    "serial": 86,
     "id": "DPS-5435109",
     "name": "جان شورەشڤان مجید احمد",
     "motherName": "حنین مھدى حامد",
-    "rollNumber": "DPS-085",
+    "rollNumber": "DPS-086",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
@@ -2221,11 +2827,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 86,
+    "serial": 87,
     "id": "DPS-5020422",
     "name": "جان لاوین عبدالستار الیاس",
     "motherName": "جوان فھمى صدیق",
-    "rollNumber": "DPS-086",
+    "rollNumber": "DPS-087",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2239,11 +2845,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 87,
+    "serial": 88,
     "id": "DPS-5465017",
     "name": "حریر دزوار عابد عارف",
     "motherName": "جیلان سھ ردار عبداللھ",
-    "rollNumber": "DPS-087",
+    "rollNumber": "DPS-088",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2257,11 +2863,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 88,
+    "serial": 89,
     "id": "DPS-5616256",
     "name": "دلیفیان میفان محمدرشید حجى",
     "motherName": "حنان فاروق عمر",
-    "rollNumber": "DPS-088",
+    "rollNumber": "DPS-089",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2276,11 +2882,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 89,
+    "serial": 90,
     "id": "DPS-5432164",
     "name": "ژا׽ھ برزى سعید موسی",
     "motherName": "ئایات صدیق حامد",
-    "rollNumber": "DPS-089",
+    "rollNumber": "DPS-090",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Female",
@@ -2292,25 +2898,6 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mifan.Mhmdrshid@dasinya.com",
     "guardianPassword": "123544",
     "guardianPasswordAlt": "123545",
-    "subjects": []
-  },
-  {
-    "serial": 90,
-    "id": "DPS-5438626",
-    "name": "ساڤان ھمزە زیاد جاسم",
-    "motherName": "پھروهر عیسى حسن",
-    "rollNumber": "DPS-090",
-    "grade": "Grade 2",
-    "section": "Class A",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07502314950",
-    "dob": "10/2/2019",
-    "bloodGroup": "A+",
-    "guardianEmail": "Shursh.Mohammed@dasinya.com",
-    "guardianPassword": "123545",
-    "guardianPasswordAlt": "123546",
     "subjects": []
   },
   {
@@ -2353,41 +2940,50 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
   },
   {
     "serial": 93,
-    "id": "DPS-4886564",
-    "name": "كرمانج ھڤال علي رشید",
-    "motherName": "ھنداڤ احمد خالد",
+    "id": "DPS-5526393",
+    "name": "لیان شھاب احمد طھ",
+    "motherName": "غربیھ عبداللھ سلیمان",
     "rollNumber": "DPS-093",
     "grade": "Grade 2",
     "section": "Class A",
-    "gender": "Male",
+    "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504587228",
-    "dob": "9/18/2019",
-    "bloodGroup": "A+",
-    "guardianEmail": "Ahmed.Bdalrhim@dasinya.com",
-    "guardianPassword": "123548",
-    "guardianPasswordAlt": "123549",
+    "phone": "07507317814",
+    "dob": "6/20/2019",
+    "bloodGroup": "AB+",
+    "guardianEmail": "Aland.Bezad@dasinya.com",
+    "guardianPassword": "123591",
+    "guardianPasswordAlt": "123629",
     "subjects": []
   },
   {
     "serial": 94,
-    "id": "DPS-4886571",
-    "name": "گھنج ھڤال علي رشید",
-    "motherName": "ھنداڤ احمد خالد",
+    "id": "DPS-5595838",
+    "name": "محمد أحمد جعفر طاھر",
+    "motherName": "شرین نعمت حسن",
     "rollNumber": "DPS-094",
     "grade": "Grade 2",
     "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504587228",
-    "dob": "9/18/2019",
-    "bloodGroup": "A+",
-    "guardianEmail": "Hvgr.Abid@dasinya.com",
-    "guardianPassword": "123549",
-    "guardianPasswordAlt": "123615",
-    "subjects": []
+    "phone": "07503033133",
+    "dob": "3/12/2019",
+    "bloodGroup": "O+",
+    "guardianEmail": "Arkan.Shmshun@dasinya.com",
+    "guardianPassword": "123569",
+    "guardianPasswordAlt": "123570",
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 95,
@@ -2463,7 +3059,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Kuvan.Ubaid@dasinya.com",
     "guardianPassword": "123553",
     "guardianPasswordAlt": "123554",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 99,
@@ -2482,7 +3087,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ismail.Saleh@dasinya.com",
     "guardianPassword": "123554",
     "guardianPasswordAlt": "123555",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 100,
@@ -2501,7 +3115,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Shirzad.Saleh@dasinya.com",
     "guardianPassword": "123555",
     "guardianPasswordAlt": "123556",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 101,
@@ -2520,7 +3143,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Adris.Abdullah@dasinya.com",
     "guardianPassword": "123556",
     "guardianPasswordAlt": "123557",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 102,
@@ -2539,7 +3171,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rani.Bniamin@dasinya.com",
     "guardianPassword": "123557",
     "guardianPasswordAlt": "123558",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 103,
@@ -2558,7 +3199,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sluan.Adnan@dasinya.com",
     "guardianPassword": "123558",
     "guardianPasswordAlt": "123559",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 104,
@@ -2577,7 +3227,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Brdl.Bdalftah@dasinya.com",
     "guardianPassword": "123559",
     "guardianPasswordAlt": "123560",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 105,
@@ -2596,7 +3255,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mievan.Shru@dasinya.com",
     "guardianPassword": "123560",
     "guardianPasswordAlt": "123561",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 106,
@@ -2615,7 +3283,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rikt.Hassan@dasinya.com",
     "guardianPassword": "123561",
     "guardianPasswordAlt": "123562",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 107,
@@ -2634,7 +3311,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hsni.Mohammed@dasinya.com",
     "guardianPassword": "123562",
     "guardianPasswordAlt": "123563",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 108,
@@ -2653,14 +3339,42 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mzir.Shawkat@dasinya.com",
     "guardianPassword": "123563",
     "guardianPasswordAlt": "123564",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
     "serial": 109,
+    "id": "DPS-5438626",
+    "name": "ساڤان ھمزە زیاد جاسم",
+    "motherName": "پھروهر عیسى حسن",
+    "rollNumber": "DPS-109",
+    "grade": "Grade 2",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07502314950",
+    "dob": "10/2/2019",
+    "bloodGroup": "A+",
+    "guardianEmail": "Shursh.Mohammed@dasinya.com",
+    "guardianPassword": "123545",
+    "guardianPasswordAlt": "123546",
+    "subjects": []
+  },
+  {
+    "serial": 110,
     "id": "DPS-5552590",
     "name": "سناریا دلشاد محمد حسین",
     "motherName": "أیمان محمد طاھر حسن",
-    "rollNumber": "DPS-109",
+    "rollNumber": "DPS-110",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Female",
@@ -2672,14 +3386,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mustafa.Bdalftah@dasinya.com",
     "guardianPassword": "123564",
     "guardianPasswordAlt": "123565",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 110,
+    "serial": 111,
     "id": "DPS-5673098",
     "name": "شادلي احمد عبدالرحیم عبدالرحیم",
     "motherName": "نوفین حسن حمي",
-    "rollNumber": "DPS-110",
+    "rollNumber": "DPS-111",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Female",
@@ -2691,14 +3414,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rifink.Bdalstar@dasinya.com",
     "guardianPassword": "123565",
     "guardianPasswordAlt": "123566",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 111,
+    "serial": 112,
     "id": "DPS-4900969",
     "name": "عمر محمد احمد مصطفى",
     "motherName": "نداء سامي",
-    "rollNumber": "DPS-111",
+    "rollNumber": "DPS-112",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Male",
@@ -2710,14 +3442,61 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sheab.Ahmed@dasinya.com",
     "guardianPassword": "123566",
     "guardianPasswordAlt": "123567",
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 113,
+    "id": "DPS-4886564",
+    "name": "كرمانج ھڤال علي رشید",
+    "motherName": "ھنداڤ احمد خالد",
+    "rollNumber": "DPS-113",
+    "grade": "Grade 2",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504587228",
+    "dob": "9/18/2019",
+    "bloodGroup": "A+",
+    "guardianEmail": "Ahmed.Bdalrhim@dasinya.com",
+    "guardianPassword": "123548",
+    "guardianPasswordAlt": "123549",
     "subjects": []
   },
   {
-    "serial": 112,
+    "serial": 114,
+    "id": "DPS-4886571",
+    "name": "گھنج ھڤال علي رشید",
+    "motherName": "ھنداڤ احمد خالد",
+    "rollNumber": "DPS-114",
+    "grade": "Grade 2",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504587228",
+    "dob": "9/18/2019",
+    "bloodGroup": "A+",
+    "guardianEmail": "Hvgr.Abid@dasinya.com",
+    "guardianPassword": "123549",
+    "guardianPasswordAlt": "123615",
+    "subjects": []
+  },
+  {
+    "serial": 115,
     "id": "DPS-5613613",
     "name": "لاوەند كوڤان عبید یاسین",
     "motherName": "ھیژا محمد طاھر",
-    "rollNumber": "DPS-112",
+    "rollNumber": "DPS-115",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Male",
@@ -2729,14 +3508,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Jfr@dasinya.com",
     "guardianPassword": "123567",
     "guardianPasswordAlt": "123568",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 113,
+    "serial": 116,
     "id": "DPS-5362752",
     "name": "لنا اسماعیل صالح عبدی",
     "motherName": "سھیلة انور صالح",
-    "rollNumber": "DPS-113",
+    "rollNumber": "DPS-116",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Female",
@@ -2748,33 +3536,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Yqzan.Saleh@dasinya.com",
     "guardianPassword": "123568",
     "guardianPasswordAlt": "123569",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 114,
-    "id": "DPS-5595838",
-    "name": "محمد أحمد جعفر طاھر",
-    "motherName": "شرین نعمت حسن",
-    "rollNumber": "DPS-114",
-    "grade": "Grade 2",
-    "section": "Class B",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07503033133",
-    "dob": "3/12/2019",
-    "bloodGroup": "O+",
-    "guardianEmail": "Arkan.Shmshun@dasinya.com",
-    "guardianPassword": "123569",
-    "guardianPasswordAlt": "123570",
-    "subjects": []
-  },
-  {
-    "serial": 115,
+    "serial": 117,
     "id": "DPS-5684429",
     "name": "ملک یقظان صالح یونس",
     "motherName": "شیماء وعد مجید",
-    "rollNumber": "DPS-115",
+    "rollNumber": "DPS-117",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Female",
@@ -2786,14 +3564,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Chpr.Rmzi@dasinya.com",
     "guardianPassword": "123570",
     "guardianPasswordAlt": "123571",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 116,
+    "serial": 118,
     "id": "DPS-4946619",
     "name": "مھران چھپھر رمزی احمد",
     "motherName": "اخینک عادل عبداللھ",
-    "rollNumber": "DPS-116",
+    "rollNumber": "DPS-118",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Male",
@@ -2805,14 +3592,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sabri.Hassan@dasinya.com",
     "guardianPassword": "123571",
     "guardianPasswordAlt": "123572",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 117,
+    "serial": 119,
     "id": "DPS-4907039",
     "name": "نازگول محمود لزکین ھادی",
     "motherName": "نرمین عبداللھ خم",
-    "rollNumber": "DPS-117",
+    "rollNumber": "DPS-119",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Female",
@@ -2824,14 +3620,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Shiruan.Ahmed@dasinya.com",
     "guardianPassword": "123572",
     "guardianPasswordAlt": "123573",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 118,
+    "serial": 120,
     "id": "DPS-5474039",
     "name": "وسیم شیرزاد صالح احمد",
     "motherName": "الھام خلیل ابراھیم",
-    "rollNumber": "DPS-118",
+    "rollNumber": "DPS-120",
     "grade": "Grade 2",
     "section": "Class B",
     "gender": "Male",
@@ -2843,14 +3648,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Bd.Alrhmn@dasinya.com",
     "guardianPassword": "123573",
     "guardianPasswordAlt": "123574",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "PE",
+        "code": "PE",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Official Term 1 PE Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 119,
+    "serial": 121,
     "id": "DPS-5659353",
     "name": "Havin Temel",
     "motherName": "یسری صالح کمال",
-    "rollNumber": "DPS-119",
+    "rollNumber": "DPS-121",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -2865,11 +3679,29 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 120,
+    "serial": 122,
+    "id": "DPS-5603021",
+    "name": "ئارا نشوان حسین عثمان",
+    "motherName": "وازین انور خورسید",
+    "rollNumber": "DPS-122",
+    "grade": "Grade 2",
+    "section": "Class C",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504122877",
+    "dob": "7/9/2019",
+    "bloodGroup": "A+",
+    "guardianEmail": "Zirvan.Mohammed@dasinya.com",
+    "guardianPassword": "123530",
+    "subjects": []
+  },
+  {
+    "serial": 123,
     "id": "DPS-5429094",
     "name": "آخرت شڤان صدیق حسین",
     "motherName": "روندك عبدالقادر سلیم",
-    "rollNumber": "DPS-120",
+    "rollNumber": "DPS-123",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -2884,11 +3716,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 121,
+    "serial": 124,
     "id": "DPS-5653516",
     "name": "ألیف لزگین كریم حسن",
     "motherName": "بیخال شمزین عبدى",
-    "rollNumber": "DPS-121",
+    "rollNumber": "DPS-124",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -2903,11 +3735,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 122,
+    "serial": 125,
     "id": "DPS-5513799",
     "name": "ادم بیوار حامد محمود",
     "motherName": "اواز عادل احمد",
-    "rollNumber": "DPS-122",
+    "rollNumber": "DPS-125",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -2922,17 +3754,17 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 123,
+    "serial": 126,
     "id": "DPS-5598224",
     "name": "ایلین ریبر شاكر سلیمان",
     "motherName": "ھیلان عبدالكریم سلیمان",
-    "rollNumber": "DPS-123",
+    "rollNumber": "DPS-126",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "",
+    "phone": "07504246918",
     "dob": "3/7/2019",
     "bloodGroup": "O+",
     "guardianEmail": "Majd.Bdalueab@dasinya.com",
@@ -2941,49 +3773,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 124,
-    "id": "DPS-5526405",
-    "name": "ایلاف عمر صدیق عبداللھ",
-    "motherName": "لیزان جانان محمد جسیم",
-    "rollNumber": "DPS-124",
-    "grade": "Grade 2",
-    "section": "Class C",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07504595468",
-    "dob": "10/5/2019",
-    "bloodGroup": "O+",
-    "guardianEmail": "Tariq.Ahmed@dasinya.com",
-    "guardianPassword": "123579",
-    "guardianPasswordAlt": "123580",
-    "subjects": []
-  },
-  {
-    "serial": 125,
-    "id": "DPS-4975564",
-    "name": "ایھان احمد جعفر فرحان",
-    "motherName": "دعاء یحیى حسین",
-    "rollNumber": "DPS-125",
-    "grade": "Grade 2",
-    "section": "Class C",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07503191588",
-    "dob": "10/29/2019",
-    "bloodGroup": "A-",
-    "guardianEmail": "Shivan.Sadiq2@dasinya.com",
-    "guardianPassword": "123580",
-    "guardianPasswordAlt": "123581",
-    "subjects": []
-  },
-  {
-    "serial": 126,
+    "serial": 127,
     "id": "DPS-4886544",
     "name": "بارز زیرڤان محمد حامد",
     "motherName": "سعدیھ تحسین عزیز",
-    "rollNumber": "DPS-126",
+    "rollNumber": "DPS-127",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -2998,11 +3792,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 127,
+    "serial": 128,
     "id": "DPS-5321566",
     "name": "بیلسان كفان نزیر عارف",
     "motherName": "یاسمین عبدالمجیب محمد",
-    "rollNumber": "DPS-127",
+    "rollNumber": "DPS-128",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3017,11 +3811,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 128,
+    "serial": 129,
     "id": "DPS-5429100",
     "name": "جنة شڤان صدیق حسین",
     "motherName": "روندك عبدالقادر سلیم",
-    "rollNumber": "DPS-128",
+    "rollNumber": "DPS-129",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3036,11 +3830,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 129,
+    "serial": 130,
     "id": "DPS-5659346",
     "name": "دانیة میھڤان شرو صالح",
     "motherName": "رسلان خالد کاظم",
-    "rollNumber": "DPS-129",
+    "rollNumber": "DPS-130",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3055,11 +3849,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 130,
+    "serial": 131,
     "id": "DPS-5424499",
     "name": "دیڤان ریكت حسن محمد",
     "motherName": "ھھژین عبد العزیز محمد",
-    "rollNumber": "DPS-130",
+    "rollNumber": "DPS-131",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -3074,11 +3868,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 131,
+    "serial": 132,
     "id": "DPS-5435144",
     "name": "سیھاد عیسی عبدالحمید نادر",
     "motherName": "نرکز عصمت محمدعلی",
-    "rollNumber": "DPS-131",
+    "rollNumber": "DPS-132",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -3093,11 +3887,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 132,
+    "serial": 133,
     "id": "DPS-5472185",
     "name": "شارا حسنی محمد حسن",
     "motherName": "لیلى شكر خورشید",
-    "rollNumber": "DPS-132",
+    "rollNumber": "DPS-133",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3112,11 +3906,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 133,
+    "serial": 134,
     "id": "DPS-5502432",
     "name": "شوكت مزیر شوكت عابد",
     "motherName": "لینا طھ غازى",
-    "rollNumber": "DPS-133",
+    "rollNumber": "DPS-134",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Male",
@@ -3131,11 +3925,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 134,
+    "serial": 135,
     "id": "DPS-5380477",
     "name": "كھیف مصطفى عبدالفتاح مصطفى",
     "motherName": "دلڤین فائق احمد",
-    "rollNumber": "DPS-134",
+    "rollNumber": "DPS-135",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3150,11 +3944,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 135,
+    "serial": 136,
     "id": "DPS-5479136",
     "name": "لافین ریفینک عبدالستار احمد",
     "motherName": "نیھال میکائیل شیدو",
-    "rollNumber": "DPS-135",
+    "rollNumber": "DPS-136",
     "grade": "Grade 2",
     "section": "Class C",
     "gender": "Female",
@@ -3166,25 +3960,6 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hevall.Mohammed@dasinya.com",
     "guardianPassword": "123590",
     "guardianPasswordAlt": "123591",
-    "subjects": []
-  },
-  {
-    "serial": 136,
-    "id": "DPS-5526393",
-    "name": "لیان شھاب احمد طھ",
-    "motherName": "غربیھ عبداللھ سلیمان",
-    "rollNumber": "DPS-136",
-    "grade": "Grade 2",
-    "section": "Class C",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07507317814",
-    "dob": "6/20/2019",
-    "bloodGroup": "AB+",
-    "guardianEmail": "Aland.Bezad@dasinya.com",
-    "guardianPassword": "123591",
-    "guardianPasswordAlt": "123629",
     "subjects": []
   },
   {
@@ -3228,8 +4003,8 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
   {
     "serial": 139,
     "id": "DPS-5654529",
-    "name": "ھیوا عبد الرحمن جلال",
-    "motherName": "",
+    "name": "ھیوا عبد الرحمن جلال الدین عبد الکریم",
+    "motherName": "سھام اسماعیل شعبان",
     "rollNumber": "DPS-139",
     "grade": "Grade 2",
     "section": "Class C",
@@ -3255,7 +4030,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "",
+    "phone": "4954029",
     "dob": "10/6/2019",
     "bloodGroup": "A+",
     "guardianEmail": "Hunar.Mohammed@dasinya.com",
@@ -3274,7 +4049,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07500164391",
+    "phone": "075001643914",
     "dob": "6/22/2018",
     "bloodGroup": "A+",
     "guardianEmail": "Amr.Hassan@dasinya.com",
@@ -3360,29 +4135,48 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
   },
   {
     "serial": 146,
-    "id": "DPS-4898369",
-    "name": "حسن بھزاد حسن محمد",
-    "motherName": "بیمان اسماعیل جنبلى",
+    "id": "DPS-4899403",
+    "name": "الند ماجد عبدالوھاب قادر",
+    "motherName": "خالده رشید",
     "rollNumber": "DPS-146",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07506656209",
-    "dob": "4/24/2018",
-    "bloodGroup": "A+",
-    "guardianEmail": "Ahmed.Biyar@dasinya.com",
-    "guardianPassword": "123601",
-    "guardianPasswordAlt": "123602",
+    "phone": "07503458292",
+    "dob": "1/7/2018",
+    "bloodGroup": "O+",
+    "guardianEmail": "Sharfan.Adel@dasinya.com",
+    "guardianPassword": "123613",
+    "guardianPasswordAlt": "123623",
     "subjects": []
   },
   {
     "serial": 147,
+    "id": "DPS-5376011",
+    "name": "الین طارق احمد عبدالرحمن",
+    "motherName": "دیمن سلیم عبدالرحمن",
+    "rollNumber": "DPS-147",
+    "grade": "Grade 3",
+    "section": "Class A",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504108063",
+    "dob": "7/25/2018",
+    "bloodGroup": "B+",
+    "guardianEmail": "Hvgr.Abid@dasinya.com",
+    "guardianPassword": "123614",
+    "guardianPasswordAlt": "123615",
+    "subjects": []
+  },
+  {
+    "serial": 148,
     "id": "DPS-5020500",
     "name": "دالیا رائد جمیل احمد",
     "motherName": "نادیا اركان نشات",
-    "rollNumber": "DPS-147",
+    "rollNumber": "DPS-148",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Female",
@@ -3397,30 +4191,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 148,
-    "id": "DPS-5020407",
-    "name": "سامان شفان سالم محمدسلیم",
-    "motherName": "ژیان مصطفى محمدامین",
-    "rollNumber": "DPS-148",
+    "serial": 149,
+    "id": "DPS-4933352",
+    "name": "رویا ئارزو دیدار حسن",
+    "motherName": "وان سھ ركار فخر الدین",
+    "rollNumber": "DPS-149",
     "grade": "Grade 3",
     "section": "Class A",
-    "gender": "Male",
+    "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504431996",
-    "dob": "12/22/2018",
-    "bloodGroup": "O+",
-    "guardianEmail": "Lashkar.Hussein@dasinya.com",
-    "guardianPassword": "123603",
-    "guardianPasswordAlt": "123680",
+    "phone": "07504884004",
+    "dob": "12/5/2018",
+    "bloodGroup": "A+",
+    "guardianEmail": "Kuvan.Ubaid@dasinya.com",
+    "guardianPassword": "123618",
+    "guardianPasswordAlt": "123619",
     "subjects": []
   },
   {
-    "serial": 149,
+    "serial": 150,
     "id": "DPS-4646767",
     "name": "شارا ھوار عبدالکریم سعید",
     "motherName": "روناک تحسین عونى",
-    "rollNumber": "DPS-149",
+    "rollNumber": "DPS-150",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Female",
@@ -3435,11 +4229,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 150,
+    "serial": 151,
     "id": "DPS-5150255",
     "name": "شیماء المان حازم محمد",
     "motherName": "شرین احمد موسى",
-    "rollNumber": "DPS-150",
+    "rollNumber": "DPS-151",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Female",
@@ -3454,68 +4248,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 151,
-    "id": "DPS-5893823",
-    "name": "لاوك شڤان عبدالمجید سعداللھ",
-    "motherName": "نرمین یوسف ناصر",
-    "rollNumber": "DPS-151",
-    "grade": "Grade 3",
-    "section": "Class A",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07507337525",
-    "dob": "11/2/2017",
-    "bloodGroup": "A+",
-    "guardianEmail": "Kivi.Bdal@dasinya.com",
-    "guardianPassword": "123606",
-    "guardianPasswordAlt": "123607",
-    "subjects": []
-  },
-  {
     "serial": 152,
-    "id": "DPS-5460027",
-    "name": "لاوك ھڤال محمد صالح حسین",
-    "motherName": "محمد سلیم امین",
-    "rollNumber": "DPS-152",
-    "grade": "Grade 3",
-    "section": "Class A",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07504553099",
-    "dob": "10/22/2018",
-    "bloodGroup": "A+",
-    "guardianEmail": "Guedar.Suleiman@dasinya.com",
-    "guardianPassword": "123607",
-    "guardianPasswordAlt": "123608",
-    "subjects": []
-  },
-  {
-    "serial": 153,
-    "id": "DPS-5891394",
-    "name": "لفند عمر ابراھیم موسى",
-    "motherName": "روضھ حسن رمضان",
-    "rollNumber": "DPS-153",
-    "grade": "Grade 3",
-    "section": "Class A",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07508422041",
-    "dob": "9/16/2018",
-    "bloodGroup": "O+",
-    "guardianEmail": "Nzar.Nadr@dasinya.com",
-    "guardianPassword": "123608",
-    "guardianPasswordAlt": "123641",
-    "subjects": []
-  },
-  {
-    "serial": 154,
     "id": "DPS-4616010",
     "name": "محمد الند بھزاد فاضل",
     "motherName": "سوزان احمد موسی",
-    "rollNumber": "DPS-154",
+    "rollNumber": "DPS-152",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Male",
@@ -3530,11 +4267,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 155,
+    "serial": 153,
     "id": "DPS-4901951",
     "name": "محمد نیرون تحسین صالح",
     "motherName": "غمكین محمد سعید",
-    "rollNumber": "DPS-155",
+    "rollNumber": "DPS-153",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Male",
@@ -3549,11 +4286,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 156,
+    "serial": 154,
     "id": "DPS-5892660",
     "name": "میدى چاڤان سھرکھوت احمد سامي",
     "motherName": "جیلان سلیم حسین",
-    "rollNumber": "DPS-156",
+    "rollNumber": "DPS-154",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Male",
@@ -3568,11 +4305,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 157,
+    "serial": 155,
     "id": "DPS-4922317",
     "name": "میلا ھضمن محمد سلمان امین",
     "motherName": "ژین تحسین عوني",
-    "rollNumber": "DPS-157",
+    "rollNumber": "DPS-155",
     "grade": "Grade 3",
     "section": "Class A",
     "gender": "Female",
@@ -3587,49 +4324,49 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 158,
-    "id": "DPS-4899403",
-    "name": "الند ماجد عبدالوھاب قادر",
-    "motherName": "خالده رشید",
-    "rollNumber": "DPS-158",
+    "serial": 156,
+    "id": "DPS-4963172",
+    "name": "ھارى ئامانج مصطفى نجمان",
+    "motherName": "ھلڤین محمد محمود",
+    "rollNumber": "DPS-156",
     "grade": "Grade 3",
-    "section": "Class B",
+    "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07503458292",
-    "dob": "1/7/2018",
+    "phone": "07504045032",
+    "dob": "6/18/2018",
     "bloodGroup": "O+",
-    "guardianEmail": "Sharfan.Adel@dasinya.com",
-    "guardianPassword": "123613",
-    "guardianPasswordAlt": "123623",
+    "guardianEmail": "Majd.Salem@dasinya.com",
+    "guardianPassword": "123621",
+    "guardianPasswordAlt": "123622",
     "subjects": []
   },
   {
-    "serial": 159,
-    "id": "DPS-5376011",
-    "name": "الین طارق احمد عبدالرحمن",
-    "motherName": "دیمن سلیم عبدالرحمن",
-    "rollNumber": "DPS-159",
+    "serial": 157,
+    "id": "DPS-4503410",
+    "name": "بینا عصمت احمد حسن",
+    "motherName": "منطیقھ طاھر خلیل",
+    "rollNumber": "DPS-157",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504108063",
-    "dob": "7/25/2018",
-    "bloodGroup": "B+",
-    "guardianEmail": "Hvgr.Abid@dasinya.com",
-    "guardianPassword": "123614",
-    "guardianPasswordAlt": "123615",
+    "phone": "07504737046",
+    "dob": "7/1/2018",
+    "bloodGroup": "A+",
+    "guardianEmail": "Nuzad.Khalid@dasinya.com",
+    "guardianPassword": "123623",
+    "guardianPasswordAlt": "123624",
     "subjects": []
   },
   {
-    "serial": 160,
+    "serial": 158,
     "id": "DPS-4857974",
     "name": "پھنا شڤان صدیق حسین",
     "motherName": "روندك عبدالقادر محمد سلیم",
-    "rollNumber": "DPS-160",
+    "rollNumber": "DPS-158",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
@@ -3644,11 +4381,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 161,
+    "serial": 159,
     "id": "DPS-5226857",
     "name": "تانیا جلال شاکر سلیمان",
     "motherName": "جیلان محمد کریم",
-    "rollNumber": "DPS-161",
+    "rollNumber": "DPS-159",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
@@ -3663,11 +4400,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 162,
+    "serial": 160,
     "id": "DPS-5715861",
     "name": "تھنیا حسن بھجت عیسی",
     "motherName": "بروین اسعد عیسى",
-    "rollNumber": "DPS-162",
+    "rollNumber": "DPS-160",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
@@ -3682,30 +4419,49 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 163,
-    "id": "DPS-4933352",
-    "name": "رویا ئارزو دیدار حسن",
-    "motherName": "وان سھ ركار فخر الدین",
-    "rollNumber": "DPS-163",
+    "serial": 161,
+    "id": "DPS-4898369",
+    "name": "حسن بھزاد حسن محمد",
+    "motherName": "بیمان اسماعیل جنبلى",
+    "rollNumber": "DPS-161",
     "grade": "Grade 3",
     "section": "Class B",
-    "gender": "Female",
+    "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504884004",
-    "dob": "12/5/2018",
+    "phone": "07506656209",
+    "dob": "4/24/2018",
     "bloodGroup": "A+",
-    "guardianEmail": "Kuvan.Ubaid@dasinya.com",
-    "guardianPassword": "123618",
-    "guardianPasswordAlt": "123619",
+    "guardianEmail": "Ahmed.Biyar@dasinya.com",
+    "guardianPassword": "123601",
+    "guardianPasswordAlt": "123602",
     "subjects": []
   },
   {
-    "serial": 164,
+    "serial": 162,
+    "id": "DPS-5020407",
+    "name": "سامان شفان سالم محمدسلیم",
+    "motherName": "ژیان مصطفى محمدامین",
+    "rollNumber": "DPS-162",
+    "grade": "Grade 3",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504431996",
+    "dob": "12/22/2018",
+    "bloodGroup": "O+",
+    "guardianEmail": "Lashkar.Hussein@dasinya.com",
+    "guardianPassword": "123603",
+    "guardianPasswordAlt": "123680",
+    "subjects": []
+  },
+  {
+    "serial": 163,
     "id": "DPS-4772163",
     "name": "ساکار ئاری مصطفی عبدالقدوس",
     "motherName": "ریژین شاكر سلیمان",
-    "rollNumber": "DPS-164",
+    "rollNumber": "DPS-163",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Male",
@@ -3720,11 +4476,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 165,
+    "serial": 164,
     "id": "DPS-5150377",
     "name": "فرح محمد الیاس",
     "motherName": "نوار عدنان محمود",
-    "rollNumber": "DPS-165",
+    "rollNumber": "DPS-164",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
@@ -3739,30 +4495,68 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
+    "serial": 165,
+    "id": "DPS-5893823",
+    "name": "لاوك شڤان عبدالمجید سعداللھ",
+    "motherName": "نرمین یوسف ناصر",
+    "rollNumber": "DPS-165",
+    "grade": "Grade 3",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07507337525",
+    "dob": "11/2/2017",
+    "bloodGroup": "A+",
+    "guardianEmail": "Kivi.Bdal@dasinya.com",
+    "guardianPassword": "123606",
+    "guardianPasswordAlt": "123607",
+    "subjects": []
+  },
+  {
     "serial": 166,
-    "id": "DPS-4963172",
-    "name": "ھارى ئامانج مصطفى نجمان",
-    "motherName": "ھلڤین محمد محمود",
+    "id": "DPS-5460027",
+    "name": "لاوك ھڤال محمد صالح حسین",
+    "motherName": "Ma محمد سلیم امین",
     "rollNumber": "DPS-166",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "07504045032",
-    "dob": "6/18/2018",
-    "bloodGroup": "O+",
-    "guardianEmail": "Majd.Salem@dasinya.com",
-    "guardianPassword": "123621",
-    "guardianPasswordAlt": "123622",
+    "phone": "07504553099",
+    "dob": "10/22/2018",
+    "bloodGroup": "A+",
+    "guardianEmail": "Guedar.Suleiman@dasinya.com",
+    "guardianPassword": "123607",
+    "guardianPasswordAlt": "123608",
     "subjects": []
   },
   {
     "serial": 167,
+    "id": "DPS-5891394",
+    "name": "لفند عمر ابراھیم موسى",
+    "motherName": "روضھ حسن رمضان",
+    "rollNumber": "DPS-167",
+    "grade": "Grade 3",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07508422041",
+    "dob": "9/16/2018",
+    "bloodGroup": "O+",
+    "guardianEmail": "Nzar.Nadr@dasinya.com",
+    "guardianPassword": "123608",
+    "guardianPasswordAlt": "123641",
+    "subjects": []
+  },
+  {
+    "serial": 168,
     "id": "DPS-4944998",
     "name": "ھھیڤ نیجیرڤان محمدعلي",
     "motherName": "كنیر عادل یونس",
-    "rollNumber": "DPS-167",
+    "rollNumber": "DPS-168",
     "grade": "Grade 3",
     "section": "Class B",
     "gender": "Female",
@@ -3774,25 +4568,6 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sharfan.Adel@dasinya.com",
     "guardianPassword": "123622",
     "guardianPasswordAlt": "123623",
-    "subjects": []
-  },
-  {
-    "serial": 168,
-    "id": "DPS-4503410",
-    "name": "بینا عصمت احمد حسن",
-    "motherName": "منطقھ طاھر خلیل",
-    "rollNumber": "DPS-168",
-    "grade": "Grade 3",
-    "section": "Class E",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07504737046",
-    "dob": "7/1/2018",
-    "bloodGroup": "A+",
-    "guardianEmail": "Nuzad.Khalid@dasinya.com",
-    "guardianPassword": "123623",
-    "guardianPasswordAlt": "123624",
     "subjects": []
   },
   {
@@ -3820,6 +4595,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3848,6 +4631,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 6,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "Needs Improvement",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3876,6 +4667,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3904,6 +4703,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "Needs Improvement",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3932,6 +4739,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 8,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3960,6 +4775,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -3988,6 +4811,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4016,6 +4847,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4026,7 +4865,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "نرمین یوسف ناصر",
     "rollNumber": "DPS-177",
     "grade": "Grade 4",
-    "section": "Class B",
+    "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
@@ -4044,6 +4883,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 13,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4072,6 +4919,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4100,6 +4955,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4128,6 +4991,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 13,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4156,6 +5027,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4184,6 +5063,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "C",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4212,6 +5099,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "C",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4240,6 +5135,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 11,
         "grade": "C",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4268,6 +5171,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 11,
         "grade": "C",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4296,6 +5207,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 14,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4324,6 +5243,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 12,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4352,6 +5279,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4380,6 +5315,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4408,6 +5351,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4436,6 +5387,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4446,7 +5405,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "motherName": "لورین یوسف خالد",
     "rollNumber": "DPS-192",
     "grade": "Grade 4",
-    "section": "Class A",
+    "section": "Class B",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
@@ -4464,6 +5423,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4492,6 +5459,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 1,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4520,6 +5495,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 1,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 1,
+        "grade": "Needs Improvement",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4548,6 +5531,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 1,
+        "grade": "Needs Improvement",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
@@ -4576,15 +5567,41 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
     "serial": 197,
+    "id": "DPS-4608019",
+    "name": "سیلین كاروان عادل جمیل",
+    "motherName": "شھد طالب وھاب",
+    "rollNumber": "DPS-197",
+    "grade": "Grade 4",
+    "section": "Class B",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504563870",
+    "dob": "1/24/2018",
+    "bloodGroup": "O+",
+    "guardianEmail": "Celin.Karwan@Dasinya.com",
+    "guardianPassword": "123759",
+    "subjects": []
+  },
+  {
+    "serial": 198,
     "id": "DPS-5891410",
     "name": "سیڤا چاڤان سھرکھوت احمد سامي",
     "motherName": "جیلان سلیم حسین",
-    "rollNumber": "DPS-197",
+    "rollNumber": "DPS-198",
     "grade": "Grade 4",
     "section": "Class B",
     "gender": "Female",
@@ -4604,17 +5621,25 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 198,
+    "serial": 199,
     "id": "DPS-4537710",
     "name": "شاد فرید وحید عبدالعزیز",
     "motherName": "ژیمان محسن اسلام",
-    "rollNumber": "DPS-198",
+    "rollNumber": "DPS-199",
     "grade": "Grade 4",
-    "section": "Class A",
+    "section": "Class B",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
@@ -4632,15 +5657,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 199,
+    "serial": 200,
     "id": "DPS-5148397",
     "name": "لاڤین کوڤان عبید یاسین",
     "motherName": "ھضژا محمد طاھر",
-    "rollNumber": "DPS-199",
+    "rollNumber": "DPS-200",
     "grade": "Grade 4",
     "section": "Class B",
     "gender": "Female",
@@ -4660,15 +5693,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 200,
+    "serial": 201,
     "id": "DPS-4330737",
     "name": "لاڤین فتاح مجید خلف",
     "motherName": "ھیوا عبداللھ حسن",
-    "rollNumber": "DPS-200",
+    "rollNumber": "DPS-201",
     "grade": "Grade 4",
     "section": "Class B",
     "gender": "Female",
@@ -4688,15 +5729,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 13,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 201,
+    "serial": 202,
     "id": "DPS-4303754",
     "name": "ھیڤیان کاروان کاظم مصطفى",
     "motherName": "سیپل عبدالعزیز محمد امین",
-    "rollNumber": "DPS-201",
+    "rollNumber": "DPS-202",
     "grade": "Grade 4",
     "section": "Class B",
     "gender": "Female",
@@ -4716,15 +5765,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 202,
+    "serial": 203,
     "id": "DPS-4932401",
     "name": "یوسف محمود صالح",
     "motherName": "زھراء عبدالخالق صالح",
-    "rollNumber": "DPS-202",
+    "rollNumber": "DPS-203",
     "grade": "Grade 4",
     "section": "Class B",
     "gender": "Male",
@@ -4744,15 +5801,51 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   },
   {
-    "serial": 203,
+    "serial": 204,
+    "id": "DPS-4469361",
+    "name": "Arjin Avesta Temel",
+    "motherName": "یسری صالح کمال",
+    "rollNumber": "DPS-204",
+    "grade": "Grade 5",
+    "section": "Class A",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07436950288",
+    "dob": "2/22/2016",
+    "bloodGroup": "A+",
+    "guardianEmail": "Tahsin.Hassan@dasinya.com",
+    "guardianPassword": "123678",
+    "guardianPasswordAlt": "123679",
+    "subjects": [
+      {
+        "subject": "Kurdish",
+        "code": "KUR",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 205,
     "id": "DPS-4350403",
     "name": "ئاروخ خوگر حمید",
     "motherName": "چیمن صدیق احمد",
-    "rollNumber": "DPS-203",
+    "rollNumber": "DPS-205",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -4776,11 +5869,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 204,
+    "serial": 206,
     "id": "DPS-4398596",
     "name": "آدم رمضان حمید تیلي",
     "motherName": "روژین محمد جرجیس",
-    "rollNumber": "DPS-204",
+    "rollNumber": "DPS-206",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -4804,11 +5897,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 205,
+    "serial": 207,
     "id": "DPS-4651207",
     "name": "احمد وائل محمدطاھر صبغة اللھ",
     "motherName": "خانزاد محمد مظھر صبغة اللھ",
-    "rollNumber": "DPS-205",
+    "rollNumber": "DPS-207",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -4832,11 +5925,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 206,
+    "serial": 208,
     "id": "DPS-4564660",
     "name": "بیتانوك رشاد موسى مصطفى",
     "motherName": "انفال صدیق حامد",
-    "rollNumber": "DPS-206",
+    "rollNumber": "DPS-208",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -4860,11 +5953,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 207,
+    "serial": 209,
     "id": "DPS-4564411",
     "name": "بیل نزاز نادر یونس",
     "motherName": "رفین احمد حسن",
-    "rollNumber": "DPS-207",
+    "rollNumber": "DPS-209",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -4888,11 +5981,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 208,
+    "serial": 210,
     "id": "DPS-4242469",
     "name": "بھرضز اومید نجیب محمد",
     "motherName": "روژین مھدي عمر",
-    "rollNumber": "DPS-208",
+    "rollNumber": "DPS-210",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -4916,11 +6009,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 209,
+    "serial": 211,
     "id": "DPS-4312375",
     "name": "تانیا عصمت محمود محمد",
     "motherName": "زورین عبدالفتاح علی",
-    "rollNumber": "DPS-209",
+    "rollNumber": "DPS-211",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -4944,11 +6037,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 210,
+    "serial": 212,
     "id": "DPS-4564686",
     "name": "جاك رشاد موسى مصطفى",
     "motherName": "انفال صدیق حامد",
-    "rollNumber": "DPS-210",
+    "rollNumber": "DPS-212",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -4972,11 +6065,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 211,
+    "serial": 213,
     "id": "DPS-4627109",
     "name": "جوان حسن احمد بکر",
     "motherName": "صولین عبداللھ على",
-    "rollNumber": "DPS-211",
+    "rollNumber": "DPS-213",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -5000,11 +6093,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 212,
+    "serial": 214,
     "id": "DPS-4623988",
     "name": "خھندە چلنك أحمد محمد",
     "motherName": "ھوزان أحمد موسى",
-    "rollNumber": "DPS-212",
+    "rollNumber": "DPS-214",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -5028,11 +6121,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 213,
+    "serial": 215,
     "id": "DPS-4350465",
     "name": "دانا ھنیر حمید",
     "motherName": "زینب ایفار محمد صدیق",
-    "rollNumber": "DPS-213",
+    "rollNumber": "DPS-215",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5056,11 +6149,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 214,
+    "serial": 216,
     "id": "DPS-3646401",
     "name": "سارکیس ماسیس مراد ماردیروس",
     "motherName": "مریم فاھیك مماركار",
-    "rollNumber": "DPS-214",
+    "rollNumber": "DPS-216",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5084,39 +6177,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 215,
-    "id": "DPS-4311937",
-    "name": "شان اراز عبداللھ علی",
-    "motherName": "کاژین عبدالقادر احمد",
-    "rollNumber": "DPS-215",
-    "grade": "Grade 5",
-    "section": "Class B",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07509958998",
-    "dob": "6/2/2016",
-    "bloodGroup": "O+",
-    "guardianEmail": "Ahmed.Bdaltif@dasinya.com",
-    "guardianPassword": "123670",
-    "guardianPasswordAlt": "123671",
-    "subjects": [
-      {
-        "subject": "Kurdish",
-        "code": "KUR",
-        "maxMarks": 20,
-        "obtainedMarks": 16,
-        "grade": "A",
-        "remarks": "Official Term 1 Kurdish Exam Evaluation"
-      }
-    ]
-  },
-  {
-    "serial": 216,
+    "serial": 217,
     "id": "DPS-4398837",
     "name": "شاه محمد سردار عبداللھ",
     "motherName": "شھلا یوسف یعقوب",
-    "rollNumber": "DPS-216",
+    "rollNumber": "DPS-217",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5140,11 +6205,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 217,
+    "serial": 218,
     "id": "DPS-4233321",
     "name": "على احمد حسین احمد",
     "motherName": "روژان سعید احمد",
-    "rollNumber": "DPS-217",
+    "rollNumber": "DPS-218",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5168,11 +6233,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 218,
+    "serial": 219,
     "id": "DPS-4404483",
     "name": "لاوو الند بھزاد فاضل",
     "motherName": "سوزان احمد موسى",
-    "rollNumber": "DPS-218",
+    "rollNumber": "DPS-219",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5196,11 +6261,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 219,
+    "serial": 220,
     "id": "DPS-5127847",
     "name": "لیندا کاوار عادل عبیداللھ",
     "motherName": "ھزین سفر رشید",
-    "rollNumber": "DPS-219",
+    "rollNumber": "DPS-220",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -5224,11 +6289,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 220,
+    "serial": 221,
     "id": "DPS-4289451",
     "name": "ماریبل مارك زیا جونة",
     "motherName": "مریم بھجة شموئیل",
-    "rollNumber": "DPS-220",
+    "rollNumber": "DPS-221",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -5252,11 +6317,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 221,
+    "serial": 222,
     "id": "DPS-4944226",
     "name": "میلا ھھكار نافع رمضان",
     "motherName": "شھد تحسین حسن",
-    "rollNumber": "DPS-221",
+    "rollNumber": "DPS-222",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Female",
@@ -5280,11 +6345,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 222,
+    "serial": 223,
     "id": "DPS-4497886",
     "name": "یاد ئالان مصطفی نجمان",
     "motherName": "بیریڤان عبدالغور خلیل",
-    "rollNumber": "DPS-222",
+    "rollNumber": "DPS-223",
     "grade": "Grade 5",
     "section": "Class A",
     "gender": "Male",
@@ -5303,34 +6368,6 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 14,
         "grade": "B+",
-        "remarks": "Official Term 1 Kurdish Exam Evaluation"
-      }
-    ]
-  },
-  {
-    "serial": 223,
-    "id": "DPS-4469361",
-    "name": "Arjin Avesta Temel",
-    "motherName": "یسری کمال صالح",
-    "rollNumber": "DPS-223",
-    "grade": "Grade 5",
-    "section": "Class A",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07436950288",
-    "dob": "2/22/2016",
-    "bloodGroup": "A+",
-    "guardianEmail": "Tahsin.Hassan@dasinya.com",
-    "guardianPassword": "123678",
-    "guardianPasswordAlt": "123679",
-    "subjects": [
-      {
-        "subject": "Kurdish",
-        "code": "KUR",
-        "maxMarks": 20,
-        "obtainedMarks": 20,
-        "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
       }
     ]
@@ -5423,7 +6460,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "serial": 227,
     "id": "DPS-4355687",
     "name": "دلجان أیاز عبدالرحیم حسین",
-    "motherName": "عھد نجم الدین عبداللھ",
+    "motherName": "Abdulraheem عھد نجم الدین عبداللھ",
     "rollNumber": "DPS-227",
     "grade": "Grade 5",
     "section": "Class B",
@@ -5617,10 +6654,38 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
   },
   {
     "serial": 234,
+    "id": "DPS-4311937",
+    "name": "شان اراز عبداللھ علی",
+    "motherName": "کاژین عبدالقادر احمد",
+    "rollNumber": "DPS-234",
+    "grade": "Grade 5",
+    "section": "Class B",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07509958998",
+    "dob": "6/2/2016",
+    "bloodGroup": "O+",
+    "guardianEmail": "Ahmed.Bdaltif@dasinya.com",
+    "guardianPassword": "123670",
+    "guardianPasswordAlt": "123671",
+    "subjects": [
+      {
+        "subject": "Kurdish",
+        "code": "KUR",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 235,
     "id": "DPS-4355904",
     "name": "شاھى احسان سعداللھ علي",
     "motherName": "وارین عبدالكریم رمزان",
-    "rollNumber": "DPS-234",
+    "rollNumber": "DPS-235",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Female",
@@ -5644,11 +6709,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 235,
+    "serial": 236,
     "id": "DPS-4701352",
     "name": "شربل وسیم کریم لوقا",
     "motherName": "ناتالى نورى صلیو",
-    "rollNumber": "DPS-235",
+    "rollNumber": "DPS-236",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Male",
@@ -5672,11 +6737,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 236,
+    "serial": 237,
     "id": "DPS-4619923",
     "name": "لارین عماد خلیل ابراھیم",
     "motherName": "شرمین توفیق رمضان",
-    "rollNumber": "DPS-236",
+    "rollNumber": "DPS-237",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Female",
@@ -5700,11 +6765,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 237,
+    "serial": 238,
     "id": "DPS-4610823",
     "name": "محمد مصطفى حسین رشاد",
     "motherName": "نشمیل محمود عمر",
-    "rollNumber": "DPS-237",
+    "rollNumber": "DPS-238",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Male",
@@ -5728,11 +6793,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 238,
+    "serial": 239,
     "id": "DPS-4263443",
     "name": "میرا زیمار كامیران لزكین",
     "motherName": "فیان فاضل محمد امین",
-    "rollNumber": "DPS-238",
+    "rollNumber": "DPS-239",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Female",
@@ -5756,11 +6821,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 239,
+    "serial": 240,
     "id": "DPS-5479322",
     "name": "میلا لشکھر حسین عمرخان",
     "motherName": "برین شمال عمرخان",
-    "rollNumber": "DPS-239",
+    "rollNumber": "DPS-240",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Female",
@@ -5784,11 +6849,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 240,
+    "serial": 241,
     "id": "DPS-5479920",
     "name": "ھھیڤ ھرمان محمدطاھر محمود",
     "motherName": "شرین نورى خلیل",
-    "rollNumber": "DPS-240",
+    "rollNumber": "DPS-241",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Female",
@@ -5812,11 +6877,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 241,
+    "serial": 242,
     "id": "DPS-4243957",
     "name": "وتین محمود لزكین ھارى",
     "motherName": "نرمین عبداللھ خم",
-    "rollNumber": "DPS-241",
+    "rollNumber": "DPS-242",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Male",
@@ -5840,11 +6905,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 242,
+    "serial": 243,
     "id": "DPS-4270582",
     "name": "یاد سكفان محمدعلي",
     "motherName": "ھدى محمدعلي عبداللھ",
-    "rollNumber": "DPS-242",
+    "rollNumber": "DPS-243",
     "grade": "Grade 5",
     "section": "Class B",
     "gender": "Male",
@@ -5868,11 +6933,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     ]
   },
   {
-    "serial": 243,
+    "serial": 244,
     "id": "DPS-4195554",
     "name": "ئارام سامان سیدطھ سیداحمد",
     "motherName": "زھراء خیرى رمضان",
-    "rollNumber": "DPS-243",
+    "rollNumber": "DPS-244",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -5884,14 +6949,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Amr.Hassan@dasinya.com",
     "guardianPassword": "123698",
     "guardianPasswordAlt": "123597",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 244,
+    "serial": 245,
     "id": "DPS-4948100",
     "name": "ئاھھنگ جمیل",
     "motherName": "ھزرین طالب بکر",
-    "rollNumber": "DPS-244",
+    "rollNumber": "DPS-245",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -5903,14 +6977,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aln.Tbsima@dasinya.com",
     "guardianPassword": "123699",
     "guardianPasswordAlt": "123700",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 245,
+    "serial": 246,
     "id": "DPS-4207665",
     "name": "ئیڤا حسن احمد بكر",
     "motherName": "صولین عبداللھ على",
-    "rollNumber": "DPS-245",
+    "rollNumber": "DPS-246",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -5922,14 +7005,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aumid.Njib@dasinya.com",
     "guardianPassword": "123700",
     "guardianPasswordAlt": "123701",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 246,
+    "serial": 247,
     "id": "DPS-4148942",
     "name": "ئضلین فرھاد لزكین كریم",
     "motherName": "ھدار غازي اسماعیل",
-    "rollNumber": "DPS-246",
+    "rollNumber": "DPS-247",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -5941,14 +7033,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Alman.Hazim@dasinya.com",
     "guardianPassword": "123701",
     "guardianPasswordAlt": "123702",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 247,
+    "serial": 248,
     "id": "DPS-795398",
     "name": "ئھلند فرھاد لزکین کریم",
     "motherName": "ھدار غازي اسماعیل",
-    "rollNumber": "DPS-247",
+    "rollNumber": "DPS-248",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -5960,14 +7061,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Zirvan.Ahsan@dasinya.com",
     "guardianPassword": "123702",
     "guardianPasswordAlt": "123703",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 248,
+    "serial": 249,
     "id": "DPS-4206756",
     "name": "اناء پضشكھفت عبدالكریم عمر",
     "motherName": "دیروك نجیب محمد",
-    "rollNumber": "DPS-248",
+    "rollNumber": "DPS-249",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -5979,14 +7089,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Saeed.Haji@dasinya.com",
     "guardianPassword": "123703",
     "guardianPasswordAlt": "123704",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 249,
+    "serial": 250,
     "id": "DPS-4111828",
     "name": "ایدن وسیم کریم لوقا",
     "motherName": "ناتالیا نورى صلیو",
-    "rollNumber": "DPS-249",
+    "rollNumber": "DPS-250",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -5998,14 +7117,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hikmat.Mohammed@dasinya.com",
     "guardianPassword": "123704",
     "guardianPasswordAlt": "123705",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 250,
+    "serial": 251,
     "id": "DPS-4300491",
     "name": "بویھر امین عمر صالح",
     "motherName": "روزان روزان نبى",
-    "rollNumber": "DPS-250",
+    "rollNumber": "DPS-251",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6017,14 +7145,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hemn.Mhmdslman@dasinya.com",
     "guardianPassword": "123705",
     "guardianPasswordAlt": "123706",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "C",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 251,
+    "serial": 252,
     "id": "DPS-4106871",
     "name": "پاوان دیندار عیسی محمد",
     "motherName": "ھژین عبدالقادر حسین",
-    "rollNumber": "DPS-251",
+    "rollNumber": "DPS-252",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6036,14 +7173,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Garnzhin.Jameel@Dasinya.com",
     "guardianPassword": "123706",
     "guardianPasswordAlt": "123708",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 252,
+    "serial": 253,
     "id": "DPS-4128825",
     "name": "رەند دلوفان محمدصالح ولى",
     "motherName": "شیماء حسین محمد",
-    "rollNumber": "DPS-252",
+    "rollNumber": "DPS-253",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -6055,14 +7201,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Jan.Bes@Dasinya.com",
     "guardianPassword": "123707",
     "guardianPasswordAlt": "123709",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 253,
+    "serial": 254,
     "id": "DPS-4170129",
     "name": "سالین بدرخان احمد سعید",
     "motherName": "بارین جمیل صالح",
-    "rollNumber": "DPS-253",
+    "rollNumber": "DPS-254",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -6074,14 +7229,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Lawand.Hassan@Dasinya.com",
     "guardianPassword": "123708",
     "guardianPasswordAlt": "123710",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 254,
+    "serial": 255,
     "id": "DPS-4207737",
     "name": "شرڤان فاخر جلال",
     "motherName": "بیزار محمد عبدالرحمن",
-    "rollNumber": "DPS-254",
+    "rollNumber": "DPS-255",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6093,14 +7257,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mohammed.Rajab@Dasinya.com",
     "guardianPassword": "123709",
     "guardianPasswordAlt": "123711",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 255,
+    "serial": 256,
     "id": "DPS-4294805",
     "name": "طاھر صلاح طاھر سعداللھ",
     "motherName": "نسرین رشید",
-    "rollNumber": "DPS-255",
+    "rollNumber": "DPS-256",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6112,14 +7285,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Muhammed.Milham@Dasinya.com",
     "guardianPassword": "123710",
     "guardianPasswordAlt": "123712",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 256,
+    "serial": 257,
     "id": "DPS-4275907",
     "name": "عمر ھفال صلاح عبدالحمید",
     "motherName": "مروى محمد علي",
-    "rollNumber": "DPS-256",
+    "rollNumber": "DPS-257",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6131,14 +7313,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ali.MohammedAli@Dasinya.com",
     "guardianPassword": "123711",
     "guardianPasswordAlt": "123713",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 257,
+    "serial": 258,
     "id": "DPS-4127307",
     "name": "نور زیرك محمد صالح ولي",
     "motherName": "ھدار عرفات عیسى",
-    "rollNumber": "DPS-257",
+    "rollNumber": "DPS-258",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Female",
@@ -6150,14 +7341,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Dilzhin.Karim@Dasinya.com",
     "guardianPassword": "123712",
     "guardianPasswordAlt": "123714",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 258,
+    "serial": 259,
     "id": "DPS-4167835",
     "name": "وھاج احمد عبدالطیف ھسام",
     "motherName": "الھام حسن صبرى",
-    "rollNumber": "DPS-258",
+    "rollNumber": "DPS-259",
     "grade": "Grade 6",
     "section": "Class A",
     "gender": "Male",
@@ -6169,14 +7369,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Haif.Abdulaziz@Dasinya.com",
     "guardianPassword": "123713",
     "guardianPasswordAlt": "123715",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 259,
+    "serial": 260,
     "id": "DPS-4728697",
     "name": "Jiyan Mirhat Temel",
-    "motherName": "یسری کمال صالح",
-    "rollNumber": "DPS-259",
+    "motherName": "یسری صالح کمال",
+    "rollNumber": "DPS-260",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6188,14 +7397,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ibrahim.Issa@Dasinya.com",
     "guardianPassword": "123714",
     "guardianPasswordAlt": "123716",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 260,
+    "serial": 261,
     "id": "DPS-4922190",
     "name": "ئالان اسماعیل ابراھیم عبدالرحمن",
     "motherName": "مھا صالح علي",
-    "rollNumber": "DPS-260",
+    "rollNumber": "DPS-261",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6207,14 +7433,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rayan.Abdullah@Dasinya.com",
     "guardianPassword": "123715",
     "guardianPasswordAlt": "123717",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 261,
+    "serial": 262,
     "id": "DPS-3607737",
     "name": "احمد حازم عزت خالد",
     "motherName": "شیماء علي احمد",
-    "rollNumber": "DPS-261",
+    "rollNumber": "DPS-262",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6226,14 +7469,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ayoub.Rashid@Dasinya.com",
     "guardianPassword": "123716",
     "guardianPasswordAlt": "123718",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 262,
+    "serial": 263,
     "id": "DPS-3664628",
     "name": "ادم جلال شاکر سلضمان",
     "motherName": "جیلان محمد کریم",
-    "rollNumber": "DPS-262",
+    "rollNumber": "DPS-263",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6245,14 +7505,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Savan.Jasim@Dasinya.com",
     "guardianPassword": "123717",
     "guardianPasswordAlt": "123719",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 263,
+    "serial": 264,
     "id": "DPS-3910198",
     "name": "امیر على جھور",
     "motherName": "رەند حكمت محمد",
-    "rollNumber": "DPS-263",
+    "rollNumber": "DPS-264",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6264,14 +7541,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Judy.Younis@Dasinya.com",
     "guardianPassword": "123718",
     "guardianPasswordAlt": "123720",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 264,
+    "serial": 265,
     "id": "DPS-3892374",
     "name": "انس شوكت اسماعیل جولی",
-    "motherName": "الماس كراب",
-    "rollNumber": "DPS-264",
+    "motherName": "الماس كراب 0",
+    "rollNumber": "DPS-265",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6283,14 +7577,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sihad.Nadir@Dasinya.com",
     "guardianPassword": "123719",
     "guardianPasswordAlt": "123721",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 265,
+    "serial": 266,
     "id": "DPS-3655817",
     "name": "جودى سعید مسعود",
     "motherName": "سوزان محسن عوني",
-    "rollNumber": "DPS-265",
+    "rollNumber": "DPS-266",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6302,14 +7613,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hassan.Mohammed@Dasinya.com",
     "guardianPassword": "123720",
     "guardianPasswordAlt": "123722",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 266,
+    "serial": 267,
     "id": "DPS-3892472",
     "name": "جیجک عبدالکریم محمد گویندوز",
-    "motherName": "yqsif گویندو",
-    "rollNumber": "DPS-266",
+    "motherName": "yqsif گویندو 0",
+    "rollNumber": "DPS-267",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Female",
@@ -6321,14 +7649,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Irina.Hangaw@Dasinya.com",
     "guardianPassword": "123721",
     "guardianPasswordAlt": "123723",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 267,
+    "serial": 268,
     "id": "DPS-3651543",
     "name": "حمید ھنیر حمید",
     "motherName": "زینب ایفار محمد صدیق",
-    "rollNumber": "DPS-267",
+    "rollNumber": "DPS-268",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6340,14 +7685,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Saman.MohammedSalim@Dasinya.com",
     "guardianPassword": "123722",
     "guardianPasswordAlt": "123724",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 268,
+    "serial": 269,
     "id": "DPS-3670737",
     "name": "دانھر خلیل ابراھیم محمدسلیم",
     "motherName": "روشن مصطفی محمد",
-    "rollNumber": "DPS-268",
+    "rollNumber": "DPS-269",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6359,14 +7721,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mustafa.Ilyas@Dasinya.com",
     "guardianPassword": "123723",
     "guardianPasswordAlt": "123746",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 269,
+    "serial": 270,
     "id": "DPS-3666118",
     "name": "زانیار فتاح مجید خلف",
     "motherName": "ھیوا عبداللھ",
-    "rollNumber": "DPS-269",
+    "rollNumber": "DPS-270",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6378,14 +7757,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Haiv.MohammedAli@Dasinya.com",
     "guardianPassword": "123724",
     "guardianPasswordAlt": "123726",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 270,
+    "serial": 271,
     "id": "DPS-3694739",
     "name": "سارا تحسین حسن زكر",
     "motherName": "دالیا علي مطر",
-    "rollNumber": "DPS-270",
+    "rollNumber": "DPS-271",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Female",
@@ -6397,14 +7793,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ana.Jangir@Dasinya.com",
     "guardianPassword": "123725",
     "guardianPasswordAlt": "123727",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 271,
+    "serial": 272,
     "id": "DPS-3655557",
     "name": "سیلا لشکھر حسین عمرخان",
     "motherName": "برین شمال عمرخان",
-    "rollNumber": "DPS-271",
+    "rollNumber": "DPS-272",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Female",
@@ -6416,14 +7829,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aram.Jangir@Dasinya.com",
     "guardianPassword": "123726",
     "guardianPasswordAlt": "123728",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 272,
+    "serial": 273,
     "id": "DPS-3694966",
     "name": "قیس مؤید طارق شوباص",
     "motherName": "فریال عیاس عنز",
-    "rollNumber": "DPS-272",
+    "rollNumber": "DPS-273",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6435,14 +7865,67 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Lihat.Rajab@Dasinya.com",
     "guardianPassword": "123727",
     "guardianPasswordAlt": "123729",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 273,
+    "serial": 274,
+    "id": "DPS-3654332",
+    "name": "لارا ریبر شاکر سلیمان",
+    "motherName": "ھیلان عبدالکریم سلیمان",
+    "rollNumber": "DPS-274",
+    "grade": "Grade 7",
+    "section": "Class A",
+    "gender": "Female",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07511844387",
+    "dob": "9/28/2014",
+    "bloodGroup": "O+",
+    "guardianEmail": "Dana.Hamid@Dasinya.com",
+    "guardianPassword": "123731",
+    "guardianPasswordAlt": "123733",
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 275,
     "id": "DPS-3651264",
     "name": "مصطفى محمد الیاس",
     "motherName": "نوار عدنان محمود",
-    "rollNumber": "DPS-273",
+    "rollNumber": "DPS-275",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6454,14 +7937,49 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Yousif.Saleh@Dasinya.com",
     "guardianPassword": "123728",
     "guardianPasswordAlt": "123730",
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 276,
+    "id": "DPS-3700962",
+    "name": "میر جتو محمد عبداللھ",
+    "motherName": "لیندا نزار حسین",
+    "rollNumber": "DPS-276",
+    "grade": "Grade 7",
+    "section": "Class A",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07508473687",
+    "dob": "11/8/2014",
+    "bloodGroup": "O+",
+    "guardianEmail": "Mir.Jeto@Dasinya.com",
+    "guardianPassword": "123760",
     "subjects": []
   },
   {
-    "serial": 274,
+    "serial": 277,
     "id": "DPS-2187409",
     "name": "نشأت ریبر شفیق صالح",
     "motherName": "نسرین سعدي صالح",
-    "rollNumber": "DPS-274",
+    "rollNumber": "DPS-277",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Male",
@@ -6476,11 +7994,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 275,
+    "serial": 278,
     "id": "DPS-3866503",
     "name": "نضلى ایمن عبدالاحد",
     "motherName": "كارمن سامي",
-    "rollNumber": "DPS-275",
+    "rollNumber": "DPS-278",
     "grade": "Grade 7",
     "section": "Class A",
     "gender": "Female",
@@ -6492,33 +8010,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aya.Mohammed@Dasinya.com",
     "guardianPassword": "123730",
     "guardianPasswordAlt": "123732",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 276,
-    "id": "DPS-3654332",
-    "name": "لارا ریبر شاکر سلیمان",
-    "motherName": "ھیلان عبدالکریم سلیمان",
-    "rollNumber": "DPS-276",
-    "grade": "Grade 7",
-    "section": "Class B",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "07511844387",
-    "dob": "9/28/2014",
-    "bloodGroup": "O+",
-    "guardianEmail": "Dana.Hamid@Dasinya.com",
-    "guardianPassword": "123731",
-    "guardianPasswordAlt": "123733",
-    "subjects": []
-  },
-  {
-    "serial": 277,
+    "serial": 279,
     "id": "DPS-5127842",
     "name": "أرکان کاوار عادل عبیداللھ",
     "motherName": "ھھژین سفر رشید",
-    "rollNumber": "DPS-277",
+    "rollNumber": "DPS-279",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6530,14 +8046,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aram.MohammedSaleh@Dasinya.com",
     "guardianPassword": "123732",
     "guardianPasswordAlt": "123734",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 278,
+    "serial": 280,
     "id": "DPS-3661590",
     "name": "ئومید دیندار عیسى محمد",
     "motherName": "ھژین عبد القادر حسین",
-    "rollNumber": "DPS-278",
+    "rollNumber": "DPS-280",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6549,14 +8082,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "David.Abdulahad@Dasinya.com",
     "guardianPassword": "123733",
     "guardianPasswordAlt": "123735",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 279,
+    "serial": 281,
     "id": "DPS-2516265",
     "name": "الین فریاد محمد ابراھیم",
     "motherName": "ئھژین فواد فریق",
-    "rollNumber": "DPS-279",
+    "rollNumber": "DPS-281",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6568,14 +8118,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Dilda.Mustafa@Dasinya.com",
     "guardianPassword": "123734",
     "guardianPasswordAlt": "123736",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 280,
+    "serial": 282,
     "id": "DPS-3656148",
     "name": "اندي اشور ادم اسرائیل",
     "motherName": "حنان جبرائیل خوشابا",
-    "rollNumber": "DPS-280",
+    "rollNumber": "DPS-282",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6587,33 +8154,67 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Silia.Hussein@Dasinya.com",
     "guardianPassword": "123735",
     "guardianPasswordAlt": "123737",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 281,
+    "serial": 283,
     "id": "DPS-3701025",
     "name": "ایمرون اركان شمشون یاقو",
     "motherName": "رنا یونس ابراھیم",
-    "rollNumber": "DPS-281",
+    "rollNumber": "DPS-283",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "",
+    "phone": "07504865254",
     "dob": "1/4/2014",
     "bloodGroup": "B+",
     "guardianEmail": "Yad.MohammedAli@Dasinya.com",
     "guardianPassword": "123736",
     "guardianPasswordAlt": "123738",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 282,
+    "serial": 284,
     "id": "DPS-3655795",
     "name": "داڤیت فاروش اونیک ارشاک",
     "motherName": "لمى ابلحد یوسف",
-    "rollNumber": "DPS-282",
+    "rollNumber": "DPS-284",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6625,14 +8226,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahang.Jameel@Dasinya.com",
     "guardianPassword": "123737",
     "guardianPasswordAlt": "123739",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 283,
+    "serial": 285,
     "id": "DPS-3656436",
     "name": "رین لیث جرجیس شمعون",
     "motherName": "انغام جلیل بنیامین",
-    "rollNumber": "DPS-283",
+    "rollNumber": "DPS-285",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6644,14 +8262,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aland.Karim@Dasinya.com",
     "guardianPassword": "123738",
     "guardianPasswordAlt": "123740",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 284,
+    "serial": 286,
     "id": "DPS-3655937",
     "name": "سیروب شانت سیروب یعقوب",
     "motherName": "لینا مراد ماردروس",
-    "rollNumber": "DPS-284",
+    "rollNumber": "DPS-286",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6663,14 +8298,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Elin.Karim@Dasinya.com",
     "guardianPassword": "123739",
     "guardianPasswordAlt": "123741",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 285,
+    "serial": 287,
     "id": "DPS-760177",
     "name": "سھھھند محمد زھیر علی",
     "motherName": "نھایھ صدیق صالح",
-    "rollNumber": "DPS-285",
+    "rollNumber": "DPS-287",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6682,14 +8334,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sharvan.Jalal@Dasinya.com",
     "guardianPassword": "123740",
     "guardianPasswordAlt": "123742",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 286,
+    "serial": 288,
     "id": "DPS-587533",
     "name": "شالین ھیمن محمد سلمان امین",
     "motherName": "ژین تحسین عونی",
-    "rollNumber": "DPS-286",
+    "rollNumber": "DPS-288",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6701,14 +8370,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Danar.MohammedSaleem@Dasinya.com",
     "guardianPassword": "123741",
     "guardianPasswordAlt": "123743",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 287,
+    "serial": 289,
     "id": "DPS-3655215",
     "name": "شاه شرفان عادل",
     "motherName": "بشكوژ عصمت عبدي",
-    "rollNumber": "DPS-287",
+    "rollNumber": "DPS-289",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6720,14 +8406,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hamid.Hamid@Dasinya.com",
     "guardianPassword": "123742",
     "guardianPasswordAlt": "123744",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 288,
+    "serial": 290,
     "id": "DPS-3655806",
     "name": "عبداللھ زید محمد سلمان",
     "motherName": "مینا عباس صالح",
-    "rollNumber": "DPS-288",
+    "rollNumber": "DPS-290",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6739,14 +8442,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Judy.Masoud@Dasinya.com",
     "guardianPassword": "123743",
     "guardianPasswordAlt": "123745",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 289,
+    "serial": 291,
     "id": "DPS-4948148",
     "name": "گرنژین جمیل",
     "motherName": "ھزرین طالب بکر",
-    "rollNumber": "DPS-289",
+    "rollNumber": "DPS-291",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6758,14 +8478,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mustafa.Ilyas@Dasinya.com",
     "guardianPassword": "123744",
     "guardianPasswordAlt": "123746",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 290,
+    "serial": 292,
     "id": "DPS-727454",
     "name": "مجید فتاح مجید خلف",
     "motherName": "ھیوا عبداللھ حسن",
-    "rollNumber": "DPS-290",
+    "rollNumber": "DPS-292",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6777,14 +8514,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Nashat.Saleh@Dasinya.com",
     "guardianPassword": "123745",
     "guardianPasswordAlt": "123747",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 291,
+    "serial": 293,
     "id": "DPS-4930071",
     "name": "محمد سیباری",
     "motherName": "مھا صالح علي",
-    "rollNumber": "DPS-291",
+    "rollNumber": "DPS-293",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
@@ -6796,14 +8550,31 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Nelly.Abdulahad@Dasinya.com",
     "guardianPassword": "123746",
     "guardianPasswordAlt": "123748",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 292,
+    "serial": 294,
     "id": "DPS-3676588",
     "name": "ملک وسیم کریم لوقا",
     "motherName": "ناتالیا نوري صلبو",
-    "rollNumber": "DPS-292",
+    "rollNumber": "DPS-294",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6815,14 +8586,50 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Roman.Hangaw@Dasinya.com",
     "guardianPassword": "123747",
     "guardianPasswordAlt": "123749",
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
+  },
+  {
+    "serial": 295,
+    "id": "DPS-2372634",
+    "name": "نور دژوار رمضان عبدالجبار",
+    "motherName": "روژین احمد رشید",
+    "rollNumber": "DPS-295",
+    "grade": "Grade 8",
+    "section": "Class A",
+    "gender": "Male",
+    "term": "Term 1 Examination",
+    "academicYear": "2024 - 2025",
+    "phone": "07504821966",
+    "dob": "2/16/2010",
+    "bloodGroup": "B+",
+    "guardianEmail": "Ara.Nimat@Dasinya.com",
+    "guardianPassword": "123750",
+    "guardianPasswordAlt": "123457",
     "subjects": []
   },
   {
-    "serial": 293,
+    "serial": 296,
     "id": "DPS-3893679",
     "name": "ڤینا عامر حسن حسضن",
-    "motherName": "رضژین تحسین",
-    "rollNumber": "DPS-293",
+    "motherName": "رضژین تحسین 0",
+    "rollNumber": "DPS-296",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Female",
@@ -6834,52 +8641,67 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Shivan.Sadiq2@dasinya.com",
     "guardianPassword": "123748",
     "guardianPasswordAlt": "123750",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 294,
+    "serial": 297,
     "id": "DPS-3679583",
     "name": "کرستیان الن تبسیما ابرم",
     "motherName": "شمونی نیسان",
-    "rollNumber": "DPS-294",
+    "rollNumber": "DPS-297",
     "grade": "Grade 8",
     "section": "Class A",
     "gender": "Male",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "",
+    "phone": "7504938227",
     "dob": "7/12/2013",
     "bloodGroup": "AB-",
     "guardianEmail": "Sahand.Ali@Dasinya.com",
     "guardianPassword": "123749",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "IT",
+        "code": "IT",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 IT Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 295,
-    "id": "DPS-2372634",
-    "name": "نور دژوار رمضان عبدالجبار",
-    "motherName": "روژین احمد رشید",
-    "rollNumber": "DPS-295",
-    "grade": "Grade 8",
-    "section": "Class C",
-    "gender": "Male",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "",
-    "dob": "2/16/2010",
-    "bloodGroup": "B+",
-    "guardianEmail": "Ara.Nimat@Dasinya.com",
-    "guardianPassword": "123750",
-    "guardianPasswordAlt": "123457",
-    "subjects": []
-  },
-  {
-    "serial": 296,
+    "serial": 298,
     "id": "DPS-569157",
     "name": "ئضفا اومید نجیب محمد",
     "motherName": "روزین مھدي عمر",
-    "rollNumber": "DPS-296",
+    "rollNumber": "DPS-298",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Female",
@@ -6891,14 +8713,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Daryan.MohammedAmin@Dasinya.com",
     "guardianPassword": "123751",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 297,
+    "serial": 299,
     "id": "DPS-743772",
     "name": "بھرضز المان حازم محمد",
     "motherName": "شرین احمد موسى",
-    "rollNumber": "DPS-297",
+    "rollNumber": "DPS-299",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Female",
@@ -6910,14 +8741,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Maroun.Bito@Dasinya.com",
     "guardianPassword": "123752",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 298,
+    "serial": 300,
     "id": "DPS-583354",
     "name": "پاشا زیرڤان احسان سعید",
     "motherName": "کژال تحسین عوني",
-    "rollNumber": "DPS-298",
+    "rollNumber": "DPS-300",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Male",
@@ -6929,33 +8769,51 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Isaac.Benno@Dasinya.com",
     "guardianPassword": "123753",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 299,
+    "serial": 301,
     "id": "DPS-623515",
     "name": "سایا سعید حاجی سعید",
     "motherName": "روندك ابراھیم حسین",
-    "rollNumber": "DPS-299",
+    "rollNumber": "DPS-301",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Female",
     "term": "Term 1 Examination",
     "academicYear": "2024 - 2025",
-    "phone": "",
+    "phone": "4506976",
     "dob": "3/8/2011",
     "bloodGroup": "O+",
     "guardianEmail": "Joud.MohammedSharif@Dasinya.com",
     "guardianPassword": "123754",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 300,
+    "serial": 302,
     "id": "DPS-901534",
     "name": "لاوهند حكمت محمد عبان",
     "motherName": "أواز صلاح الدین عارف",
-    "rollNumber": "DPS-300",
+    "rollNumber": "DPS-302",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Male",
@@ -6967,14 +8825,23 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Giovanni.Khoshaba@Dasinya.com",
     "guardianPassword": "123755",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Official Term 1 English Exam Evaluation"
+      }
+    ]
   },
   {
-    "serial": 301,
+    "serial": 303,
     "id": "DPS-2592854",
     "name": "مؤمن صدیق احمد محمود",
     "motherName": "ھیبت صالح یونس",
-    "rollNumber": "DPS-301",
+    "rollNumber": "DPS-303",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Male",
@@ -6989,11 +8856,11 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "subjects": []
   },
   {
-    "serial": 302,
+    "serial": 304,
     "id": "DPS-582945",
     "name": "وارشاد ھضمن محمدسلمان امین",
     "motherName": "ژین تحسین عونى",
-    "rollNumber": "DPS-302",
+    "rollNumber": "DPS-304",
     "grade": "Grade 9",
     "section": "Class A",
     "gender": "Male",
@@ -7005,33 +8872,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Livia.Hussein@Dasinya.com",
     "guardianPassword": "123757",
     "guardianPasswordAlt": "123456",
-    "subjects": []
-  },
-  {
-    "serial": 303,
-    "id": "DPS-5127848",
-    "name": "سیلین کاوار عادل",
-    "motherName": "نیلیان ابراهیم",
-    "rollNumber": "DPS-303",
-    "grade": "Grade 4",
-    "section": "Class B",
-    "gender": "Female",
-    "term": "Term 1 Examination",
-    "academicYear": "2024 - 2025",
-    "phone": "+964 750 442 8190",
-    "dob": "2014-06-18",
-    "bloodGroup": "A+",
-    "guardianEmail": "Kawar.Adil@dasinya.com",
-    "guardianPassword": "123674",
-    "guardianPasswordAlt": "123758",
     "subjects": [
       {
-        "subject": "Kurdish",
-        "code": "KUR",
+        "subject": "English",
+        "code": "ENG",
         "maxMarks": 20,
-        "obtainedMarks": 13,
-        "grade": "B",
-        "remarks": "Official Term 1 Kurdish Exam Evaluation"
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Official Term 1 English Exam Evaluation"
       }
     ]
   }
