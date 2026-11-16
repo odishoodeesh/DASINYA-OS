@@ -16,8 +16,17 @@ import {
   BookOpen,
   FileSpreadsheet,
   Filter,
+  Bus,
+  Radio,
+  MapPin,
+  KeyRound,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
+import { BUS_DRIVER_ROUTES, BusDriverRoute } from '../data/busRoutes';
+import { LiveBusState } from '../hooks/useBusTracking';
+import { LiveBusMap } from './LiveBusMap';
 import {
   TEACHER_ACCOUNTS,
   DailySubjectRecord,
@@ -46,6 +55,8 @@ interface AdminSummaryPanelProps {
   schoolStructure: Record<string, string[]>;
   gradeCurriculum: Record<string, SubjectDescriptor[]>;
   officialSubjects: SubjectDescriptor[];
+  liveBuses: Record<string, LiveBusState>;
+  wsConnected: boolean;
   language: Language;
   isRtl: boolean;
   onSelectModalStudent: (student: StudentRecord) => void;
@@ -109,17 +120,31 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   schoolStructure,
   gradeCurriculum,
   officialSubjects,
+  liveBuses,
+  wsConnected,
   language,
   isRtl,
   onSelectModalStudent,
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses'>('summary');
+  const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
+  const [copiedPwdKey, setCopiedPwdKey] = useState<string | null>(null);
+
+  const handleCopyPassword = (pwd: string, key: string) => {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(pwd).catch(() => {});
+    }
+    setCopiedPwdKey(key);
+    window.setTimeout(() => {
+      setCopiedPwdKey((curr) => (curr === key ? null : curr));
+    }, 1500);
+  };
 
   const gradeKeys = useMemo(() => Object.keys(schoolStructure), [schoolStructure]);
 
@@ -267,7 +292,8 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           s.name.toLowerCase().includes(q) ||
           s.id.toLowerCase().includes(q) ||
           s.rollNumber.toLowerCase().includes(q) ||
-          (s.guardianPassword || '').toLowerCase().includes(q)
+          (s.guardianPassword || '').toLowerCase().includes(q) ||
+          (s.guardianPasswordAlt || '').toLowerCase().includes(q)
         );
       }
       return true;
@@ -386,6 +412,20 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setAdminTab('students')}
+            className="px-3.5 py-2 bg-[#00A887] hover:bg-[#008E72] text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>
+              {language === 'ku'
+                ? 'پاسوۆردێن قوتابیان'
+                : language === 'ar'
+                ? 'كلمات مرور الطلاب'
+                : 'Student Passwords'}
+            </span>
+          </button>
           <button
             type="button"
             onClick={handleExportSummaryCsv}
@@ -521,10 +561,10 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             <Users className="w-4 h-4" />
             <span>
               {language === 'ku'
-                ? `قوتابی و کەشف (${students.length})`
+                ? `قوتابی و پاسوۆرد (${students.length})`
                 : language === 'ar'
-                ? `الطلاب وكشوف الدرجات (${students.length})`
-                : `Students & Marksheets (${students.length})`}
+                ? `الطلاب وكلمات المرور (${students.length})`
+                : `Students & Passwords (${students.length})`}
             </span>
           </button>
 
@@ -546,10 +586,29 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : `Teachers (${TEACHER_ACCOUNTS.length})`}
             </span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('buses')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'buses'
+                ? 'bg-[#0087A5] text-white shadow-xs'
+                : 'text-[#454A87] hover:bg-[#F5F6FF]'
+            }`}
+          >
+            <Bus className="w-4 h-4" />
+            <span>
+              {language === 'ku'
+                ? `پاسێن قوتابخانێ (${BUS_DRIVER_ROUTES.length})`
+                : language === 'ar'
+                ? `حافلات المدرسة (${BUS_DRIVER_ROUTES.length})`
+                : `Live Buses (${BUS_DRIVER_ROUTES.length})`}
+            </span>
+          </button>
         </div>
 
         {/* Grade Filter for Summary & Students */}
-        {adminTab !== 'teachers' && (
+        {(adminTab === 'summary' || adminTab === 'students') && (
           <div className="flex flex-wrap items-center gap-2 px-2">
             <Filter className="w-3.5 h-3.5 text-[#0087A5]" />
             <select
@@ -907,7 +966,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                   <th className="py-3 px-3">ID</th>
                   <th className="py-3 px-3">Roll No</th>
                   <th className="py-3 px-3">Recorded Marks</th>
-                  <th className="py-3 px-3">Guardian Password</th>
+                  <th className="py-3 px-3">Student / Parent Passwords</th>
                   <th className="py-3 px-3 text-center">Marksheet</th>
                 </tr>
               </thead>
@@ -917,6 +976,8 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                   const gradedCount = curr.filter(
                     (c) => getStudentSubjectTermScore(s, c.name, dailyRecords) !== null
                   ).length;
+                  const primaryKey = `${s.id}-primary`;
+                  const altKey = `${s.id}-alt`;
 
                   return (
                     <tr key={s.id} className="hover:bg-[#F5F6FF]/50 transition-colors">
@@ -940,8 +1001,41 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                           {gradedCount} / {curr.length}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
-                        {s.guardianPassword}
+                      <td className="py-2.5 px-3 font-mono">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {s.guardianPassword ? (
+                            <button
+                              type="button"
+                              onClick={() => handleCopyPassword(s.guardianPassword!, primaryKey)}
+                              title="Click to copy student password"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#E1F3F7] hover:bg-[#C8E5EC] text-[#006F89] font-bold text-xs cursor-pointer transition-colors"
+                            >
+                              <span>{s.guardianPassword}</span>
+                              {copiedPwdKey === primaryKey ? (
+                                <Check className="w-3 h-3 text-emerald-600" />
+                              ) : (
+                                <Copy className="w-3 h-3 opacity-70" />
+                              )}
+                            </button>
+                          ) : (
+                            <span className="text-[#8C90C2]">—</span>
+                          )}
+                          {s.guardianPasswordAlt && (
+                            <button
+                              type="button"
+                              onClick={() => handleCopyPassword(s.guardianPasswordAlt!, altKey)}
+                              title="Click to copy alternate/sibling password"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#E1E9FF] text-[#454A87] font-semibold text-[11px] cursor-pointer transition-colors"
+                            >
+                              <span>Alt: {s.guardianPasswordAlt}</span>
+                              {copiedPwdKey === altKey ? (
+                                <Check className="w-2.5 h-2.5 text-emerald-600" />
+                              ) : (
+                                <Copy className="w-2.5 h-2.5 opacity-60" />
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </td>
                       <td className="py-2.5 px-3 text-center">
                         <button
@@ -1050,6 +1144,146 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           </div>
         </div>
       )}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 4: LIVE SCHOOL BUS FLEET & DRIVER ACCESS       */}
+      {/* ======================================================== */}
+      {adminTab === 'buses' && (() => {
+        const selectedDriver: BusDriverRoute | null =
+          selectedDriverId === 'ALL'
+            ? null
+            : BUS_DRIVER_ROUTES.find((d) => d.id === selectedDriverId) || null;
+
+        const fleetMarkers = BUS_DRIVER_ROUTES.map((driver) => ({
+          driver,
+          state: liveBuses[driver.id],
+        })).filter(
+          (item): item is { driver: BusDriverRoute; state: LiveBusState } =>
+            Boolean(item.state && typeof item.state.lat === 'number' && typeof item.state.lng === 'number')
+        );
+
+        const activeBusCount = BUS_DRIVER_ROUTES.filter((d) => liveBuses[d.id]?.active).length;
+
+        return (
+          <div className="space-y-6">
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
+                <div>
+                  <h3 className="text-base font-black text-[#1A1D4E] flex items-center gap-2">
+                    <Radio className={`w-4 h-4 ${activeBusCount > 0 ? 'text-emerald-600 animate-pulse' : 'text-[#0087A5]'}`} />
+                    <span>
+                      {language === 'ku'
+                        ? 'چاڤدێریا زیندوو یا پاسێن قوتابخانێ'
+                        : language === 'ar'
+                        ? 'مراقبة حافلات المدرسة المباشرة'
+                        : 'Live School Bus Fleet Monitor'}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[#6B70A6]">
+                    {activeBusCount} / {BUS_DRIVER_ROUTES.length} active buses • {wsConnected ? 'Real-Time WebSocket Connected' : 'Connecting...'}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-[#0087A5]" />
+                  <select
+                    value={selectedDriverId}
+                    onChange={(e) => setSelectedDriverId(e.target.value)}
+                    className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                  >
+                    <option value="ALL">All Buses Fleet View ({BUS_DRIVER_ROUTES.length})</option>
+                    {BUS_DRIVER_ROUTES.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.code} — {d.name} ({d.stops.length} stops)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <LiveBusMap
+                stops={selectedDriver ? selectedDriver.stops : []}
+                busState={selectedDriver ? liveBuses[selectedDriver.id] : null}
+                driverName={selectedDriver?.name}
+                driverCode={selectedDriver?.code}
+                fleetBuses={selectedDriver ? undefined : fleetMarkers}
+                focusKey={`admin-${selectedDriverId}`}
+                heightClass="h-[420px] sm:h-[480px]"
+              />
+            </div>
+
+            {/* Drivers Directory & Live Boarding Summary Table */}
+            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
+              <div className="pb-3 border-b border-[#E1E9FF]">
+                <h3 className="text-base font-bold text-[#1A1D4E]">
+                  School Bus Drivers & Portal Credentials ({BUS_DRIVER_ROUTES.length} Routes)
+                </h3>
+                <p className="text-xs text-[#6B70A6]">
+                  Drivers sign in via Driver Portal using their Bus Code (e.g. BUS-01) or Name + Driver PIN
+                </p>
+              </div>
+
+              <div className="border border-[#E1E9FF] rounded-2xl overflow-x-auto">
+                <table className="w-full min-w-[760px] text-left text-xs">
+                  <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E]">
+                    <tr>
+                      <th className="py-3 px-3">Bus Code</th>
+                      <th className="py-3 px-3">Driver Name</th>
+                      <th className="py-3 px-3">PIN</th>
+                      <th className="py-3 px-3 text-center">Stops</th>
+                      <th className="py-3 px-3 text-center">Live Status</th>
+                      <th className="py-3 px-3 text-center">Boarded</th>
+                      <th className="py-3 px-3 text-center">Dropped</th>
+                      <th className="py-3 px-3 text-center">Inspect Route</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E1E9FF]">
+                    {BUS_DRIVER_ROUTES.map((drv) => {
+                      const st = liveBuses[drv.id];
+                      const statuses = st?.studentStatuses || {};
+                      const boardedCount = Object.values(statuses).filter((v) => v === 'boarded').length;
+                      const droppedCount = Object.values(statuses).filter((v) => v === 'dropped_off').length;
+
+                      return (
+                        <tr key={drv.id} className="hover:bg-[#F5F6FF]/50 transition-colors">
+                          <td className="py-2.5 px-3 font-mono font-extrabold text-[#0087A5]">{drv.code}</td>
+                          <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">
+                            {drv.name} <span className="text-[#6B70A6] font-normal">({drv.nameEn})</span>
+                          </td>
+                          <td className="py-2.5 px-3 font-mono font-bold text-[#1A1D4E]">{drv.pin}</td>
+                          <td className="py-2.5 px-3 text-center font-mono">{drv.stops.length}</td>
+                          <td className="py-2.5 px-3 text-center">
+                            <span
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                st?.active
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                  : 'bg-[#F5F6FF] text-[#6B70A6] border border-[#E1E9FF]'
+                              }`}
+                            >
+                              {st?.active ? `LIVE (${st.direction === 'dropoff' ? 'Drop-off' : 'Pickup'})` : 'Standby'}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-700">{boardedCount}</td>
+                          <td className="py-2.5 px-3 text-center font-mono font-bold text-[#0087A5]">{droppedCount}</td>
+                          <td className="py-2.5 px-3 text-center">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDriverId(drv.id)}
+                              className="px-3 py-1 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-lg text-[11px] font-bold cursor-pointer"
+                            >
+                              View Map
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </main>
   );
 };

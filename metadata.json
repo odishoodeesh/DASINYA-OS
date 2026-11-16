@@ -1,6 +1,6 @@
 {
   "name": "Dasinya Private School",
   "description": "Dasinya Private School - clean, modern website ready for content.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": ["geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

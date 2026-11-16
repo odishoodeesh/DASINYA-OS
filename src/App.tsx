@@ -50,7 +50,11 @@ import {
   UserCheck,
   Layers,
   ExternalLink,
-  Save
+  Save,
+  Bus,
+  Radio,
+  MapPin,
+  Navigation
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -77,11 +81,20 @@ import {
   calcGrade49GrandTotal100,
 } from './data/teacherPortal';
 import {
+  BUS_DRIVER_ROUTES,
+  BusDriverRoute,
+  authenticateDriver,
+  findBusForStudent,
+} from './data/busRoutes';
+import { useBusTracking } from './hooks/useBusTracking';
+import {
   Grade13DailyRecordTable,
   Grade49DailyRecordTable,
   DailyRecordRowItem,
 } from './components/DailyRecordTables';
 import { AdminSummaryPanel } from './components/AdminSummaryPanel';
+import { DriverPortal } from './components/DriverPortal';
+import { LiveBusMap } from './components/LiveBusMap';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -94,7 +107,7 @@ import {
 
 export const SCHOOL_LOGO_URL = 'https://i.ibb.co/sdrcN4PL/logo-dasinya-2.png';
 
-export type PortalRole = 'admin' | 'staff' | 'teacher' | 'parent' | 'student';
+export type PortalRole = 'admin' | 'staff' | 'teacher' | 'parent' | 'student' | 'driver';
 
 // Official Dasinya Private School Class Structure
 export const SCHOOL_STRUCTURE: Record<string, string[]> = {
@@ -259,7 +272,7 @@ export interface ReportSubjectRow {
   remarks?: string;
 }
 
-export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | null;
+export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | 'bus_tracking' | null;
 
 interface AuthenticatedGuardian {
   password: string;
@@ -394,12 +407,23 @@ export default function App() {
   // Dedicated to Parents Portal, Teacher Portal & Admin Portal
   const [selectedPortal, setSelectedPortal] = useState<PortalRole>('parent');
 
-  // Authentication State for Parent (Password Only), Teacher (Email + Phone) & Admin (Username + Password)
+  // Authentication State for Parent (Password Only), Teacher (Email + Phone), Driver (Bus Code + PIN) & Admin
   const [authGuardian, setAuthGuardian] = useState<AuthenticatedGuardian | null>(null);
   const [authStaff, setAuthStaff] = useState<AuthenticatedStaff | null>(null);
+  const [authDriver, setAuthDriver] = useState<BusDriverRoute | null>(null);
+  const {
+    buses: liveBuses,
+    connected: wsConnected,
+    startTrip,
+    stopTrip,
+    sendLocation,
+    updateStudentStatus,
+    resetStatuses,
+  } = useBusTracking();
   const isPortalAuthenticated =
     (selectedPortal === 'parent' && Boolean(authGuardian)) ||
     (selectedPortal === 'teacher' && Boolean(authStaff && authStaff.role === 'teacher')) ||
+    (selectedPortal === 'driver' && Boolean(authDriver)) ||
     (selectedPortal === 'admin' && Boolean(authStaff && authStaff.role === 'admin'));
 
   // Persistent Teacher-entered Daily Student Records (localStorage + authentic Term 1 marks)
@@ -518,6 +542,7 @@ export default function App() {
       const normalizedAdminPwd = pwdToVerify.replace(/[\s\-().]+/g, '');
       if (usernameToVerify === 'admin' && normalizedAdminPwd === '07517340166') {
         setAuthGuardian(null);
+        setAuthDriver(null);
         setAuthStaff({
           role: 'admin',
           username: 'admin',
@@ -534,6 +559,41 @@ export default function App() {
             : language === 'ar'
             ? 'اسم المستخدم أو كلمة المرور الخاصة بالإدارة غير صحيحة.'
             : 'Invalid admin username or password.'
+        );
+      }
+      setIsLoggingIn(false);
+      return;
+    }
+
+    if (selectedPortal === 'driver') {
+      const driverIdentifier = loginUsername.trim();
+      if (!driverIdentifier || !pwdToVerify) {
+        setLoginError(
+          language === 'ku'
+            ? 'تکایە کۆدێ باسێ (یان ناڤێ شۆفێری) و PIN بنووسە'
+            : language === 'ar'
+            ? 'يرجى اختيار السائق أو رمز الحافلة وإدخال رمز الدخول PIN'
+            : 'Please select driver / enter Bus Code and Driver PIN'
+        );
+        setIsLoggingIn(false);
+        return;
+      }
+
+      const driverAcc = authenticateDriver(driverIdentifier, pwdToVerify);
+      if (driverAcc) {
+        setAuthGuardian(null);
+        setAuthStaff(null);
+        setAuthDriver(driverAcc);
+        setLoginError('');
+        setLoginUsername('');
+        setLoginPassword('');
+      } else {
+        setLoginError(
+          language === 'ku'
+            ? 'کۆدێ باسێ یان PIN یێ شۆفێری خەلەتە.'
+            : language === 'ar'
+            ? 'رمز الحافلة أو رمز PIN غير صحيح.'
+            : 'Invalid Bus Code / Driver Name or PIN.'
         );
       }
       setIsLoggingIn(false);
@@ -640,6 +700,7 @@ export default function App() {
   const handleSignOut = () => {
     setAuthGuardian(null);
     setAuthStaff(null);
+    setAuthDriver(null);
     setSelectedChildId('');
     setActivePortalTab(null);
     setTeacherTab('daily_record');
@@ -838,7 +899,7 @@ export default function App() {
 
   // CSV Export for Admin
   const handleExportCsv = () => {
-    const headers = ['Serial', 'ID', 'Name', 'Grade', 'Section', 'Roll Number', 'Gender', 'Attendance', 'Conduct', 'Guardian Email', 'Guardian Password'];
+    const headers = ['Serial', 'ID', 'Name', 'Grade', 'Section', 'Roll Number', 'Gender', 'Attendance', 'Conduct', 'Guardian Email', 'Student / Guardian Password', 'Alt / Sibling Password'];
     const rows = students.map(s => [
       s.serial || '',
       s.id,
@@ -850,7 +911,8 @@ export default function App() {
       s.attendance,
       s.conduct,
       s.guardianEmail || '',
-      s.guardianPassword || ''
+      s.guardianPassword || '',
+      s.guardianPasswordAlt || ''
     ]);
     const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
@@ -937,6 +999,8 @@ export default function App() {
                     ? 'bg-[#EEF0FF] text-[#1A1D4E]'
                     : selectedPortal === 'teacher'
                     ? 'bg-[#E1F3F7] text-[#0087A5]'
+                    : selectedPortal === 'driver'
+                    ? 'bg-[#E6FAF6] text-[#00876A]'
                     : 'bg-[#FFF2E8] text-[#FF6D00]'
                 }`}
               >
@@ -948,6 +1012,12 @@ export default function App() {
                     : 'Admin Portal'
                   : selectedPortal === 'teacher'
                   ? t.portalTeacher
+                  : selectedPortal === 'driver'
+                  ? language === 'ku'
+                    ? 'پۆڕتاڵێ شۆفێران'
+                    : language === 'ar'
+                    ? 'بوابة السائقين'
+                    : 'Driver Portal'
                   : t.portalParent}
               </span>
             </div>
@@ -1051,6 +1121,12 @@ export default function App() {
                 : language === 'ar'
                 ? 'بوابة الإدارة والملخص الشامل'
                 : 'Admin Panel Portal'
+              : selectedPortal === 'driver'
+              ? language === 'ku'
+                ? 'پۆڕتاڵێ شۆفێران و چاڤدێریا باسان'
+                : language === 'ar'
+                ? 'بوابة السائقين والتتبع المباشر'
+                : 'Bus Driver Portal'
               : selectedPortal === 'teacher'
               ? t.teacherLoginTitle
               : t.parentLoginTitle}
@@ -1062,7 +1138,13 @@ export default function App() {
                 ? 'ب رێکا ناڤێ بەکارهێنەری و وشەی تێپەڕبوونێ بچۆ ژوورڤە بۆ بینینا پوختەیا گشتی یا نمرە و پۆلان'
                 : language === 'ar'
                 ? 'سجل الدخول باسم المستخدم وكلمة المرور لعرض الملخص الشامل للدرجات والصفوف'
-                : 'Sign in with administrator credentials to inspect entry progress, averages, pass rates & full school summary'
+                : 'Sign in with administrator credentials to inspect entry progress, averages, pass rates & live fleet'
+              : selectedPortal === 'driver'
+              ? language === 'ku'
+                ? 'شۆفێرێ خۆ هەلبژێرە و PIN بنووسە بۆ دەستپێکرنا رێڤەبرن و پەخشا زیندوو یا جھێ باسێ'
+                : language === 'ar'
+                ? 'اختر اسم السائق وأدخل رمز PIN لتفعيل البث المباشر لموقع الحافلة ومنازل الطلاب'
+                : 'Select your driver route and enter your Driver PIN for live GPS bus tracking & student house navigation'
               : selectedPortal === 'teacher'
               ? language === 'ku'
                 ? 'ب رێکا ئیمەیڵ و ژمارا تەلەفۆنا خۆ (وەکی وشەی تێپەڕبوون) بچۆ ژوورڤە بۆ تۆمارکرنا نمرێن قوتابیان'
@@ -1073,11 +1155,11 @@ export default function App() {
               ? 'ب رێکا وشەی تێپەڕبوون (پاسوۆرد) بچۆ ژوورڤە بۆ بینینا نمرەیان، خشتەیێ وانان و راپۆرتا رەوشتی' 
               : language === 'ar' 
               ? 'سجل الدخول بكلمة المرور فقط لعرض بيانات الطالب وكشف الدرجات والجدول الدراسي' 
-              : 'Sign in using student password to access academic evaluations, marksheet & timetable'}
+              : 'Sign in using student password to access academic evaluations, marksheet, timetable & live bus'}
           </p>
 
-          {/* Portal Switcher: Parents Portal vs Teacher Portal vs Admin Portal */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-xl mb-5">
+          {/* Portal Switcher: Parents vs Teacher vs Driver vs Admin */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full max-w-3xl mb-5">
             <button
               type="button"
               onClick={() => {
@@ -1129,6 +1211,33 @@ export default function App() {
             <button
               type="button"
               onClick={() => {
+                setSelectedPortal('driver');
+                setLoginUsername('BUS-01');
+                setLoginPassword('');
+                setLoginError('');
+              }}
+              className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center gap-3 ${
+                selectedPortal === 'driver'
+                  ? 'bg-white border-[#00A887] shadow-[0_8px_20px_rgba(0,168,135,0.18)]'
+                  : 'bg-white/70 border-[#E1E9FF] hover:border-[#00A887]/50 opacity-85 hover:opacity-100'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00A887] to-[#0087A5] text-white flex items-center justify-center shrink-0">
+                <Bus className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="block text-xs font-extrabold text-[#1A1D4E] truncate">
+                  {language === 'ku' ? 'پۆڕتاڵێ شۆفێران' : language === 'ar' ? 'بوابة السائقين' : 'Driver Portal'}
+                </span>
+                <span className="block text-[10px] font-mono text-[#00A887] truncate">
+                  {language === 'ku' ? 'پاس + PIN' : language === 'ar' ? 'حافلة + PIN' : 'Live Bus GPS'}
+                </span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
                 setSelectedPortal('admin');
                 setLoginUsername('');
                 setLoginPassword('');
@@ -1159,6 +1268,8 @@ export default function App() {
             className={`w-full max-w-md bg-white border rounded-3xl p-6 sm:p-8 shadow-[0_12px_32px_rgba(0,135,165,0.08)] text-left transition-all ${
               selectedPortal === 'admin'
                 ? 'border-[#C9D2F5] hover:border-[#1A1D4E]/50'
+                : selectedPortal === 'driver'
+                ? 'border-[#B6EADF] hover:border-[#00A887]/60'
                 : selectedPortal === 'teacher'
                 ? 'border-[#C8E5EC] hover:border-[#0087A5]/60'
                 : 'border-[#E1E9FF] hover:border-[#FF7F2A]/50'
@@ -1170,6 +1281,8 @@ export default function App() {
                 className={`w-11 h-11 rounded-2xl flex items-center justify-center text-white shrink-0 ${
                   selectedPortal === 'admin'
                     ? 'bg-gradient-to-br from-[#1A1D4E] to-[#0087A5] shadow-[0_4px_12px_rgba(26,29,78,0.3)]'
+                    : selectedPortal === 'driver'
+                    ? 'bg-gradient-to-br from-[#00A887] to-[#0087A5] shadow-[0_4px_12px_rgba(0,168,135,0.35)]'
                     : selectedPortal === 'teacher'
                     ? 'bg-gradient-to-br from-[#0087A5] to-[#2AD4FF] shadow-[0_4px_12px_rgba(0,135,165,0.35)]'
                     : 'bg-gradient-to-br from-[#FF7F2A] to-[#FF5599] shadow-[0_4px_12px_rgba(255,127,42,0.35)]'
@@ -1177,6 +1290,8 @@ export default function App() {
               >
                 {selectedPortal === 'admin' ? (
                   <ShieldCheck className="w-5 h-5" />
+                ) : selectedPortal === 'driver' ? (
+                  <Bus className="w-5 h-5" />
                 ) : selectedPortal === 'teacher' ? (
                   <GraduationCap className="w-5 h-5" />
                 ) : (
@@ -1191,6 +1306,12 @@ export default function App() {
                       : language === 'ar'
                       ? 'بوابة الإدارة'
                       : 'Admin Panel Portal'
+                    : selectedPortal === 'driver'
+                    ? language === 'ku'
+                      ? 'پۆڕتاڵێ شۆفێران'
+                      : language === 'ar'
+                      ? 'بوابة السائقين'
+                      : 'Bus Driver Portal'
                     : selectedPortal === 'teacher'
                     ? t.portalTeacher
                     : t.portalParent}
@@ -1199,6 +1320,8 @@ export default function App() {
                   className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono ${
                     selectedPortal === 'admin'
                       ? 'text-[#1A1D4E] bg-[#EEF0FF]'
+                      : selectedPortal === 'driver'
+                      ? 'text-[#00876A] bg-[#E6FAF6]'
                       : selectedPortal === 'teacher'
                       ? 'text-[#0087A5] bg-[#E1F3F7]'
                       : 'text-[#FF6D00] bg-[#FFF2E8]'
@@ -1210,6 +1333,12 @@ export default function App() {
                       : language === 'ar'
                       ? 'اسم المستخدم + كلمة المرور'
                       : 'Username + Password'
+                    : selectedPortal === 'driver'
+                    ? language === 'ku'
+                      ? 'کۆدێ باسێ + PIN'
+                      : language === 'ar'
+                      ? 'رمز الحافلة + PIN'
+                      : 'Driver Route + PIN'
                     : selectedPortal === 'teacher'
                     ? language === 'ku'
                       ? 'ئیمەیڵ + ژمارا تەلەفۆنێ'
@@ -1231,6 +1360,40 @@ export default function App() {
 
             {/* LOGIN FORM */}
             <form onSubmit={handleLogin} className="space-y-4">
+              {/* DRIVER SELECTOR FIELD */}
+              {selectedPortal === 'driver' && (
+                <div className="space-y-1.5">
+                  <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
+                    {language === 'ku'
+                      ? 'شۆفێر / کۆدێ باسێ'
+                      : language === 'ar'
+                      ? 'السائق / رقم الحافلة'
+                      : 'Select Driver / Bus Route'}
+                  </label>
+                  <div className="relative">
+                    <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
+                      <Bus className="w-4 h-4 text-[#00A887]" />
+                    </div>
+                    <select
+                      value={loginUsername}
+                      onChange={(e) => {
+                        setLoginUsername(e.target.value);
+                        setLoginError('');
+                      }}
+                      className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs font-bold text-[#1A1D4E] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A887] focus:border-transparent transition-all ${
+                        isRtl ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'
+                      }`}
+                    >
+                      {BUS_DRIVER_ROUTES.map((drv) => (
+                        <option key={drv.id} value={drv.code}>
+                          {drv.code} — {drv.name} ({drv.stops.length} stops)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
               {/* TEACHER EMAIL OR ADMIN USERNAME FIELD */}
               {(selectedPortal === 'teacher' || selectedPortal === 'admin') && (
                 <div className="space-y-1.5">
@@ -1278,10 +1441,16 @@ export default function App() {
                 </div>
               )}
 
-              {/* PASSWORD FIELD (ADMIN PASSWORD / TEACHER PHONE / PARENT PASSWORD) */}
+              {/* PASSWORD FIELD (ADMIN PASSWORD / TEACHER PHONE / DRIVER PIN / PARENT PASSWORD) */}
               <div className="space-y-1.5">
                 <label className={`block text-xs font-bold uppercase tracking-wider text-[#454A87] ${isRtl ? 'text-right' : 'text-left'}`}>
-                  {selectedPortal === 'teacher'
+                  {selectedPortal === 'driver'
+                    ? language === 'ku'
+                      ? 'وشەی تێپەڕبوون (PIN یێ شۆفێری)'
+                      : language === 'ar'
+                      ? 'رمز الدخول السري للسائق (PIN)'
+                      : 'Driver PIN'
+                    : selectedPortal === 'teacher'
                     ? language === 'ku'
                       ? 'وشەی تێپەڕبوون (ژمارا تەلەفۆنێ)'
                       : language === 'ar'
@@ -1293,6 +1462,8 @@ export default function App() {
                   <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRtl ? 'right-3.5' : 'left-3.5'}`}>
                     {selectedPortal === 'teacher' ? (
                       <Phone className="w-4 h-4 text-[#0087A5]" />
+                    ) : selectedPortal === 'driver' ? (
+                      <KeyRound className="w-4 h-4 text-[#00A887]" />
                     ) : selectedPortal === 'admin' ? (
                       <KeyRound className="w-4 h-4 text-[#1A1D4E]" />
                     ) : (
@@ -1314,6 +1485,8 @@ export default function App() {
                           : language === 'ar'
                           ? 'أدخل كلمة مرور الإدارة'
                           : 'Enter admin password'
+                        : selectedPortal === 'driver'
+                        ? 'PIN (123456 - 123464)'
                         : selectedPortal === 'teacher'
                         ? '0750 XXX XXXX'
                         : language === 'ku'
@@ -1325,6 +1498,8 @@ export default function App() {
                     className={`w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 text-xs text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:bg-white focus:outline-none focus:ring-2 border-transparent transition-all ${
                       selectedPortal === 'admin'
                         ? 'focus:ring-[#1A1D4E]'
+                        : selectedPortal === 'driver'
+                        ? 'focus:ring-[#00A887]'
                         : selectedPortal === 'teacher'
                         ? 'focus:ring-[#0087A5]'
                         : 'focus:ring-[#FF7F2A]'
@@ -1336,6 +1511,8 @@ export default function App() {
                     className={`absolute inset-y-0 flex items-center text-[#7C85FF] px-3 cursor-pointer ${
                       selectedPortal === 'admin'
                         ? 'hover:text-[#1A1D4E]'
+                        : selectedPortal === 'driver'
+                        ? 'hover:text-[#00A887]'
                         : selectedPortal === 'teacher'
                         ? 'hover:text-[#0087A5]'
                         : 'hover:text-[#FF7F2A]'
@@ -1353,6 +1530,8 @@ export default function App() {
                 className={`w-full text-white py-3.5 px-4 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2 active:scale-[0.99] ${
                   selectedPortal === 'admin'
                     ? 'bg-[#1A1D4E] hover:bg-[#13163D] shadow-[0_4px_14px_rgba(26,29,78,0.3)]'
+                    : selectedPortal === 'driver'
+                    ? 'bg-[#00A887] hover:bg-[#008E72] shadow-[0_4px_14px_rgba(0,168,135,0.35)]'
                     : selectedPortal === 'teacher'
                     ? 'bg-[#0087A5] hover:bg-[#00738D] shadow-[0_4px_14px_rgba(0,135,165,0.35)]'
                     : 'bg-[#FF7F2A] hover:bg-[#E56E20] shadow-[0_4px_14px_rgba(255,127,42,0.35)]'
@@ -1581,6 +1760,33 @@ export default function App() {
                     </p>
                   </div>
                 </button>
+
+                {/* 7. LIVE SCHOOL BUS TRACKING */}
+                <button
+                  onClick={() => setActivePortalTab('bus_tracking')}
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#00A887] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,168,135,0.18)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
+                >
+                  <div className="flex items-start justify-between w-full mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00A887] to-[#0087A5] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,168,135,0.35)] group-hover:scale-105 transition-transform">
+                      <Bus className="w-7 h-7" />
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E6FAF6] text-[#00A887]">
+                      07
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#00A887] transition-colors mb-1">
+                      {language === 'ku' ? 'چاڤدێریا باسێ (زیندوو)' : language === 'ar' ? 'تتبع حافلة المدرسة (مباشر)' : 'LIVE SCHOOL BUS'}
+                    </h4>
+                    <p className="text-xs text-[#6B70A6] line-clamp-2">
+                      {language === 'ku'
+                        ? 'جھێ باسێ ب شێوەیێ زیندوو، ناڤێ شۆفێری و رەوشا سواربوونا قوتابی'
+                        : language === 'ar'
+                        ? 'الموقع المباشر لحافلة الطالب، اسم السائق، وحالة الصعود والنزول'
+                        : 'Live GPS bus location, assigned driver & real-time boarding status'}
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
           )}
@@ -1649,6 +1855,14 @@ export default function App() {
                     }`}
                   >
                     {t.tabCalendar}
+                  </button>
+                  <button
+                    onClick={() => setActivePortalTab('bus_tracking')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      activePortalTab === 'bus_tracking' ? 'bg-[#00A887] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                    }`}
+                  >
+                    {language === 'ku' ? 'باسا قوتابخانێ' : language === 'ar' ? 'حافلة المدرسة' : 'School Bus'}
                   </button>
                 </div>
               </div>
@@ -2430,6 +2644,186 @@ export default function App() {
                   </div>
                 </div>
               )}
+
+              {/* ---------------------------------------------------- */}
+              {/* SECTION 7: LIVE SCHOOL BUS TRACKER                   */}
+              {/* ---------------------------------------------------- */}
+              {activePortalTab === 'bus_tracking' && (() => {
+                const match = findBusForStudent(currentStudent.id, currentStudent.name);
+                const driver = match?.driver || null;
+                const studentStop = match?.stop || null;
+                const busState = driver ? liveBuses[driver.id] : null;
+                const boardingStatus = studentStop && busState?.studentStatuses?.[studentStop.id]
+                  ? busState.studentStatuses[studentStop.id]
+                  : 'waiting';
+
+                return (
+                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00A887] to-[#0087A5] text-white flex items-center justify-center shrink-0">
+                          <Bus className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-[#1A1D4E]">
+                            {language === 'ku'
+                              ? 'چاڤدێریا زیندوو یا باسا قوتابخانێ'
+                              : language === 'ar'
+                              ? 'التتبع المباشر لحافلة المدرسة'
+                              : 'Live School Bus Tracking'}
+                          </h3>
+                          <p className="text-xs text-[#6B70A6]">
+                            {wsConnected
+                              ? language === 'ku'
+                                ? 'پەیوەندیا زیندوو چالاکە'
+                                : language === 'ar'
+                                ? 'الاتصال المباشر نشط'
+                                : 'Real-Time Connection Active'
+                              : 'Connecting to live bus feed...'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {driver && (
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold ${
+                            busState?.active
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              : 'bg-[#F5F6FF] text-[#454A87] border border-[#E1E9FF]'
+                          }`}
+                        >
+                          <Radio className={`w-3.5 h-3.5 ${busState?.active ? 'animate-pulse text-emerald-600' : ''}`} />
+                          <span>
+                            {busState?.active
+                              ? busState.direction === 'dropoff'
+                                ? language === 'ku'
+                                  ? 'د ڕێکێ دا بەرەڤ مال'
+                                  : language === 'ar'
+                                  ? 'في الطريق إلى المنزل'
+                                  : 'ACTIVE: Dropping Off Home'
+                                : language === 'ku'
+                                ? 'د ڕێکێ دا بەرەڤ قوتابخانێ'
+                                : language === 'ar'
+                                ? 'في الطريق إلى المدرسة'
+                                : 'ACTIVE: Morning Pickup'
+                              : language === 'ku'
+                              ? 'باس د گەرێ دا نینە'
+                              : language === 'ar'
+                              ? 'الحافلة في وضع الاستعداد'
+                              : 'Bus Standby (Not on Trip)'}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+
+                    {driver && studentStop ? (
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div className="p-4 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                            <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                              {language === 'ku' ? 'شۆفێر و باس' : language === 'ar' ? 'السائق والحافلة' : 'Assigned Driver & Bus'}
+                            </span>
+                            <span className="font-black text-[#1A1D4E] text-sm block">{driver.name}</span>
+                            <span className="text-xs font-mono text-[#0087A5] font-bold">{driver.code} • {driver.nameEn}</span>
+                          </div>
+
+                          <div className="p-4 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                            <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                              {language === 'ku' ? 'رەوشا قوتابی' : language === 'ar' ? 'حالة الطالب' : 'Student Boarding Status'}
+                            </span>
+                            <span
+                              className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-black ${
+                                boardingStatus === 'boarded'
+                                  ? 'bg-emerald-600 text-white'
+                                  : boardingStatus === 'dropped_off'
+                                  ? 'bg-[#0087A5] text-white'
+                                  : boardingStatus === 'absent'
+                                  ? 'bg-rose-600 text-white'
+                                  : 'bg-white text-[#1A1D4E] border border-[#E1E9FF]'
+                              }`}
+                            >
+                              {boardingStatus === 'boarded'
+                                ? language === 'ku'
+                                  ? 'ل ناڤ باسێ دایە'
+                                  : language === 'ar'
+                                  ? 'تم الصعود للحافلة'
+                                  : 'Boarded on Bus'
+                                : boardingStatus === 'dropped_off'
+                                ? language === 'ku'
+                                  ? 'گەهشتە مالێ / قوتابخانێ'
+                                  : language === 'ar'
+                                  ? 'تم التوصيل بأمان'
+                                  : 'Safely Dropped Off'
+                                : boardingStatus === 'absent'
+                                ? language === 'ku'
+                                  ? 'نەهاتی'
+                                  : language === 'ar'
+                                  ? 'غائب اليوم'
+                                  : 'Marked Absent'
+                                : language === 'ku'
+                                ? 'ل هیڤیا باسێ'
+                                : language === 'ar'
+                                ? 'في انتظار الحافلة'
+                                : 'Waiting for Pickup'}
+                            </span>
+                          </div>
+
+                          <div className="p-4 bg-[#F0F8FA] rounded-2xl border border-[#C8E5EC] flex flex-col justify-between">
+                            <div>
+                              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#0087A5] mb-1">
+                                {language === 'ku' ? 'ناڤونیشانا مالێ' : language === 'ar' ? 'موقع المنزل المسجل' : 'Registered House Pin'}
+                              </span>
+                              <span className="text-xs font-bold text-[#1A1D4E] block">
+                                Stop #{studentStop.order} • {studentStop.studentNamesLabel}
+                              </span>
+                            </div>
+                            {studentStop.googleMapsUrl && (
+                              <a
+                                href={studentStop.googleMapsUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#0087A5] hover:underline"
+                              >
+                                <Navigation className="w-3.5 h-3.5" />
+                                <span>Open House Pin in Google Maps</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        <LiveBusMap
+                          stops={[studentStop]}
+                          busState={busState}
+                          driverName={driver.name}
+                          driverCode={driver.code}
+                          highlightedStopId={studentStop.id}
+                          focusKey={`parent-${driver.id}-${studentStop.id}`}
+                          heightClass="h-[380px] sm:h-[440px]"
+                        />
+                      </>
+                    ) : (
+                      <div className="p-6 bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl text-center space-y-2">
+                        <MapPin className="w-8 h-8 text-[#0087A5] mx-auto opacity-75" />
+                        <h4 className="text-sm font-bold text-[#1A1D4E]">
+                          {language === 'ku'
+                            ? 'ئەڤ قوتابیە ل سەر خشتەیێ باسا قوتابخانێ تۆمارکری نینە'
+                            : language === 'ar'
+                            ? 'هذا الطالب غير مسجل في قائمة حافلات المدرسة'
+                            : 'No School Bus Assignment Linked'}
+                        </h4>
+                        <p className="text-xs text-[#6B70A6] max-w-md mx-auto">
+                          {language === 'ku'
+                            ? 'ئەگەر قوتابی هاتنوچوونا قوتابخانێ بکاردهینیت، تکایە پەیوەندیێ ب کارگێڕیا قوتابخانێ بکە.'
+                            : language === 'ar'
+                            ? 'إذا كان الطالب يستخدم حافلة المدرسة، يرجى مراجعة الإدارة لتأكيد ربط المسار.'
+                            : 'If this student rides a Dasinya school bus, please contact the school office to link their stop.'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           )}
         </main>
@@ -2969,10 +3363,31 @@ export default function App() {
           schoolStructure={SCHOOL_STRUCTURE}
           gradeCurriculum={GRADE_CURRICULUM}
           officialSubjects={OFFICIAL_SUBJECTS}
+          liveBuses={liveBuses}
+          wsConnected={wsConnected}
           language={language}
           isRtl={isRtl}
           onSelectModalStudent={(s) => setModalStudent(s)}
           onExportStudentsCsv={handleExportCsv}
+          onSignOut={handleSignOut}
+        />
+      )}
+
+      {/* ======================================================== */}
+      {/* VIEW 6: BUS DRIVER PORTAL (AUTHENTICATED)                */}
+      {/* ======================================================== */}
+      {selectedPortal === 'driver' && isPortalAuthenticated && authDriver && (
+        <DriverPortal
+          driver={authDriver}
+          busState={liveBuses[authDriver.id] || null}
+          wsConnected={wsConnected}
+          language={language}
+          isRtl={isRtl}
+          onStartTrip={startTrip}
+          onStopTrip={stopTrip}
+          onSendLocation={sendLocation}
+          onUpdateStudentStatus={updateStudentStatus}
+          onResetStatuses={resetStatuses}
           onSignOut={handleSignOut}
         />
       )}
@@ -2992,6 +3407,22 @@ export default function App() {
                 <p className="text-xs text-[#6B70A6]">
                   {formatGradeLabel(modalStudent.grade, language)} - {formatClassLabel(modalStudent.section, language)} • Roll No: {modalStudent.rollNumber} • ID: {modalStudent.id}
                 </p>
+                {authStaff?.role === 'admin' && modalStudent.guardianPassword && (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#E1F3F7] text-[#006F89] font-mono text-[11px] font-bold">
+                      <KeyRound className="w-3 h-3" />
+                      <span>
+                        {language === 'ku' ? 'پاسوۆرد:' : language === 'ar' ? 'كلمة المرور:' : 'Password:'}{' '}
+                        {modalStudent.guardianPassword}
+                      </span>
+                    </span>
+                    {modalStudent.guardianPasswordAlt && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] font-mono text-[11px] font-semibold">
+                        Alt: {modalStudent.guardianPasswordAlt}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
               <button
                 onClick={() => setModalStudent(null)}
@@ -3055,6 +3486,12 @@ export default function App() {
               : language === 'ar'
               ? 'بوابة الإدارة'
               : 'Admin Portal'
+            : selectedPortal === 'driver'
+            ? language === 'ku'
+              ? 'پۆڕتاڵێ شۆفێران'
+              : language === 'ar'
+              ? 'بوابة السائقين'
+              : 'Driver Portal'
             : selectedPortal === 'teacher'
             ? t.portalTeacher
             : t.portalParent}
@@ -3066,6 +3503,12 @@ export default function App() {
               : language === 'ar'
               ? 'لوحة الإدارة والملخص الشامل • مدرسة داسنيا الأهلية'
               : 'Official Admin Panel & Academic Summary • Dasinya Private School'
+            : selectedPortal === 'driver'
+            ? language === 'ku'
+              ? 'سیستەمێ چاڤدێریا زیندوو یا باسێن قوتابیان • قوتابخانەیا داسنیا یا تایبەت'
+              : language === 'ar'
+              ? 'نظام التتبع المباشر لحافلات المدرسة • مدرسة داسنيا الأهلية'
+              : 'Live School Bus Tracking Portal • Dasinya Private School'
             : selectedPortal === 'teacher'
             ? language === 'ku'
               ? 'دەروازەیا فەرمی یا مامۆستایان • قوتابخانەیا داسنیا یا تایبەت'
