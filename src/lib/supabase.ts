@@ -5,8 +5,8 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const DEFAULT_PROJECT_URL = 'https://wecjxneowqcxlmdrowmy.supabase.co';
-const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlY2p4bmVvd3FjeGxtZHJvd215Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1MTMxOTgsImV4cCI6MjEwOTA4OTE5OH0.SC4AEL0-quBEWrKRkjxZwOoMUmaqD6mKg_0KMSvmc-Y';
+const DEFAULT_PROJECT_URL = 'https://knwkwzwjhepobqxpamkd.supabase.co';
+const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtud2t3endqaGVwb2JxeHBhbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MTM4NzAsImV4cCI6MjExMDM4OTg3MH0.UNZ8-ym7wth5BxUAcFmHeGvfjaqmv484dz8Dn14W52o';
 
 /**
  * Validates and normalizes the Supabase URL.
