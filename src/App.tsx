@@ -58,6 +58,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { seedStudentsToSupabase } from './lib/supabase';
 import { IMPORTED_STUDENTS, StudentRecord, SubjectMark } from './data/importedStudents';
 import { 
   getClassTimetable, 
@@ -508,6 +509,11 @@ export default function App() {
       window.scrollTo(0, 0);
     }
   };
+
+  // Auto-sync students roster to Supabase on mount in background
+  useEffect(() => {
+    seedStudentsToSupabase(students).catch(() => {});
+  }, [students]);
 
   // Scroll to top on portal tab, active student, teacher tab, or authentication changes
   useEffect(() => {

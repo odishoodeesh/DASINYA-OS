@@ -114,3 +114,52 @@ export async function fetchStudentsFromSupabase(): Promise<SupabaseStudentRow[] 
     return null;
   }
 }
+
+/**
+ * Seed all students into Supabase students table
+ */
+export async function seedStudentsToSupabase(students: any[]): Promise<{ success: boolean; count: number; error?: string }> {
+  if (!supabase) {
+    return { success: false, count: 0, error: 'Supabase client not initialized.' };
+  }
+  try {
+    const rows = students.map(s => ({
+      id: s.id,
+      serial: s.serial || null,
+      name: s.name,
+      mother_name: s.motherName || null,
+      roll_number: s.rollNumber,
+      grade: s.grade,
+      section: s.section,
+      gender: s.gender || null,
+      attendance: s.attendance || '100%',
+      class_rank: s.classRank || null,
+      term: s.term || 'First Term 2024-2025',
+      academic_year: s.academicYear || '2024-2025',
+      conduct: s.conduct || 'Excellent',
+      class_teacher: s.classTeacher || null,
+      phone: s.phone || null,
+      dob: s.dob || null,
+      blood_group: s.bloodGroup || null,
+      guardian_email: s.guardianEmail || null,
+      guardian_password: s.guardianPassword || null,
+      guardian_password_alt: s.guardianPasswordAlt || null,
+      subjects: s.subjects || [],
+      behaviour_report: s.behaviourReport || { uploaded: false }
+    }));
+
+    let successCount = 0;
+    for (let i = 0; i < rows.length; i += 50) {
+      const batch = rows.slice(i, i + 50);
+      const { error } = await supabase.from('students').upsert(batch, { onConflict: 'id' });
+      if (error) {
+        return { success: false, count: successCount, error: error.message };
+      }
+      successCount += batch.length;
+    }
+    return { success: true, count: successCount };
+  } catch (err: any) {
+    return { success: false, count: 0, error: err?.message || 'Seeding failed' };
+  }
+}
+
