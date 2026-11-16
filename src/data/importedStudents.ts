@@ -2,7 +2,8 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * Official Dasinya Private School Student Roster (304 Students)
- * Contains ONLY authentic uploaded student records and verified Kurdish exam marksheets.
+ * Contains ONLY authentic uploaded student records and verified exam marksheets.
+ * Updated from All_Marks_936a9aca.html + Marks_Report_871553b8.pdf + Kurdish Marksheets.
  * No mock or fabricated marks.
  */
 
@@ -81,6 +82,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -116,6 +125,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -151,6 +168,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -186,6 +211,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -221,6 +254,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -256,6 +297,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -291,6 +340,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 22,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -326,6 +383,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -361,6 +426,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -388,6 +461,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -423,6 +504,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -458,6 +547,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -493,6 +590,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -528,6 +633,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -563,6 +676,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -598,6 +719,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -633,6 +762,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -668,6 +805,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -738,6 +883,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -773,6 +926,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -808,6 +969,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -843,6 +1012,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -878,6 +1055,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -913,6 +1098,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -948,6 +1141,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -983,6 +1184,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1010,6 +1219,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1045,6 +1262,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1080,6 +1305,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1115,6 +1348,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1150,6 +1391,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1185,6 +1434,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1220,6 +1477,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1255,6 +1520,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1290,6 +1563,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1325,6 +1606,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1360,6 +1649,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1395,6 +1692,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1430,6 +1735,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1465,6 +1778,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1500,6 +1821,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1535,6 +1864,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1570,6 +1907,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1605,6 +1950,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1640,6 +1993,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1675,6 +2036,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1710,6 +2079,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1745,6 +2122,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1780,6 +2165,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1815,6 +2208,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1850,6 +2251,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1885,6 +2294,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1920,6 +2337,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1955,6 +2380,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -1990,6 +2423,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2025,6 +2466,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2060,6 +2509,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2095,6 +2552,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2165,6 +2630,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 21,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2200,6 +2673,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2235,6 +2716,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2270,6 +2759,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 22,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2305,6 +2802,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2340,6 +2845,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 23,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2375,6 +2888,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2410,6 +2931,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2445,6 +2974,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2480,6 +3017,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2515,6 +3060,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 24,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2550,6 +3103,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2585,6 +3146,14 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 25,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -2604,7 +3173,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "B+",
     "guardianEmail": "Bilal.Zirk@dasinya.com",
     "guardianPassword": "123529",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 75,
@@ -2622,7 +3208,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Nirun.Tahsin@dasinya.com",
     "guardianPassword": "123531",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 76,
@@ -2640,7 +3243,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Kfan.Nzir@dasinya.com",
     "guardianPassword": "123532",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 77,
@@ -2659,7 +3279,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Nuzad.Khalid@dasinya.com",
     "guardianPassword": "123533",
     "guardianPasswordAlt": "123624",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 78,
@@ -2677,7 +3314,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "O+",
     "guardianEmail": "Taher.qtas@dasinya.com",
     "guardianPassword": "123534",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 79,
@@ -2695,7 +3349,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Shurshvan.Majeed@dasinya.com",
     "guardianPassword": "123535",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 80,
@@ -2713,7 +3384,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Brza.Saeed@dasinya.com",
     "guardianPassword": "123536",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 81,
@@ -2731,7 +3419,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Dilshad.Mohammed@dasinya.com",
     "guardianPassword": "123537",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 82,
@@ -2750,7 +3455,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Tariq.Ahmed@dasinya.com",
     "guardianPassword": "123579",
     "guardianPasswordAlt": "123580",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 83,
@@ -2769,7 +3491,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Shivan.Sadiq2@dasinya.com",
     "guardianPassword": "123580",
     "guardianPasswordAlt": "123581",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 84,
@@ -2788,7 +3527,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mahmoud.Lzkin@dasinya.com",
     "guardianPassword": "123538",
     "guardianPasswordAlt": "123633",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 85,
@@ -2806,7 +3562,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "B+",
     "guardianEmail": "Zhvan.Yousif@dasinya.com",
     "guardianPassword": "123539",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 86,
@@ -2824,7 +3597,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "O+",
     "guardianEmail": "Zradesht.Ali@dasinya.com",
     "guardianPassword": "123540",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 87,
@@ -2842,7 +3632,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Baur.Zeir@dasinya.com",
     "guardianPassword": "123541",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 88,
@@ -2860,7 +3667,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "AB+",
     "guardianEmail": "Lauin.Bdalstar@dasinya.com",
     "guardianPassword": "123542",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 89,
@@ -2879,7 +3703,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Dzuar.Abid@dasinya.com",
     "guardianPassword": "123543",
     "guardianPasswordAlt": "123605",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 90,
@@ -2898,7 +3739,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mifan.Mhmdrshid@dasinya.com",
     "guardianPassword": "123544",
     "guardianPasswordAlt": "123545",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 91,
@@ -2917,7 +3775,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Amir.Shawkat@dasinya.com",
     "guardianPassword": "123546",
     "guardianPasswordAlt": "123547",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 92,
@@ -2936,7 +3811,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Niuar.Zinl@dasinya.com",
     "guardianPassword": "123547",
     "guardianPasswordAlt": "123589",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 93,
@@ -2955,7 +3847,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Aland.Bezad@dasinya.com",
     "guardianPassword": "123591",
     "guardianPasswordAlt": "123629",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 94,
@@ -2976,12 +3885,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123570",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3002,7 +3919,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mohammed.Ahmed@dasinya.com",
     "guardianPassword": "123550",
     "guardianPasswordAlt": "123551",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 96,
@@ -3021,7 +3955,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hevall.Ali@dasinya.com",
     "guardianPassword": "123551",
     "guardianPasswordAlt": "123553",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 97,
@@ -3040,7 +3991,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hevall.Ali@dasinya.com",
     "guardianPassword": "123552",
     "guardianPasswordAlt": "123553",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 98,
@@ -3061,12 +4029,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123554",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3089,12 +4065,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123555",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3117,12 +4101,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123556",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3145,12 +4137,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123557",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3173,12 +4173,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123558",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3201,12 +4209,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123559",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3229,12 +4245,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123560",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3257,12 +4281,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123561",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3285,12 +4317,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123562",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3313,12 +4353,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123563",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3341,12 +4389,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123564",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3367,7 +4423,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Shursh.Mohammed@dasinya.com",
     "guardianPassword": "123545",
     "guardianPasswordAlt": "123546",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 110,
@@ -3388,12 +4461,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123565",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3416,12 +4497,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123566",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3444,12 +4533,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123567",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3470,7 +4567,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Bdalrhim@dasinya.com",
     "guardianPassword": "123548",
     "guardianPasswordAlt": "123549",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 114,
@@ -3489,7 +4603,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hvgr.Abid@dasinya.com",
     "guardianPassword": "123549",
     "guardianPasswordAlt": "123615",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 115,
@@ -3510,12 +4641,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123568",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3538,12 +4677,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123569",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3566,12 +4713,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123571",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3594,12 +4749,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123572",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3622,12 +4785,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123573",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3650,12 +4821,20 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianPasswordAlt": "123574",
     "subjects": [
       {
-        "subject": "PE",
-        "code": "PE",
+        "subject": "Art",
+        "code": "ART",
         "maxMarks": 25,
         "obtainedMarks": 25,
         "grade": "A+",
-        "remarks": "Official Term 1 PE Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -3676,7 +4855,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sheur.Sherzad@dasinya.com",
     "guardianPassword": "123574",
     "guardianPasswordAlt": "123575",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 122,
@@ -3694,7 +4890,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "bloodGroup": "A+",
     "guardianEmail": "Zirvan.Mohammed@dasinya.com",
     "guardianPassword": "123530",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 123,
@@ -3713,7 +4926,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Hussein@dasinya.com",
     "guardianPassword": "123575",
     "guardianPasswordAlt": "123627",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 124,
@@ -3732,7 +4962,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Mohammed.Lzgin@dasinya.com",
     "guardianPassword": "123576",
     "guardianPasswordAlt": "123577",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 125,
@@ -3751,7 +4998,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Hussein@dasinya.com",
     "guardianPassword": "123577",
     "guardianPasswordAlt": "123627",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 126,
@@ -3789,7 +5053,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Jlal.Shakr@dasinya.com",
     "guardianPassword": "123581",
     "guardianPasswordAlt": "123582",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 128,
@@ -3808,7 +5089,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hassan.Bejt@dasinya.com",
     "guardianPassword": "123582",
     "guardianPasswordAlt": "123583",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 129,
@@ -3827,7 +5125,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rad.Jameel@dasinya.com",
     "guardianPassword": "123583",
     "guardianPasswordAlt": "123584",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 130,
@@ -3846,7 +5161,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Arzu.Didar@dasinya.com",
     "guardianPassword": "123584",
     "guardianPasswordAlt": "123585",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 131,
@@ -3865,7 +5197,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Farhad.Bdi@dasinya.com",
     "guardianPassword": "123585",
     "guardianPasswordAlt": "123586",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 132,
@@ -3884,7 +5233,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ari.Mustafa@dasinya.com",
     "guardianPassword": "123586",
     "guardianPasswordAlt": "123587",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 133,
@@ -3903,7 +5269,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Huar.Abdulkarim@dasinya.com",
     "guardianPassword": "123587",
     "guardianPasswordAlt": "123588",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 134,
@@ -3922,7 +5305,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Niuar.Zinl@dasinya.com",
     "guardianPassword": "123588",
     "guardianPasswordAlt": "123589",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 135,
@@ -3941,7 +5341,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Alman.Hazim@dasinya.com",
     "guardianPassword": "123589",
     "guardianPasswordAlt": "123702",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 136,
@@ -3960,7 +5377,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hevall.Mohammed@dasinya.com",
     "guardianPassword": "123590",
     "guardianPasswordAlt": "123591",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 137,
@@ -3979,7 +5413,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Nirun.Tahsin@dasinya.com",
     "guardianPassword": "123592",
     "guardianPasswordAlt": "123593",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 138,
@@ -3998,7 +5449,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hemn.Mohammed@dasinya.com",
     "guardianPassword": "123593",
     "guardianPasswordAlt": "123691",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 139,
@@ -4017,7 +5485,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Amanj.Mustafa@dasinya.com",
     "guardianPassword": "123594",
     "guardianPasswordAlt": "123595",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 140,
@@ -4036,7 +5521,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hunar.Mohammed@dasinya.com",
     "guardianPassword": "123595",
     "guardianPasswordAlt": "123596",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 141,
@@ -4055,7 +5557,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Amr.Hassan@dasinya.com",
     "guardianPassword": "123596",
     "guardianPasswordAlt": "123597",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 142,
@@ -4074,7 +5593,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ari.Gid@dasinya.com",
     "guardianPassword": "123597",
     "guardianPasswordAlt": "123598",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 143,
@@ -4093,7 +5629,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Kedar.Ahmed@dasinya.com",
     "guardianPassword": "123598",
     "guardianPasswordAlt": "123616",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 144,
@@ -4112,7 +5657,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Rami.Sliu@dasinya.com",
     "guardianPassword": "123599",
     "guardianPasswordAlt": "123600",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 145,
@@ -4131,7 +5685,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Adris.Musa@dasinya.com",
     "guardianPassword": "123600",
     "guardianPasswordAlt": "123601",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 146,
@@ -4150,7 +5713,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sharfan.Adel@dasinya.com",
     "guardianPassword": "123613",
     "guardianPasswordAlt": "123623",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 147,
@@ -4169,7 +5741,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hvgr.Abid@dasinya.com",
     "guardianPassword": "123614",
     "guardianPasswordAlt": "123615",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 148,
@@ -4188,7 +5769,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Himn.Hazim@dasinya.com",
     "guardianPassword": "123602",
     "guardianPasswordAlt": "123603",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 149,
@@ -4207,7 +5797,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Kuvan.Ubaid@dasinya.com",
     "guardianPassword": "123618",
     "guardianPasswordAlt": "123619",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 150,
@@ -4226,7 +5825,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Dzuar.Abid@dasinya.com",
     "guardianPassword": "123604",
     "guardianPasswordAlt": "123605",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 151,
@@ -4245,7 +5853,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Lezgin.Krim@dasinya.com",
     "guardianPassword": "123605",
     "guardianPasswordAlt": "123606",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 152,
@@ -4264,7 +5881,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Peshkeft.Bdalkrim@dasinya.com",
     "guardianPassword": "123609",
     "guardianPasswordAlt": "123660",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 153,
@@ -4283,7 +5909,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Bdalltif@dasinya.com",
     "guardianPassword": "123610",
     "guardianPasswordAlt": "123611",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 154,
@@ -4302,7 +5937,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Siabnd.Mohammed@dasinya.com",
     "guardianPassword": "123611",
     "guardianPasswordAlt": "123612",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 155,
@@ -4321,7 +5965,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Farid.wahid1@dasinya.com",
     "guardianPassword": "123612",
     "guardianPasswordAlt": "123613",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 156,
@@ -4340,7 +5993,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Majd.Salem@dasinya.com",
     "guardianPassword": "123621",
     "guardianPasswordAlt": "123622",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 157,
@@ -4378,7 +6040,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Kedar.Ahmed@dasinya.com",
     "guardianPassword": "123615",
     "guardianPasswordAlt": "123616",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 159,
@@ -4397,7 +6076,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Zia.Btrs@dasinya.com",
     "guardianPassword": "123616",
     "guardianPasswordAlt": "123617",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 160,
@@ -4416,7 +6112,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Hukr.Naf@dasinya.com",
     "guardianPassword": "123617",
     "guardianPasswordAlt": "123618",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 161,
@@ -4435,7 +6148,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Biyar@dasinya.com",
     "guardianPassword": "123601",
     "guardianPasswordAlt": "123602",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 162,
@@ -4454,7 +6184,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Lashkar.Hussein@dasinya.com",
     "guardianPassword": "123603",
     "guardianPasswordAlt": "123680",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 163,
@@ -4473,7 +6220,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Fatah.Majeed@dasinya.com",
     "guardianPassword": "123619",
     "guardianPasswordAlt": "123695",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 164,
@@ -4492,7 +6256,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Ahmed.Mohammed@dasinya.com",
     "guardianPassword": "123620",
     "guardianPasswordAlt": "123621",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 165,
@@ -4511,7 +6292,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Kivi.Bdal@dasinya.com",
     "guardianPassword": "123606",
     "guardianPasswordAlt": "123607",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 166,
@@ -4530,7 +6328,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Guedar.Suleiman@dasinya.com",
     "guardianPassword": "123607",
     "guardianPasswordAlt": "123608",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 24,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 167,
@@ -4549,7 +6364,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Nzar.Nadr@dasinya.com",
     "guardianPassword": "123608",
     "guardianPasswordAlt": "123641",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 168,
@@ -4568,7 +6400,24 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "Sharfan.Adel@dasinya.com",
     "guardianPassword": "123622",
     "guardianPasswordAlt": "123623",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Art",
+        "code": "ART",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 25,
+        "obtainedMarks": 25,
+        "grade": "A+",
+        "remarks": "Pass"
+      }
+    ]
   },
   {
     "serial": 169,
@@ -4602,7 +6451,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4637,8 +6494,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 6,
-        "grade": "Needs Improvement",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4674,7 +6539,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4709,8 +6582,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 8,
-        "grade": "Needs Improvement",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4746,7 +6627,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4782,7 +6671,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4818,7 +6715,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4853,8 +6758,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 15,
-        "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4890,7 +6803,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4925,8 +6846,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 13,
-        "grade": "B",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4962,7 +6891,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -4998,7 +6935,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5034,7 +6979,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 17,
         "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5069,8 +7022,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 11,
-        "grade": "C",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5105,8 +7066,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 11,
-        "grade": "C",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5142,7 +7111,7 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 14,
         "grade": "B",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
       }
     ]
   },
@@ -5178,7 +7147,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5214,7 +7191,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5249,8 +7234,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 13,
-        "grade": "B",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5285,8 +7278,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 12,
-        "grade": "B",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5322,7 +7323,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5357,8 +7366,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 15,
-        "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5393,8 +7410,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 15,
-        "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5430,7 +7455,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5466,7 +7499,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5501,8 +7542,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 1,
-        "grade": "Needs Improvement",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5537,8 +7586,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 1,
-        "grade": "Needs Improvement",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5574,7 +7631,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5628,7 +7693,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5664,7 +7737,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 17,
         "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5700,7 +7781,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5735,8 +7824,16 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "code": "ENG",
         "maxMarks": 20,
         "obtainedMarks": 13,
-        "grade": "B",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5772,7 +7869,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5808,7 +7913,15 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 English Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5837,6 +7950,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5865,6 +7994,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5893,6 +8038,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 5,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5921,6 +8082,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 5,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5949,6 +8126,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -5977,6 +8170,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 10,
         "grade": "C",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6005,6 +8214,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6033,6 +8258,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 9,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6061,6 +8302,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 14,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 3,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6089,6 +8346,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 3,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6117,6 +8390,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 7,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6145,6 +8434,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6173,6 +8478,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 10,
         "grade": "C",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6201,6 +8522,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6229,6 +8566,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6257,6 +8610,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 12,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6285,6 +8654,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 9,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6313,6 +8698,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 6,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6341,6 +8742,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6369,6 +8786,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 14,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6397,6 +8830,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6425,6 +8882,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6453,6 +8934,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6481,6 +8986,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6509,6 +9038,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 6,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6537,6 +9090,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 7,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6565,6 +9142,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 3,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -6593,6 +9194,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 3,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6621,6 +9246,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6649,6 +9298,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6677,6 +9350,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6705,6 +9402,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "B+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6733,6 +9454,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 5,
         "grade": "Needs Improvement",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 5,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -6761,6 +9506,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6789,6 +9558,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6817,6 +9610,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6845,6 +9662,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6873,6 +9714,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 13,
         "grade": "B",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6901,6 +9766,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6929,6 +9818,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 Kurdish Exam Evaluation"
+      },
+      {
+        "subject": "English",
+        "code": "ENG",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6957,6 +9870,38 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -6985,6 +9930,38 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7013,6 +9990,38 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "PE",
+        "code": "PED",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7041,6 +10050,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 5,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7069,6 +10102,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 4,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7097,6 +10154,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7125,6 +10206,22 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7153,6 +10250,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 11,
         "grade": "C",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 4,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7181,6 +10302,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7209,6 +10354,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 13,
         "grade": "B",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 2,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7237,6 +10406,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7265,6 +10458,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7293,6 +10510,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 16,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7321,6 +10562,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7349,6 +10614,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7377,6 +10666,30 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 15,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7408,11 +10721,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7444,11 +10789,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 3,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7480,11 +10857,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7516,11 +10925,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7552,11 +10993,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7588,11 +11061,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -7624,11 +11129,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7660,11 +11197,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7696,11 +11265,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7732,11 +11333,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 6,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7768,11 +11401,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7804,11 +11469,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7840,11 +11537,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7876,11 +11605,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -7912,11 +11673,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 3,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -7948,11 +11733,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8021,11 +11838,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8057,11 +11898,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8093,11 +11966,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8129,11 +12034,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8165,11 +12102,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 17,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8201,11 +12162,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8237,11 +12222,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8273,11 +12282,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8309,11 +12342,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8345,11 +12402,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 16,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8381,11 +12470,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 17,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 7,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8417,11 +12538,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8453,11 +12606,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 19,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8489,11 +12674,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8525,11 +12742,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 18,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8561,11 +12810,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8597,11 +12878,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 14,
         "grade": "B",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8652,11 +12957,43 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 20,
         "grade": "A+",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8688,11 +13025,35 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
       },
       {
         "subject": "IT",
-        "code": "IT",
+        "code": "ITC",
         "maxMarks": 20,
         "obtainedMarks": 17,
         "grade": "A",
-        "remarks": "Official Term 1 IT Exam Evaluation"
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 15,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8721,6 +13082,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 19,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8749,6 +13150,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 8,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -8777,6 +13218,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 18,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 20,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8805,6 +13286,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 18,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
       }
     ]
   },
@@ -8833,6 +13354,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 17,
         "grade": "A",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 13,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 10,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 14,
+        "grade": "B",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
       }
     ]
   },
@@ -8853,7 +13414,48 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
     "guardianEmail": "David.Sabeeh@Dasinya.com",
     "guardianPassword": "123756",
     "guardianPasswordAlt": "123456",
-    "subjects": []
+    "subjects": [
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 16,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 4,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 4,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 9,
+        "grade": "F",
+        "remarks": "Needs Improvement"
+      }
+    ]
   },
   {
     "serial": 304,
@@ -8880,6 +13482,46 @@ export const IMPORTED_STUDENTS: StudentRecord[] = [
         "obtainedMarks": 20,
         "grade": "A+",
         "remarks": "Official Term 1 English Exam Evaluation"
+      },
+      {
+        "subject": "Religion",
+        "code": "REL",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Arabic",
+        "code": "ARA",
+        "maxMarks": 20,
+        "obtainedMarks": 11,
+        "grade": "D",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Science",
+        "code": "SCI",
+        "maxMarks": 20,
+        "obtainedMarks": 19,
+        "grade": "A+",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Moral Values",
+        "code": "MRV",
+        "maxMarks": 20,
+        "obtainedMarks": 17,
+        "grade": "A",
+        "remarks": "Pass"
+      },
+      {
+        "subject": "Math",
+        "code": "MTH",
+        "maxMarks": 20,
+        "obtainedMarks": 12,
+        "grade": "C",
+        "remarks": "Pass"
       }
     ]
   }
