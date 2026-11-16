@@ -88,7 +88,6 @@ import {
   calcGrade49GrandTotal100,
 } from './data/teacherPortal';
 import {
-  ALL_BUS_STOPS,
   BUS_DRIVER_ROUTES,
   BusDriverRoute,
   DEFAULT_SUPABASE_BUS_ID,
@@ -96,7 +95,7 @@ import {
   authenticateDriver,
   findBusForStudent,
 } from './data/busRoutes';
-import { LiveBusState, useBusTracking } from './hooks/useBusTracking';
+import { useBusTracking } from './hooks/useBusTracking';
 import {
   Grade13DailyRecordTable,
   Grade49DailyRecordTable,
@@ -313,7 +312,6 @@ export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() =>
     typeof window !== 'undefined' ? window.location.pathname : '/'
   );
-  const [showPublicLiveMap, setShowPublicLiveMap] = useState<boolean>(false);
 
   useEffect(() => {
     const onPopState = () => {
@@ -962,9 +960,26 @@ export default function App() {
 
   const activeLangOption = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
 
-  // Dedicated mobile-friendly /driver GPS route
+  // Dedicated mobile-friendly /driver GPS route (only authenticated drivers can start/stop live GPS)
   if (currentPath.replace(/\/+$/, '') === '/driver') {
-    return <DriverRouteTrackerPage onNavigateHome={() => navigateTo('/')} />;
+    return (
+      <DriverRouteTrackerPage
+        authenticatedDriver={authDriver}
+        onDriverAuthenticated={(drv) => {
+          setAuthGuardian(null);
+          setAuthStaff(null);
+          setAuthDriver(drv);
+          setSelectedPortal('driver');
+        }}
+        onDriverSignOut={() => {
+          setAuthDriver(null);
+        }}
+        onNavigateHome={() => navigateTo('/')}
+        onStartTrip={startTrip}
+        onStopTrip={stopTrip}
+        onSendLocation={sendLocation}
+      />
+    );
   }
 
   return (
@@ -1550,112 +1565,6 @@ export default function App() {
                 )}
               </button>
             </form>
-          </div>
-
-          {/* Quick Links: Mobile /driver GPS Tracker & Live OpenStreetMap Bus Map */}
-          <div className="w-full max-w-2xl mt-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => setShowPublicLiveMap((prev) => !prev)}
-                className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold border-2 transition-all cursor-pointer flex items-center gap-2 ${
-                  showPublicLiveMap
-                    ? 'bg-[#0087A5] text-white border-[#0087A5] shadow-md'
-                    : 'bg-white text-[#1A1D4E] border-[#E1E9FF] hover:border-[#0087A5]'
-                }`}
-              >
-                <MapPin className="w-4 h-4" />
-                <span>
-                  {showPublicLiveMap ? 'Hide Live School Bus Map' : 'Live Bus & Student Pins Map'}
-                </span>
-                {liveBuses[DEFAULT_SUPABASE_BUS_ID]?.active && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                )}
-              </button>
-
-              <a
-                href="/driver"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigateTo('/driver');
-                }}
-                className="px-4 py-2.5 rounded-2xl text-xs font-extrabold border-2 border-[#B6EADF] bg-[#E6FAF6] hover:bg-[#D3F5EE] text-[#006F59] transition-all flex items-center gap-2 shadow-2xs"
-              >
-                <Radio className="w-4 h-4" />
-                <span>Open Driver GPS Page (/driver)</span>
-              </a>
-            </div>
-
-            {showPublicLiveMap && (() => {
-              const bus1Live = liveBuses[DEFAULT_SUPABASE_BUS_ID];
-              const publicFleet = BUS_DRIVER_ROUTES.map((d) => ({
-                driver: d,
-                state: liveBuses[d.id],
-              })).filter(
-                (item): item is { driver: BusDriverRoute; state: LiveBusState } =>
-                  Boolean(
-                    item.state &&
-                      typeof item.state.lat === 'number' &&
-                      typeof item.state.lng === 'number'
-                  )
-              );
-
-              if (
-                bus1Live &&
-                typeof bus1Live.lat === 'number' &&
-                typeof bus1Live.lng === 'number'
-              ) {
-                publicFleet.push({
-                  driver: {
-                    id: DEFAULT_SUPABASE_BUS_ID,
-                    code: 'BUS-1',
-                    pin: '',
-                    name: BUS_DRIVER_ROUTES[0]?.name || 'Bus 1 Live GPS',
-                    nameEn: 'Bus 1 (Supabase Realtime)',
-                    routeLabel: 'Live GPS Broadcast',
-                    routeLabelArKu: 'البث المباشر',
-                    stops: BUS_DRIVER_ROUTES[0]?.stops || [],
-                  },
-                  state: bus1Live,
-                });
-              }
-
-              return (
-                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-5 shadow-[0_8px_28px_rgba(0,135,165,0.08)] text-left space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#E1E9FF]">
-                    <div>
-                      <h3 className="text-sm sm:text-base font-black text-[#1A1D4E] flex items-center gap-2">
-                        <Bus className="w-4 h-4 text-[#0087A5]" />
-                        <span>Live OpenStreetMap • Student Pins &amp; Bus 1 Realtime</span>
-                      </h3>
-                      <p className="text-[11px] text-[#6B70A6]">
-                        {ALL_BUS_STOPS.length} student stops parsed •{' '}
-                        {bus1Live
-                          ? `Bus 1 last updated ${bus1Live.updatedAt ? new Date(bus1Live.updatedAt).toLocaleTimeString() : 'just now'}`
-                          : 'Waiting for Bus 1 GPS broadcast from /driver'}
-                      </p>
-                    </div>
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
-                        wsConnected
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-[#F5F6FF] text-[#6B70A6] border border-[#E1E9FF]'
-                      }`}
-                    >
-                      {wsConnected ? '● REALTIME LIVE' : 'Connecting...'}
-                    </span>
-                  </div>
-
-                  <LiveBusMap
-                    stops={ALL_BUS_STOPS}
-                    fleetBuses={publicFleet}
-                    drawRouteLine={false}
-                    focusKey="public-live-map"
-                    heightClass="h-[380px] sm:h-[440px]"
-                  />
-                </div>
-              );
-            })()}
           </div>
         </main>
       )}

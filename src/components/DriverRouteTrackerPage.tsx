@@ -10,6 +10,8 @@ import {
   Bus,
   CheckCircle2,
   Compass,
+  Lock,
+  LogOut,
   Navigation,
   Play,
   Radio,
@@ -18,11 +20,38 @@ import {
   Square,
 } from 'lucide-react';
 import { BUS_1_ID, upsertBusLocation } from '../lib/supabase';
-import { BUS_DRIVER_ROUTES, SCHOOL_LOCATION } from '../data/busRoutes';
+import {
+  authenticateDriver,
+  BUS_DRIVER_ROUTES,
+  BusDriverRoute,
+  SCHOOL_LOCATION,
+} from '../data/busRoutes';
+import { GpsSource, TripDirection } from '../hooks/useBusTracking';
 import { LiveBusMap } from './LiveBusMap';
 
 interface DriverRouteTrackerPageProps {
+  authenticatedDriver: BusDriverRoute | null;
+  onDriverAuthenticated: (driver: BusDriverRoute) => void;
+  onDriverSignOut: () => void;
   onNavigateHome: () => void;
+  onStartTrip?: (
+    driverId: string,
+    direction: TripDirection,
+    coords?: { lat: number; lng: number; gpsSource?: GpsSource }
+  ) => void;
+  onStopTrip?: (driverId: string) => void;
+  onSendLocation?: (
+    driverId: string,
+    payload: {
+      lat: number;
+      lng: number;
+      heading?: number | null;
+      speedKmh?: number | null;
+      accuracy?: number | null;
+      gpsSource?: GpsSource;
+      currentStopId?: string | null;
+    }
+  ) => void;
 }
 
 interface WakeLockSentinelLike {
@@ -40,8 +69,19 @@ interface GpsTelemetry {
 }
 
 export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
+  authenticatedDriver,
+  onDriverAuthenticated,
+  onDriverSignOut,
   onNavigateHome,
+  onStartTrip,
+  onStopTrip,
+  onSendLocation,
 }) => {
+  // Driver sign-in form state when /driver is opened directly without active driver session
+  const [selectedCode, setSelectedCode] = useState<string>(BUS_DRIVER_ROUTES[0]?.code || 'BUS-01');
+  const [pinInput, setPinInput] = useState<string>('');
+  const [authError, setAuthError] = useState<string>('');
+
   const [isTracking, setIsTracking] = useState<boolean>(false);
   const [gpsStatus, setGpsStatus] = useState<'idle' | 'acquiring' | 'active' | 'error'>('idle');
   const [gpsError, setGpsError] = useState<string>('');
@@ -60,8 +100,6 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
   const latestTelemetryRef = useRef<GpsTelemetry | null>(null);
   const lastUpsertMsRef = useRef<number>(0);
   const isTrackingRef = useRef<boolean>(false);
-
-  const primaryRoute = BUS_DRIVER_ROUTES[0];
 
   const releaseWakeLock = useCallback(async () => {
     if (wakeLockRef.current) {
@@ -102,23 +140,27 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
     }
   }, []);
 
-  const pushPositionToSupabase = useCallback(async (coords: GpsTelemetry) => {
-    const nowIso = new Date().toISOString();
-    lastUpsertMsRef.current = Date.now();
-    const res = await upsertBusLocation({
-      id: BUS_1_ID,
-      lat: coords.lat,
-      lng: coords.lng,
-      updatedAt: nowIso,
-    });
-    if (res.ok) {
-      setSupabaseError('');
-      setLastSyncedAt(nowIso);
-      setSyncCount((c) => c + 1);
-    } else if (res.error) {
-      setSupabaseError(res.error);
-    }
-  }, []);
+  const pushPositionToSupabase = useCallback(
+    async (coords: GpsTelemetry) => {
+      if (!authenticatedDriver) return;
+      const nowIso = new Date().toISOString();
+      lastUpsertMsRef.current = Date.now();
+      const res = await upsertBusLocation({
+        id: BUS_1_ID,
+        lat: coords.lat,
+        lng: coords.lng,
+        updatedAt: nowIso,
+      });
+      if (res.ok) {
+        setSupabaseError('');
+        setLastSyncedAt(nowIso);
+        setSyncCount((c) => c + 1);
+      } else if (res.error) {
+        setSupabaseError(res.error);
+      }
+    },
+    [authenticatedDriver]
+  );
 
   const stopRoute = useCallback(() => {
     isTrackingRef.current = false;
@@ -135,9 +177,13 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
       intervalIdRef.current = null;
     }
     void releaseWakeLock();
-  }, [releaseWakeLock]);
+    if (authenticatedDriver) {
+      onStopTrip?.(authenticatedDriver.id);
+    }
+  }, [authenticatedDriver, onStopTrip, releaseWakeLock]);
 
   const startRoute = useCallback(() => {
+    if (!authenticatedDriver) return;
     if (!('geolocation' in navigator)) {
       setGpsStatus('error');
       setGpsError('Geolocation is not supported by this browser/device.');
@@ -150,6 +196,8 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
     setGpsError('');
     setSupabaseError('');
     lastUpsertMsRef.current = 0;
+
+    onStartTrip?.(authenticatedDriver.id, 'pickup');
 
     // Keep phone screen awake during live GPS broadcasting
     void requestWakeLock();
@@ -178,6 +226,15 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
         setTelemetry(nextTelemetry);
         setGpsStatus('active');
         setGpsError('');
+
+        onSendLocation?.(authenticatedDriver.id, {
+          lat: nextTelemetry.lat,
+          lng: nextTelemetry.lng,
+          heading: nextTelemetry.heading,
+          speedKmh: nextTelemetry.speedKmh,
+          accuracy: nextTelemetry.accuracy,
+          gpsSource: 'device_gps',
+        });
 
         // Push immediately on first fix or if >= 3.5 seconds since last upsert
         if (Date.now() - lastUpsertMsRef.current >= 3500) {
@@ -211,7 +268,7 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
         void pushPositionToSupabase(latestTelemetryRef.current);
       }
     }, 4000);
-  }, [pushPositionToSupabase, requestWakeLock]);
+  }, [authenticatedDriver, onSendLocation, onStartTrip, pushPositionToSupabase, requestWakeLock]);
 
   // Re-acquire Screen Wake Lock when driver switches back to this browser tab
   useEffect(() => {
@@ -240,6 +297,133 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
     };
   }, [releaseWakeLock]);
 
+  const handleDriverSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCode || !pinInput.trim()) {
+      setAuthError('Please select a bus driver and enter your Driver PIN.');
+      return;
+    }
+    const matched = authenticateDriver(selectedCode, pinInput);
+    if (!matched) {
+      setAuthError('Invalid Bus Code or Driver PIN. Only authorized drivers can control live GPS.');
+      return;
+    }
+    setAuthError('');
+    setPinInput('');
+    onDriverAuthenticated(matched);
+  };
+
+  const handleSignOutClick = () => {
+    if (isTrackingRef.current) {
+      stopRoute();
+    }
+    onDriverSignOut();
+  };
+
+  // Gate: Only authenticated drivers can start/stop live GPS
+  if (!authenticatedDriver) {
+    return (
+      <div className="min-h-[100dvh] bg-[#F5F6FF] text-[#1A1D4E] flex flex-col">
+        <header className="w-full bg-white border-b border-[#E1E9FF] px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0087A5] to-[#00A887] text-white flex items-center justify-center shadow-xs shrink-0">
+              <Bus className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-sm sm:text-base font-black text-[#1A1D4E] leading-tight">
+                Dasinya Driver GPS
+              </h1>
+              <p className="text-[11px] font-bold text-[#6B70A6]">Driver Authorization Required</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onNavigateHome}
+            className="px-3 py-2 rounded-xl border border-[#E1E9FF] bg-[#F5F6FF] hover:bg-[#E1E9FF] text-xs font-bold text-[#1A1D4E] flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Login</span>
+          </button>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_12px_36px_rgba(0,135,165,0.08)] space-y-5">
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-[#E6FAF6] border border-[#B6EADF] text-[#00A887] flex items-center justify-center">
+                <Lock className="w-7 h-7" />
+              </div>
+              <h2 className="text-xl font-black text-[#1A1D4E]">Driver Login Only</h2>
+              <p className="text-xs text-[#6B70A6] leading-relaxed">
+                Only an authorized school bus driver can start or stop live GPS location tracking.
+              </p>
+            </div>
+
+            {authError && (
+              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <span>{authError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleDriverSignIn} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#454A87]">
+                  Select Driver / Bus Route
+                </label>
+                <div className="relative">
+                  <Bus className="w-4 h-4 text-[#00A887] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <select
+                    value={selectedCode}
+                    onChange={(e) => {
+                      setSelectedCode(e.target.value);
+                      setAuthError('');
+                    }}
+                    className="w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 pl-10 pr-4 text-xs font-bold text-[#1A1D4E] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A887]"
+                  >
+                    {BUS_DRIVER_ROUTES.map((drv) => (
+                      <option key={drv.id} value={drv.code}>
+                        {drv.code} — {drv.name} ({drv.stops.length} stops)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#454A87]">
+                  Driver PIN
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-[#00A887] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="password"
+                    value={pinInput}
+                    onChange={(e) => {
+                      setPinInput(e.target.value);
+                      setAuthError('');
+                    }}
+                    placeholder="Enter Driver PIN"
+                    className="w-full bg-[#F5F6FF] border border-[#E1E9FF] rounded-2xl py-3 pl-10 pr-4 text-xs font-bold text-[#1A1D4E] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00A887]"
+                    autoComplete="current-password"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 px-4 rounded-2xl bg-[#00A887] hover:bg-[#008E72] text-white text-sm font-extrabold shadow-[0_4px_14px_rgba(0,168,135,0.35)] transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Sign In as Driver</span>
+              </button>
+            </form>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   const liveMapBusState = telemetry
     ? {
         driverId: BUS_1_ID,
@@ -261,29 +445,40 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
   return (
     <div className="min-h-[100dvh] bg-[#F5F6FF] text-[#1A1D4E] flex flex-col">
       {/* Compact Mobile Header */}
-      <header className="w-full bg-white border-b border-[#E1E9FF] px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
-        <div className="flex items-center gap-2.5">
+      <header className="w-full bg-white border-b border-[#E1E9FF] px-4 py-3 flex items-center justify-between gap-2 sticky top-0 z-30 shadow-2xs">
+        <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0087A5] to-[#00A887] text-white flex items-center justify-center shadow-xs shrink-0">
             <Bus className="w-5 h-5" />
           </div>
-          <div>
-            <h1 className="text-sm sm:text-base font-black text-[#1A1D4E] leading-tight">
-              Dasinya Driver GPS
+          <div className="min-w-0">
+            <h1 className="text-sm sm:text-base font-black text-[#1A1D4E] leading-tight truncate">
+              {authenticatedDriver.nameEn}
             </h1>
-            <p className="text-[11px] font-mono font-bold text-[#0087A5]">
-              Bus ID: {BUS_1_ID} • Supabase Live
+            <p className="text-[11px] font-mono font-bold text-[#0087A5] truncate">
+              {authenticatedDriver.code} • Bus ID: {BUS_1_ID}
             </p>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={onNavigateHome}
-          className="px-3 py-2 rounded-xl border border-[#E1E9FF] bg-[#F5F6FF] hover:bg-[#E1E9FF] text-xs font-bold text-[#1A1D4E] flex items-center gap-1.5 cursor-pointer transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Main App</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={onNavigateHome}
+            className="px-3 py-2 rounded-xl border border-[#E1E9FF] bg-[#F5F6FF] hover:bg-[#E1E9FF] text-xs font-bold text-[#1A1D4E] flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Portal</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSignOutClick}
+            className="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-xs font-bold text-rose-700 flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </header>
 
       {/* Main Mobile Control Container */}
@@ -325,7 +520,7 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
 
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B70A6] block">
-                  Live GPS Status
+                  Live GPS Status • Driver Control
                 </span>
                 <h2 className="text-base sm:text-lg font-black text-[#1A1D4E]">
                   {gpsStatus === 'active'
@@ -334,7 +529,7 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
                     ? 'Acquiring High-Accuracy GPS...'
                     : gpsStatus === 'error'
                     ? 'GPS Signal Attention Needed'
-                    : 'Standby • Route Stopped'}
+                    : 'Standby • Press Start to Track'}
                 </h2>
               </div>
             </div>
@@ -427,7 +622,7 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
             <p className="text-xs font-mono font-extrabold text-[#1A1D4E] mt-1">
               {telemetry
                 ? `${telemetry.lat.toFixed(5)}, ${telemetry.lng.toFixed(5)}`
-                : 'Waiting for GPS...'}
+                : 'Waiting for Start...'}
             </p>
           </div>
 
@@ -467,7 +662,7 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
             <div>
               <h3 className="text-sm font-black text-[#1A1D4E]">Route & Student Pins Preview</h3>
               <p className="text-[11px] text-[#6B70A6]">
-                {SCHOOL_LOCATION.name} • {primaryRoute?.stops.length || 0} student stops
+                {SCHOOL_LOCATION.name} • {authenticatedDriver.stops.length} student stops
               </p>
             </div>
             <button
@@ -481,11 +676,11 @@ export const DriverRouteTrackerPage: React.FC<DriverRouteTrackerPageProps> = ({
 
           {showMapPreview && (
             <LiveBusMap
-              stops={primaryRoute?.stops || []}
+              stops={authenticatedDriver.stops}
               busState={liveMapBusState}
-              driverName={primaryRoute?.nameEn || 'Bus 1'}
-              driverCode="BUS-1"
-              focusKey="driver-mobile-page"
+              driverName={authenticatedDriver.nameEn}
+              driverCode={authenticatedDriver.code}
+              focusKey={`driver-mobile-${authenticatedDriver.id}`}
               heightClass="h-[320px] sm:h-[380px]"
             />
           )}
