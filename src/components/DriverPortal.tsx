@@ -20,8 +20,9 @@ import {
   ExternalLink,
   AlertCircle,
   Home,
+  School,
 } from 'lucide-react';
-import { BusDriverRoute, BusStop } from '../data/busRoutes';
+import { BusDriverRoute, BusStop, SCHOOL_LOCATION } from '../data/busRoutes';
 import {
   GpsSource,
   LiveBusState,
@@ -106,8 +107,13 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
   const beginLiveGpsWatch = (dir: TripDirection) => {
     setGpsError('');
 
+    const initialCoords =
+      dir === 'dropoff'
+        ? { lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng, gpsSource: 'stop_checkin' as GpsSource }
+        : undefined;
+
     if (!('geolocation' in navigator)) {
-      onStartTrip(driver.id, dir);
+      onStartTrip(driver.id, dir, initialCoords);
       setGpsError(
         language === 'ku'
           ? 'ئامێرێ تە پشتگریا GPS ناکەت. دشێی ب رێکا پشکنینا خاڵێن قوتابیان جھێ باسێ نویکەیت.'
@@ -118,7 +124,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
       return;
     }
 
-    onStartTrip(driver.id, dir);
+    onStartTrip(driver.id, dir, initialCoords);
     setGpsWatching(true);
 
     watchIdRef.current = navigator.geolocation.watchPosition(
@@ -194,6 +200,16 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
         currentStopId: stop.id,
       });
     }
+  };
+
+  const handleCheckInSchool = () => {
+    setSelectedStopId(null);
+    onSendLocation(driver.id, {
+      lat: SCHOOL_LOCATION.lat,
+      lng: SCHOOL_LOCATION.lng,
+      gpsSource: 'stop_checkin',
+      currentStopId: 'school-hub',
+    });
   };
 
   const handleStatusClick = (stop: BusStop, status: StudentBoardingStatus) => {
@@ -463,6 +479,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
           <LiveBusMap
             stops={driver.stops}
             busState={busState}
+            direction={direction}
             driverName={driver.name}
             driverCode={driver.code}
             highlightedStopId={selectedStopId}
@@ -481,6 +498,66 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
             <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E1F3F7] text-[#0087A5]">
               {filteredStops.length} / {driver.stops.length}
             </span>
+          </div>
+
+          {/* Official School Hub Card (Departure / Arrival Point for All Buses) */}
+          <div className="p-3.5 rounded-2xl border-2 border-[#00A887]/50 bg-gradient-to-r from-[#1A1D4E]/5 to-[#E1F3F7]/70 flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#1A1D4E] text-white flex items-center justify-center shrink-0 border-2 border-[#00A887]">
+                <School className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0087A5] block">
+                  {direction === 'dropoff'
+                    ? language === 'ku'
+                      ? 'خاڵا دەرکەفتنێ (ژ قوتابخانێ)'
+                      : language === 'ar'
+                      ? 'نقطة الانطلاق (المدرسة)'
+                      : 'Origin Hub • Depart from School'
+                    : language === 'ku'
+                    ? 'ئارمانجا دووماهیێ (گەهشتن بۆ قوتابخانێ)'
+                    : language === 'ar'
+                    ? 'الوجهة النهائية (الوصول للمدرسة)'
+                    : 'Destination Hub • Arrive at School'}
+                </span>
+                <h4 className="text-xs font-black text-[#1A1D4E]">
+                  {language === 'ku'
+                    ? SCHOOL_LOCATION.nameKu
+                    : language === 'ar'
+                    ? SCHOOL_LOCATION.nameAr
+                    : SCHOOL_LOCATION.name}
+                </h4>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handleCheckInSchool}
+                className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold bg-[#1A1D4E] hover:bg-[#272B6B] text-white cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <MapPin className="w-3 h-3 text-[#00A887]" />
+                <span>
+                  {language === 'ku'
+                    ? 'ل قوتابخانێ یە'
+                    : language === 'ar'
+                    ? 'في المدرسة'
+                    : direction === 'dropoff'
+                    ? 'At School Gate'
+                    : 'Arrived School'}
+                </span>
+              </button>
+              <a
+                href={SCHOOL_LOCATION.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold bg-[#0087A5] hover:bg-[#00738D] text-white flex items-center gap-1 shadow-2xs"
+              >
+                <Navigation className="w-3 h-3" />
+                <span>Maps</span>
+                <ExternalLink className="w-2.5 h-2.5 opacity-80" />
+              </a>
+            </div>
           </div>
 
           {/* Search box */}

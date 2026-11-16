@@ -63,6 +63,12 @@ type IncomingMessage =
 const PORT = Number(process.env.PORT) || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Official Dasinya Private School Location (Origin for Drop-off, Destination for Pickup)
+export const SCHOOL_COORDS = {
+  lat: 36.8611058,
+  lng: 42.9783187,
+} as const;
+
 // Server-authoritative live state keyed by driverId
 const fleetState = new Map<string, LiveBusState>();
 
@@ -160,6 +166,12 @@ async function startServer() {
               bus.lat = msg.lat;
               bus.lng = msg.lng;
               bus.gpsSource = msg.gpsSource || 'device_gps';
+            } else if (bus.direction === 'dropoff' && (bus.lat === null || bus.lng === null)) {
+              // Leaving school on afternoon drop-off: anchor initial bus pin at school hub
+              bus.lat = SCHOOL_COORDS.lat;
+              bus.lng = SCHOOL_COORDS.lng;
+              bus.currentStopId = 'school-hub';
+              bus.gpsSource = 'stop_checkin';
             }
             fleetState.set(driverId, bus);
             broadcast({ type: 'bus_update', driverId, state: bus });
@@ -170,6 +182,13 @@ async function startServer() {
             bus.active = false;
             bus.updatedAt = nowIso;
             bus.speedKmh = 0;
+            if (bus.direction === 'pickup') {
+              // Arrived at school after morning pickup
+              bus.lat = SCHOOL_COORDS.lat;
+              bus.lng = SCHOOL_COORDS.lng;
+              bus.currentStopId = 'school-hub';
+              bus.gpsSource = 'stop_checkin';
+            }
             fleetState.set(driverId, bus);
             broadcast({ type: 'bus_update', driverId, state: bus });
             break;

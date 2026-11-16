@@ -18,8 +18,8 @@ import {
   useApiLoadingStatus,
   useMap,
 } from '@vis.gl/react-google-maps';
-import { BusDriverRoute, BusStop, DUHOK_CENTER } from '../data/busRoutes';
-import { LiveBusState, StudentBoardingStatus } from '../hooks/useBusTracking';
+import { BusDriverRoute, BusStop, DUHOK_CENTER, SCHOOL_LOCATION } from '../data/busRoutes';
+import { LiveBusState, StudentBoardingStatus, TripDirection } from '../hooks/useBusTracking';
 
 export interface FleetBusMarker {
   driver: BusDriverRoute;
@@ -29,6 +29,7 @@ export interface FleetBusMarker {
 interface LiveBusMapProps {
   stops?: BusStop[];
   busState?: LiveBusState | null;
+  direction?: TripDirection;
   driverName?: string;
   driverCode?: string;
   highlightedStopId?: string | null;
@@ -119,6 +120,7 @@ interface GoogleFleetInnerProps extends LiveBusMapProps {
 const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
   stops = [],
   busState,
+  direction,
   driverName,
   driverCode,
   highlightedStopId,
@@ -131,11 +133,15 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
   const apiStatus = useApiLoadingStatus();
   const routePolylineRef = useRef<google.maps.Polyline | null>(null);
   const lastFittedFocusRef = useRef<string>('');
+  const lastHighlightedRef = useRef<string | null>(null);
 
   const [selectedAnchor, setSelectedAnchor] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
   const [selectedStopInfo, setSelectedStopInfo] = useState<BusStop | null>(null);
   const [selectedBusInfo, setSelectedBusInfo] = useState<FleetBusMarker | null>(null);
+  const [selectedSchoolInfo, setSelectedSchoolInfo] = useState<boolean>(false);
+
+  const effectiveDirection: TripDirection = direction || busState?.direction || 'pickup';
 
   // Gracefully switch to Leaflet fallback if Maps authentication or load fails
   useEffect(() => {
@@ -191,9 +197,16 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
       routePolylineRef.current = null;
     }
 
-    if (validStops.length >= 2) {
+    if (validStops.length >= 1) {
+      const stopCoords = validStops.map((s) => ({ lat: s.lat, lng: s.lng }));
+      const schoolPoint = { lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng };
+      const routePath =
+        effectiveDirection === 'dropoff'
+          ? [schoolPoint, ...stopCoords]
+          : [...stopCoords, schoolPoint];
+
       const polyline = new google.maps.Polyline({
-        path: validStops.map((s) => ({ lat: s.lat, lng: s.lng })),
+        path: routePath,
         strokeColor: '#0087A5',
         strokeOpacity: 0.72,
         strokeWeight: 3.5,
@@ -209,26 +222,19 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
         routePolylineRef.current = null;
       }
     };
-  }, [map, validStops]);
+  }, [map, validStops, effectiveDirection]);
 
-  // Fit bounds when focusKey changes or pan to highlighted stop
+  // Fit bounds when focusKey changes or pan when highlightedStopId changes interactively
   useEffect(() => {
     if (!map || typeof google === 'undefined' || !google.maps?.LatLngBounds) return;
-
-    if (highlightedStopId) {
-      const target = validStops.find((s) => s.id === highlightedStopId);
-      if (target) {
-        map.panTo({ lat: target.lat, lng: target.lng });
-        if ((map.getZoom() || 0) < 14) {
-          map.setZoom(15);
-        }
-      }
-      return;
-    }
 
     if (lastFittedFocusRef.current !== focusKey) {
       const bounds = new google.maps.LatLngBounds();
       let pointCount = 0;
+
+      // Always include School Hub location in overview bounds
+      bounds.extend({ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng });
+      pointCount++;
 
       for (const s of validStops) {
         bounds.extend({ lat: s.lat, lng: s.lng });
@@ -241,23 +247,27 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
         }
       }
 
-      if (pointCount === 1) {
-        const single = validStops[0]
-          ? { lat: validStops[0].lat, lng: validStops[0].lng }
-          : {
-              lat: busMarkers[0].state.lat as number,
-              lng: busMarkers[0].state.lng as number,
-            };
-        map.setCenter(single);
-        map.setZoom(15);
-      } else if (pointCount > 1) {
-        map.fitBounds(bounds, 44);
+      if (pointCount <= 1) {
+        map.setCenter({ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng });
+        map.setZoom(14);
       } else {
-        map.setCenter(DUHOK_CENTER);
-        map.setZoom(13);
+        map.fitBounds(bounds, 48);
       }
 
       lastFittedFocusRef.current = focusKey;
+      lastHighlightedRef.current = highlightedStopId || null;
+      return;
+    }
+
+    if (highlightedStopId && lastHighlightedRef.current !== highlightedStopId) {
+      lastHighlightedRef.current = highlightedStopId;
+      const target = validStops.find((s) => s.id === highlightedStopId);
+      if (target) {
+        map.panTo({ lat: target.lat, lng: target.lng });
+        if ((map.getZoom() || 0) < 14) {
+          map.setZoom(15);
+        }
+      }
     }
   }, [map, validStops, busMarkers, highlightedStopId, focusKey]);
 
@@ -265,6 +275,7 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
     setSelectedAnchor(null);
     setSelectedStopInfo(null);
     setSelectedBusInfo(null);
+    setSelectedSchoolInfo(false);
   }, []);
 
   return (
@@ -280,6 +291,39 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
       className="w-full h-full"
       style={{ width: '100%', height: '100%' }}
     >
+      {/* Official School Hub Marker (All Buses Arrive & Depart Here) */}
+      <AdvancedMarkerWithRef
+        position={{ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng }}
+        zIndex={950}
+        onMarkerSelect={(marker) => {
+          setSelectedBusInfo(null);
+          setSelectedStopInfo(null);
+          setSelectedSchoolInfo(true);
+          setSelectedAnchor(marker);
+        }}
+      >
+        <div
+          style={{
+            padding: '4px 10px',
+            borderRadius: '9999px',
+            background: '#1A1D4E',
+            color: '#ffffff',
+            fontSize: '11px',
+            fontWeight: 900,
+            whiteSpace: 'nowrap',
+            border: '2.5px solid #00A887',
+            boxShadow: '0 4px 14px rgba(26,29,78,0.42)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          <span>🏫</span>
+          <span>Dasinya School</span>
+        </div>
+      </AdvancedMarkerWithRef>
+
       {/* Numbered Student House Pins */}
       {validStops.map((stop, idx) => {
         const status = busState?.studentStatuses?.[stop.id];
@@ -293,6 +337,7 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
             position={{ lat: stop.lat, lng: stop.lng }}
             zIndex={isHighlighted ? 900 : 100 + idx}
             onMarkerSelect={(marker) => {
+              setSelectedSchoolInfo(false);
               setSelectedBusInfo(null);
               setSelectedStopInfo(stop);
               setSelectedAnchor(marker);
@@ -334,6 +379,7 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
             zIndex={1000}
             collisionBehavior={CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY}
             onMarkerSelect={(marker) => {
+              setSelectedSchoolInfo(false);
               setSelectedStopInfo(null);
               setSelectedBusInfo(item);
               setSelectedAnchor(marker);
@@ -364,13 +410,33 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
       })}
 
       {/* InfoWindow anchored to clicked AdvancedMarker */}
-      {selectedAnchor && (selectedStopInfo || selectedBusInfo) && (
+      {selectedAnchor && (selectedStopInfo || selectedBusInfo || selectedSchoolInfo) && (
         <InfoWindow
           anchor={selectedAnchor}
           pixelOffset={[0, -6]}
           onCloseClick={handleCloseInfoWindow}
         >
-          {selectedStopInfo ? (
+          {selectedSchoolInfo ? (
+            <div className="min-w-[185px] font-sans p-0.5">
+              <div className="text-[10px] font-extrabold text-[#00A887] uppercase">
+                🏫 School Bus Hub
+              </div>
+              <div className="text-xs font-black text-[#1A1D4E] mt-1">
+                {SCHOOL_LOCATION.name}
+              </div>
+              <div className="text-[10px] text-[#454A87] mt-0.5">
+                All buses arrive here (Pickup) & depart from here (Drop-off).
+              </div>
+              <a
+                href={SCHOOL_LOCATION.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block mt-2 px-2.5 py-1 rounded-lg bg-[#1A1D4E] text-white text-[11px] font-bold no-underline"
+              >
+                Open School in Google Maps
+              </a>
+            </div>
+          ) : selectedStopInfo ? (
             <div className="min-w-[175px] font-sans p-0.5">
               <div className="text-[10px] font-bold text-[#6B70A6]">
                 Stop #{selectedStopInfo.order} •{' '}
@@ -442,6 +508,7 @@ const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
 const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
   stops = [],
   busState,
+  direction,
   driverName,
   driverCode,
   highlightedStopId,
@@ -455,6 +522,8 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
   const routeLineRef = useRef<L.Polyline | null>(null);
   const busesLayerRef = useRef<L.LayerGroup | null>(null);
   const lastFittedFocusRef = useRef<string>('');
+  const lastHighlightedRef = useRef<string | null>(null);
+  const effectiveDirection: TripDirection = direction || busState?.direction || 'pickup';
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -552,22 +621,63 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
       marker.addTo(stopsLayer);
     }
 
-    if (validCoords.length >= 2) {
-      routeLineRef.current = L.polyline(validCoords, {
+    // Always render Official Dasinya Private School Hub Pin
+    const schoolIcon = L.divIcon({
+      className: 'dasinya-school-hub-pin',
+      html: `<div style="
+        padding:4px 9px;border-radius:9999px;
+        background:#1A1D4E;color:#fff;font-size:11px;font-weight:900;white-space:nowrap;
+        border:2.5px solid #00A887;box-shadow:0 4px 14px rgba(26,29,78,0.42);
+        display:flex;align-items:center;gap:4px;font-family:Inter,sans-serif;
+      ">
+        <span>🏫</span>
+        <span>Dasinya School</span>
+      </div>`,
+      iconSize: [122, 30],
+      iconAnchor: [61, 15],
+    });
+
+    const schoolMarker = L.marker([SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng], {
+      icon: schoolIcon,
+      zIndexOffset: 950,
+    });
+    schoolMarker.bindPopup(
+      `<div style="min-width:185px;font-family:Cairo,Inter,sans-serif;">
+        <div style="font-size:10px;color:#00A887;font-weight:800;">🏫 SCHOOL BUS HUB</div>
+        <div style="font-size:13px;font-weight:900;color:#1A1D4E;margin-top:2px;">
+          ${escapeHtml(SCHOOL_LOCATION.name)}
+        </div>
+        <div style="font-size:10px;color:#454A87;margin-top:2px;">
+          All buses arrive here (Pickup) & depart from here (Drop-off).
+        </div>
+        <a href="${escapeHtml(SCHOOL_LOCATION.googleMapsUrl)}" target="_blank" rel="noreferrer" style="
+          display:inline-block;margin-top:6px;padding:4px 10px;border-radius:8px;
+          background:#1A1D4E;color:#fff;font-size:11px;font-weight:700;text-decoration:none;
+        ">Open School in Google Maps</a>
+      </div>`
+    );
+    schoolMarker.addTo(stopsLayer);
+
+    if (validCoords.length >= 1) {
+      const schoolPoint: [number, number] = [SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng];
+      const routePoints =
+        effectiveDirection === 'dropoff'
+          ? [schoolPoint, ...validCoords]
+          : [...validCoords, schoolPoint];
+
+      routeLineRef.current = L.polyline(routePoints, {
         color: '#0087A5',
         weight: 3,
-        opacity: 0.6,
+        opacity: 0.65,
         dashArray: '6 8',
       }).addTo(map);
     }
 
-    if (highlightedStopId) {
-      const target = stops.find((s) => s.id === highlightedStopId);
-      if (target && typeof target.lat === 'number' && typeof target.lng === 'number') {
-        map.panTo([target.lat, target.lng], { animate: true });
-      }
-    } else if (lastFittedFocusRef.current !== focusKey) {
-      const points: [number, number][] = [...validCoords];
+    if (lastFittedFocusRef.current !== focusKey) {
+      const points: [number, number][] = [
+        [SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng],
+        ...validCoords,
+      ];
       if (busState && typeof busState.lat === 'number' && typeof busState.lng === 'number') {
         points.push([busState.lat, busState.lng]);
       }
@@ -578,17 +688,24 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
           }
         }
       }
-      if (points.length > 0) {
+      if (points.length > 1) {
         map.fitBounds(L.latLngBounds(points), { padding: [36, 36], maxZoom: 15 });
-        lastFittedFocusRef.current = focusKey;
       } else {
-        map.setView([DUHOK_CENTER.lat, DUHOK_CENTER.lng], 13);
-        lastFittedFocusRef.current = focusKey;
+        map.setView([SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng], 14);
+      }
+      lastFittedFocusRef.current = focusKey;
+      lastHighlightedRef.current = highlightedStopId || null;
+    } else if (highlightedStopId && lastHighlightedRef.current !== highlightedStopId) {
+      lastHighlightedRef.current = highlightedStopId;
+      const target = stops.find((s) => s.id === highlightedStopId);
+      if (target && typeof target.lat === 'number' && typeof target.lng === 'number') {
+        map.panTo([target.lat, target.lng], { animate: true });
       }
     }
   }, [
     stops,
     busState?.studentStatuses,
+    effectiveDirection,
     highlightedStopId,
     onSelectStop,
     focusKey,

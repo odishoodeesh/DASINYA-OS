@@ -23,11 +23,14 @@ import {
   Copy,
   Check,
   Layers,
+  ClipboardList,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
 import { BUS_DRIVER_ROUTES, BusDriverRoute } from '../data/busRoutes';
+import { ExamGradeKey, ExamScheduleRow } from '../data/examsSchedule';
 import { LiveBusState } from '../hooks/useBusTracking';
 import { LiveBusMap } from './LiveBusMap';
+import { ExamsScheduleView } from './ExamsScheduleView';
 import {
   TEACHER_ACCOUNTS,
   DailySubjectRecord,
@@ -62,6 +65,10 @@ interface AdminSummaryPanelProps {
   isRtl: boolean;
   onSelectModalStudent: (student: StudentRecord) => void;
   onUpdateStudentClass: (studentId: string, newGrade: string, newSection: string) => void;
+  examRows: ExamScheduleRow[];
+  onUpdateExamCell: (rowId: string, grade: ExamGradeKey, value: string) => void;
+  onResetExamSchedule: () => void;
+  schoolLogoUrl: string;
   onExportStudentsCsv: () => void;
   onSignOut: () => void;
 }
@@ -128,10 +135,14 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   isRtl,
   onSelectModalStudent,
   onUpdateStudentClass,
+  examRows,
+  onUpdateExamCell,
+  onResetExamSchedule,
+  schoolLogoUrl,
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams'>('summary');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
@@ -626,6 +637,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : language === 'ar'
                 ? 'إدارة وترتيب الصفوف'
                 : 'Class Control'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('exams')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'exams'
+                ? 'bg-[#0087A5] text-white shadow-xs'
+                : 'text-[#454A87] hover:bg-[#F5F6FF]'
+            }`}
+          >
+            <ClipboardList className="w-4 h-4" />
+            <span>
+              {language === 'ku'
+                ? 'خشتەیێ ئەزموونان'
+                : language === 'ar'
+                ? 'جدول الامتحانات'
+                : 'Exams Schedule'}
             </span>
           </button>
         </div>
@@ -1411,6 +1441,21 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             </table>
           </div>
         </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 6: EXAMS SCHEDULE                              */}
+      {/* ======================================================== */}
+      {adminTab === 'exams' && (
+        <ExamsScheduleView
+          language={language}
+          isRtl={isRtl}
+          schoolLogoUrl={schoolLogoUrl}
+          rows={examRows}
+          isAdmin={true}
+          onUpdateCell={onUpdateExamCell}
+          onResetSchedule={onResetExamSchedule}
+        />
       )}
     </main>
   );

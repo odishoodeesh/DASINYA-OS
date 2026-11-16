@@ -54,7 +54,8 @@ import {
   Bus,
   Radio,
   MapPin,
-  Navigation
+  Navigation,
+  ClipboardList
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -70,6 +71,11 @@ import {
   CalendarEvent 
 } from './data/schoolCalendar';
 import {
+  OFFICIAL_SEMESTER_ONE_SECOND_EXAMS,
+  ExamGradeKey,
+  ExamScheduleRow,
+} from './data/examsSchedule';
+import {
   TeacherClassAssignment,
   authenticateTeacher,
   DailySubjectRecord,
@@ -84,6 +90,7 @@ import {
 import {
   BUS_DRIVER_ROUTES,
   BusDriverRoute,
+  SCHOOL_LOCATION,
   authenticateDriver,
   findBusForStudent,
 } from './data/busRoutes';
@@ -96,6 +103,7 @@ import {
 import { AdminSummaryPanel } from './components/AdminSummaryPanel';
 import { DriverPortal } from './components/DriverPortal';
 import { LiveBusMap } from './components/LiveBusMap';
+import { ExamsScheduleView } from './components/ExamsScheduleView';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -273,7 +281,7 @@ export interface ReportSubjectRow {
   remarks?: string;
 }
 
-export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | 'bus_tracking' | null;
+export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | 'bus_tracking' | 'exams_schedule' | null;
 
 interface AuthenticatedGuardian {
   password: string;
@@ -422,6 +430,45 @@ export default function App() {
     });
   };
 
+  // Official Exams Schedule (with optional Admin edits saved to localStorage)
+  const [examRows, setExamRows] = useState<ExamScheduleRow[]>(() => {
+    try {
+      const saved = localStorage.getItem('dasinya_exam_schedule_v2');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return OFFICIAL_SEMESTER_ONE_SECOND_EXAMS;
+  });
+
+  const handleUpdateExamCell = (rowId: string, grade: ExamGradeKey, value: string) => {
+    setExamRows((prev) => {
+      const next = prev.map((row) =>
+        row.id === rowId
+          ? {
+              ...row,
+              subjectsByGrade: {
+                ...row.subjectsByGrade,
+                [grade]: value,
+              },
+            }
+          : row
+      );
+      try {
+        localStorage.setItem('dasinya_exam_schedule_v2', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const handleResetExamSchedule = () => {
+    setExamRows(OFFICIAL_SEMESTER_ONE_SECOND_EXAMS);
+    try {
+      localStorage.removeItem('dasinya_exam_schedule_v2');
+    } catch {}
+  };
+
   const [language, setLanguage] = useState<Language>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
@@ -487,7 +534,7 @@ export default function App() {
   const [staffSearchQuery, setStaffSearchQuery] = useState<string>('');
 
   // Sub-tabs for Teacher / Staff
-  const [teacherTab, setTeacherTab] = useState<'daily_record' | 'roster' | 'timetable'>('daily_record');
+  const [teacherTab, setTeacherTab] = useState<'daily_record' | 'roster' | 'timetable' | 'exams'>('daily_record');
   const [staffTab, setStaffTab] = useState<'students' | 'timetables' | 'food_menu'>('students');
 
   // Quick modal for inspecting student marksheet in Staff/Teacher/Admin
@@ -1814,16 +1861,43 @@ export default function App() {
                     </p>
                   </div>
                 </button>
+
+                {/* 8. EXAMS SCHEDULE */}
+                <button
+                  onClick={() => setActivePortalTab('exams_schedule')}
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#1A1D4E] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(26,29,78,0.16)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
+                >
+                  <div className="flex items-start justify-between w-full mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1A1D4E] to-[#0087A5] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(26,29,78,0.35)] group-hover:scale-105 transition-transform">
+                      <ClipboardList className="w-7 h-7" />
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#EEF0FF] text-[#1A1D4E]">
+                      08
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#0087A5] transition-colors mb-1">
+                      {language === 'ku' ? 'خشتەیێ ئەزموونان' : language === 'ar' ? 'جدول الامتحانات' : 'EXAMS SCHEDULE'}
+                    </h4>
+                    <p className="text-xs text-[#6B70A6] line-clamp-2">
+                      {language === 'ku'
+                        ? 'خشتەیێ ئەزموونێن دووەم (٢٠٪-٢٥٪) یێن وەرزێ ئێکێ بۆ هەمی پۆلان'
+                        : language === 'ar'
+                        ? 'جدول الامتحان الثاني (٢٠٪-٢٥٪) للفصل الدراسي الأول لجميع الصفوف'
+                        : 'Second (20%-25%) Exam of Semester One schedule starting 18/11/2026'}
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
           )}
 
           {/* ======================================================== */}
-          {/* SUB-SECTION VIEWS (WHEN ONE OF THE 5 BUTTONS IS CLICKED) */}
+          {/* SUB-SECTION VIEWS (WHEN ONE OF THE BUTTONS IS CLICKED)   */}
           {/* ======================================================== */}
           {activePortalTab !== null && (
             <div className="space-y-6">
-              {/* Back to 5-buttons Hub Bar */}
+              {/* Back to Hub Bar */}
               <div className="flex items-center justify-between bg-white border border-[#E1E9FF] rounded-2xl p-3.5 shadow-xs">
                 <button
                   onClick={() => setActivePortalTab(null)}
@@ -1890,6 +1964,14 @@ export default function App() {
                     }`}
                   >
                     {language === 'ku' ? 'باسا قوتابخانێ' : language === 'ar' ? 'حافلة المدرسة' : 'School Bus'}
+                  </button>
+                  <button
+                    onClick={() => setActivePortalTab('exams_schedule')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      activePortalTab === 'exams_schedule' ? 'bg-[#1A1D4E] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                    }`}
+                  >
+                    {language === 'ku' ? 'خشتەیێ ئەزموونان' : language === 'ar' ? 'جدول الامتحانات' : 'Exams Schedule'}
                   </button>
                 </div>
               </div>
@@ -2804,18 +2886,30 @@ export default function App() {
                                 Stop #{studentStop.order} • {studentStop.studentNamesLabel}
                               </span>
                             </div>
-                            {studentStop.googleMapsUrl && (
+                            <div className="mt-2 flex flex-wrap items-center gap-3">
+                              {studentStop.googleMapsUrl && (
+                                <a
+                                  href={studentStop.googleMapsUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs font-bold text-[#0087A5] hover:underline"
+                                >
+                                  <Navigation className="w-3.5 h-3.5" />
+                                  <span>House Pin</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
                               <a
-                                href={studentStop.googleMapsUrl}
+                                href={SCHOOL_LOCATION.googleMapsUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#0087A5] hover:underline"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-[#1A1D4E] hover:underline"
                               >
-                                <Navigation className="w-3.5 h-3.5" />
-                                <span>Open House Pin in Google Maps</span>
+                                <School className="w-3.5 h-3.5 text-[#00A887]" />
+                                <span>School Hub</span>
                                 <ExternalLink className="w-3 h-3" />
                               </a>
-                            )}
+                            </div>
                           </div>
                         </div>
 
@@ -2851,6 +2945,21 @@ export default function App() {
                   </div>
                 );
               })()}
+              {/* ---------------------------------------------------- */}
+              {/* SECTION 8: EXAMS SCHEDULE                            */}
+              {/* ---------------------------------------------------- */}
+              {activePortalTab === 'exams_schedule' && (
+                <ExamsScheduleView
+                  language={language}
+                  isRtl={isRtl}
+                  schoolLogoUrl={SCHOOL_LOGO_URL}
+                  studentName={currentStudent.name}
+                  highlightGrade={currentStudent.grade}
+                  rows={examRows}
+                  onDownloadPdf={handleDownloadPdf}
+                  isGeneratingPdf={isGeneratingPdf}
+                />
+              )}
             </div>
           )}
         </main>
@@ -2989,6 +3098,14 @@ export default function App() {
                 }`}
               >
                 {language === 'ku' ? 'خشتەیێ وانان' : language === 'ar' ? 'الجدول الدراسي' : 'Class Timetable'}
+              </button>
+              <button
+                onClick={() => setTeacherTab('exams')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  teacherTab === 'exams' ? 'bg-[#1A1D4E] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
+                }`}
+              >
+                {language === 'ku' ? 'خشتەیێ ئەزموونان' : language === 'ar' ? 'جدول الامتحانات' : 'Exams Schedule'}
               </button>
             </div>
           </div>
@@ -3203,6 +3320,16 @@ export default function App() {
               </div>
             </div>
           )}
+          {/* Teacher Tab 4: Official Exams Schedule */}
+          {teacherTab === 'exams' && (
+            <ExamsScheduleView
+              language={language}
+              isRtl={isRtl}
+              schoolLogoUrl={SCHOOL_LOGO_URL}
+              highlightGrade={staffGrade}
+              rows={examRows}
+            />
+          )}
         </main>
         );
       })()}
@@ -3396,6 +3523,10 @@ export default function App() {
           isRtl={isRtl}
           onSelectModalStudent={(s) => setModalStudent(s)}
           onUpdateStudentClass={handleUpdateStudentClass}
+          examRows={examRows}
+          onUpdateExamCell={handleUpdateExamCell}
+          onResetExamSchedule={handleResetExamSchedule}
+          schoolLogoUrl={SCHOOL_LOGO_URL}
           onExportStudentsCsv={handleExportCsv}
           onSignOut={handleSignOut}
         />

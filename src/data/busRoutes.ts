@@ -33,7 +33,19 @@ export interface BusDriverRoute {
   stops: BusStop[];
 }
 
-export const DUHOK_CENTER = { lat: 36.8665, lng: 42.9885 } as const;
+export const SCHOOL_LOCATION = {
+  name: 'Dasinya Private School',
+  nameKu: 'قوتابخانەیا داسنیا یا تایبەت',
+  nameAr: 'مدرسة داسنيا الأهلية',
+  lat: 36.8611058,
+  lng: 42.9783187,
+  googleMapsUrl: 'https://maps.app.goo.gl/h4MtMhy5Y4rCCquX8',
+} as const;
+
+export const DUHOK_CENTER = {
+  lat: SCHOOL_LOCATION.lat,
+  lng: SCHOOL_LOCATION.lng,
+} as const;
 
 export const BUS_DRIVER_ROUTES: BusDriverRoute[] = [
   {
