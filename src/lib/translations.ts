@@ -398,8 +398,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     calendarTitle: 'Official School Calendar 2026–2027',
     calendarSubtitle: 'Official Ministry & School Schedule of Terms, Examinations & Holidays',
 
-    foodMenuTitle: 'Weekly Nutrition & Cafeteria Menu',
-    foodMenuSubtitle: 'Healthy, balanced, and freshly prepared hot meals and fresh fruit snacks for students.',
+    foodMenuTitle: '4-Week Rotating Cafeteria Menu',
+    foodMenuSubtitle: 'Official Breakfast & Lunch Schedule (Week One – Week Four • Sunday to Thursday).',
     timetableTitle: 'Official Weekly Classes Timetable',
     timetableSubtitle: 'Standard instructional periods and weekly schedule (Sunday – Thursday).',
     behaviourTitle: 'Student Behaviour & Conduct Report',
@@ -585,8 +585,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     calendarTitle: 'ساڵنامەی فەرمی یێ خوێندن و تاقیکردنەوان ٢٠٢٦-٢٠٢٧',
     calendarSubtitle: 'خشتەی فەرمی یێ دەستپێکرنا وانان، هەڵسەنگاندن، ئەزموون و پشوویێن فەرمی',
 
-    foodMenuTitle: 'مێنیویا خوارنێ یا حەفتیانە',
-    foodMenuSubtitle: 'خوارنێن ساخلەم و هەمەجۆر دگەل میوەیێن تەڕ و تازە بۆ قوتابیان.',
+    foodMenuTitle: 'مێنیویا خوارنێ یا ٤ حەفتیان',
+    foodMenuSubtitle: 'خشتەیێ فەرمی یێ تێشت و فراڤینێ (حەفتیا ئێکێ – حەفتیا چوارێ • ئێک شەمبی هەتا پێنج شەمبی).',
     timetableTitle: 'خشتەیێ حەفتیانە یێ وانان',
     timetableSubtitle: 'دەواما فەرمی یا وانان (ئێک شەمبی هەتا پێنج شەمبی) یا ڤێ هۆبێ.',
     behaviourTitle: 'راپۆرتا فەرمی یا سلوک و رەوشتێ قوتابی',
@@ -772,8 +772,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     calendarTitle: 'التقويم الدراسي الرسمي ٢٠٢٦-٢٠٢٧',
     calendarSubtitle: 'المواعيد المعتمدة لبدء الدروس، الامتحانات الدورية والنهائية، والعطلات الرسمية',
 
-    foodMenuTitle: 'قائمة الوجبات الغذائية الأسبوعية',
-    foodMenuSubtitle: 'وجبات صحية متوازنة وطازجة يومياً مع وجبات الفواكه الصحية للطلاب.',
+    foodMenuTitle: 'قائمة الطعام المدرسية (٤ أسابيع)',
+    foodMenuSubtitle: 'الجدول الرسمي للإفطار والغداء (الأسبوع الأول – الأسبوع الرابع • من الأحد إلى الخميس).',
     timetableTitle: 'جدول الحصص الأسبوعي المعتمد',
     timetableSubtitle: 'الجدول الدراسي واليومي المعتمد (من الأحد إلى الخميس) لهذا الصف.',
     behaviourTitle: 'تقرير السلوك والمواظبة الأكاديمية',

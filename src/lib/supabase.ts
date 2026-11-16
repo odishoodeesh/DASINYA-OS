@@ -143,7 +143,7 @@ export async function seedStudentsToSupabase(students: any[]): Promise<{ success
       blood_group: s.bloodGroup || null,
       guardian_email: s.guardianEmail || null,
       guardian_password: s.guardianPassword || null,
-      guardian_password_alt: s.guardianPasswordAlt || null,
+      guardian_password_alt: null,
       subjects: s.subjects || [],
       behaviour_report: s.behaviourReport || { uploaded: false }
     }));
@@ -162,4 +162,102 @@ export async function seedStudentsToSupabase(students: any[]): Promise<{ success
     return { success: false, count: 0, error: err?.message || 'Seeding failed' };
   }
 }
+
+export const BUS_LOCATIONS_TABLE = 'bus_locations';
+export const BUS_1_ID = 'bus-1';
+
+export interface BusLocationRow {
+  id: string;
+  lat: number;
+  lng: number;
+  updated_at: string;
+}
+
+/**
+ * Upsert live bus GPS position into Supabase `bus_locations` table.
+ */
+export async function upsertBusLocation(params: {
+  id?: string;
+  lat: number;
+  lng: number;
+  updatedAt?: string;
+}): Promise<{ ok: boolean; data?: BusLocationRow; error?: string }> {
+  if (!supabase) {
+    return { ok: false, error: 'Supabase client is not initialized.' };
+  }
+  const row: BusLocationRow = {
+    id: (params.id || BUS_1_ID).trim() || BUS_1_ID,
+    lat: params.lat,
+    lng: params.lng,
+    updated_at: params.updatedAt || new Date().toISOString(),
+  };
+  try {
+    const { data, error } = await supabase
+      .from(BUS_LOCATIONS_TABLE)
+      .upsert(row, { onConflict: 'id' })
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: true, data: (data as BusLocationRow) || row };
+  } catch (err: any) {
+    return { ok: false, error: err?.message || 'Failed to update bus location' };
+  }
+}
+
+/**
+ * Fetch the latest coordinates for a single bus (default 'bus-1') from Supabase `bus_locations`.
+ */
+export async function fetchBusLocation(
+  busId: string = BUS_1_ID
+): Promise<BusLocationRow | null> {
+  if (!supabase) return null;
+  try {
+    const { data, error } = await supabase
+      .from(BUS_LOCATIONS_TABLE)
+      .select('id, lat, lng, updated_at')
+      .eq('id', busId)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    const lat = Number((data as BusLocationRow).lat);
+    const lng = Number((data as BusLocationRow).lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return {
+      id: data.id,
+      lat,
+      lng,
+      updated_at: data.updated_at || new Date().toISOString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch all live rows from Supabase `bus_locations`.
+ */
+export async function fetchAllBusLocations(): Promise<BusLocationRow[]> {
+  if (!supabase) return [];
+  try {
+    const { data, error } = await supabase
+      .from(BUS_LOCATIONS_TABLE)
+      .select('id, lat, lng, updated_at');
+
+    if (error || !Array.isArray(data)) return [];
+    return data
+      .filter((r) => Number.isFinite(Number(r.lat)) && Number.isFinite(Number(r.lng)))
+      .map((r) => ({
+        id: String(r.id),
+        lat: Number(r.lat),
+        lng: Number(r.lng),
+        updated_at: r.updated_at || new Date().toISOString(),
+      }));
+  } catch {
+    return [];
+  }
+}
+
 

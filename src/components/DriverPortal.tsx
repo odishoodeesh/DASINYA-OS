@@ -64,6 +64,7 @@ interface DriverPortalProps {
   ) => void;
   onResetStatuses: (driverId: string) => void;
   onSignOut: () => void;
+  onOpenMobileRoute?: () => void;
 }
 
 export const DriverPortal: React.FC<DriverPortalProps> = ({
@@ -78,6 +79,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
   onUpdateStudentStatus,
   onResetStatuses,
   onSignOut,
+  onOpenMobileRoute,
 }) => {
   const [direction, setDirection] = useState<TripDirection>(busState?.direction || 'pickup');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -85,14 +87,40 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
   const [gpsError, setGpsError] = useState<string>('');
   const [gpsWatching, setGpsWatching] = useState<boolean>(false);
   const watchIdRef = useRef<number | null>(null);
+  const wakeLockRef = useRef<{ released: boolean; release: () => Promise<void> } | null>(null);
 
   const isTripActive = Boolean(busState?.active);
+
+  const releaseScreenWakeLock = () => {
+    if (wakeLockRef.current && !wakeLockRef.current.released) {
+      wakeLockRef.current.release().catch(() => {});
+      wakeLockRef.current = null;
+    }
+  };
+
+  const requestScreenWakeLock = () => {
+    if (typeof navigator !== 'undefined' && 'wakeLock' in navigator) {
+      (
+        navigator as unknown as {
+          wakeLock: {
+            request: (t: 'screen') => Promise<{ released: boolean; release: () => Promise<void> }>;
+          };
+        }
+      ).wakeLock
+        .request('screen')
+        .then((sentinel) => {
+          wakeLockRef.current = sentinel;
+        })
+        .catch(() => {});
+    }
+  };
 
   const stopGpsWatch = () => {
     if (watchIdRef.current !== null && 'geolocation' in navigator) {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
     }
+    releaseScreenWakeLock();
     setGpsWatching(false);
   };
 
@@ -101,6 +129,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
       if (watchIdRef.current !== null && 'geolocation' in navigator) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
+      releaseScreenWakeLock();
     };
   }, []);
 
@@ -126,6 +155,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
 
     onStartTrip(driver.id, dir, initialCoords);
     setGpsWatching(true);
+    requestScreenWakeLock();
 
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
@@ -375,6 +405,17 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                 : 'Start Live Trip (GPS)'}
             </span>
           </button>
+
+          {onOpenMobileRoute && (
+            <button
+              type="button"
+              onClick={onOpenMobileRoute}
+              className="px-3.5 py-2.5 bg-white/15 hover:bg-white/25 rounded-xl text-xs font-bold text-white transition-all cursor-pointer flex items-center gap-1.5 border border-white/25"
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              <span>/driver GPS</span>
+            </button>
+          )}
 
           <button
             type="button"

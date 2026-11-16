@@ -65,3 +65,32 @@ html {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Smooth real-time position gliding for live bus markers on Leaflet */
+.leaflet-marker-icon.dasinya-smooth-bus-marker {
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.leaflet-zoom-anim .leaflet-marker-icon.dasinya-smooth-bus-marker {
+  transition: none !important;
+}
+
+@keyframes dasinya-bus-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+.dasinya-bus-pulse-ring {
+  animation: dasinya-bus-pulse 2s infinite;
+}
+
+

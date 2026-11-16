@@ -47,6 +47,87 @@ export const DUHOK_CENTER = {
   lng: SCHOOL_LOCATION.lng,
 } as const;
 
+export const DEFAULT_SUPABASE_BUS_ID = 'bus-1';
+
+function isValidLatLng(lat: number, lng: number): boolean {
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180 &&
+    !(lat === 0 && lng === 0)
+  );
+}
+
+/**
+ * Automatically parses latitude and longitude from Google Maps location links.
+ * Supports ?q=lat,lng, @lat,lng, ll=lat,lng, query=lat,lng, daddr=lat,lng, !3dlat!4dlng, and plain lat,lng strings.
+ */
+export function parseGoogleMapsCoords(url?: string | null): { lat: number; lng: number } | null {
+  if (!url || typeof url !== 'string') return null;
+  let decoded = url.trim();
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {
+    // Keep raw string if URI decoding fails
+  }
+
+  // 1. ?q=lat,lng, &ll=lat,lng, ?query=lat,lng, daddr=lat,lng, center=lat,lng
+  const queryParamMatch = decoded.match(
+    /[?&](?:q|query|ll|daddr|saddr|center)=(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)/i
+  );
+  if (queryParamMatch) {
+    const lat = Number(queryParamMatch[1]);
+    const lng = Number(queryParamMatch[2]);
+    if (isValidLatLng(lat, lng)) return { lat, lng };
+  }
+
+  // 2. @lat,lng (e.g. https://www.google.com/maps/@36.8611,42.9783,16z)
+  const atMatch = decoded.match(/@(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)/);
+  if (atMatch) {
+    const lat = Number(atMatch[1]);
+    const lng = Number(atMatch[2]);
+    if (isValidLatLng(lat, lng)) return { lat, lng };
+  }
+
+  // 3. !3dLAT!4dLNG embedded coordinates in place URLs
+  const bangMatch = decoded.match(/!3d(-?\d{1,3}(?:\.\d+)?)!4d(-?\d{1,3}(?:\.\d+)?)/);
+  if (bangMatch) {
+    const lat = Number(bangMatch[1]);
+    const lng = Number(bangMatch[2]);
+    if (isValidLatLng(lat, lng)) return { lat, lng };
+  }
+
+  // 4. Plain "lat, lng" coordinate string
+  const plainMatch = decoded.match(/^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/);
+  if (plainMatch) {
+    const lat = Number(plainMatch[1]);
+    const lng = Number(plainMatch[2]);
+    if (isValidLatLng(lat, lng)) return { lat, lng };
+  }
+
+  return null;
+}
+
+/**
+ * Resolves coordinates for a BusStop by parsing googleMapsUrl first and
+ * falling back to pre-resolved lat/lng values on the stop record.
+ */
+export function resolveStopCoords(stop: BusStop): { lat: number; lng: number } | null {
+  const parsedFromUrl = parseGoogleMapsCoords(stop.googleMapsUrl);
+  if (parsedFromUrl) return parsedFromUrl;
+  if (
+    typeof stop.lat === 'number' &&
+    typeof stop.lng === 'number' &&
+    isValidLatLng(stop.lat, stop.lng)
+  ) {
+    return { lat: stop.lat, lng: stop.lng };
+  }
+  return null;
+}
+
 export const BUS_DRIVER_ROUTES: BusDriverRoute[] = [
   {
     "id": "drv-mohammed-abdulfatah",
@@ -2118,6 +2199,8 @@ export const BUS_DRIVER_ROUTES: BusDriverRoute[] = [
     ]
   }
 ];
+
+export const ALL_BUS_STOPS: BusStop[] = BUS_DRIVER_ROUTES.flatMap((d) => d.stops);
 
 export function authenticateDriver(identifier: string, pin: string): BusDriverRoute | null {
   const cleanId = identifier.trim().toLowerCase();

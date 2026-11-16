@@ -3,22 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
-  APILoadingStatus,
-  APIProvider,
-  AdvancedMarker,
-  AdvancedMarkerProps,
-  CollisionBehavior,
-  InfoWindow,
-  Map as GoogleMap,
-  useAdvancedMarkerRef,
-  useApiLoadingStatus,
-  useMap,
-} from '@vis.gl/react-google-maps';
-import { BusDriverRoute, BusStop, DUHOK_CENTER, SCHOOL_LOCATION } from '../data/busRoutes';
+  BusDriverRoute,
+  BusStop,
+  DEFAULT_SUPABASE_BUS_ID,
+  DUHOK_CENTER,
+  SCHOOL_LOCATION,
+  resolveStopCoords,
+} from '../data/busRoutes';
 import { LiveBusState, StudentBoardingStatus, TripDirection } from '../hooks/useBusTracking';
 
 export interface FleetBusMarker {
@@ -37,6 +32,7 @@ interface LiveBusMapProps {
   fleetBuses?: FleetBusMarker[];
   heightClass?: string;
   focusKey?: string;
+  drawRouteLine?: boolean;
 }
 
 const VALID_STOP_COLORS = {
@@ -77,432 +73,84 @@ function getStopColor(
   }
 }
 
-function normalizeConfiguredKey(raw?: string | null): string {
-  const val = (raw || '').trim();
-  if (!val || val === 'MY_GOOGLE_MAPS_API_KEY') return '';
-  return val;
+/**
+ * Custom inline SVG student location pin icon (zero external image assets so Vite builds never break).
+ */
+function createStudentPinIcon(order: number, bg: string, border: string, isHighlighted: boolean) {
+  const width = isHighlighted ? 34 : 28;
+  const height = isHighlighted ? 42 : 36;
+  return L.divIcon({
+    className: 'dasinya-stop-pin',
+    html: `<div style="position:relative;width:${width}px;height:${height}px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 6px rgba(26,29,78,0.34));cursor:pointer;">
+      <svg width="${width}" height="${height}" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 1C7.716 1 1 7.716 1 16C1 26.5 16 39 16 39C16 39 31 26.5 31 16C31 7.716 24.284 1 16 1Z" fill="${bg}" stroke="${border}" stroke-width="2.4"/>
+      </svg>
+      <span style="position:absolute;top:${isHighlighted ? '7px' : '5px'};left:0;right:0;text-align:center;color:#ffffff;font-weight:800;font-size:${isHighlighted ? '12px' : '10.5px'};font-family:Inter,sans-serif;line-height:1;">
+        ${order}
+      </span>
+    </div>`,
+    iconSize: [width, height],
+    iconAnchor: [width / 2, height - 2],
+    popupAnchor: [0, -(height - 4)],
+  });
+}
+
+/**
+ * Custom inline SVG school hub pin icon.
+ */
+function createSchoolHubIcon() {
+  return L.divIcon({
+    className: 'dasinya-school-hub-pin',
+    html: `<div style="
+      padding:4px 10px;border-radius:9999px;
+      background:#1A1D4E;color:#fff;font-size:11px;font-weight:900;white-space:nowrap;
+      border:2.5px solid #00A887;box-shadow:0 4px 14px rgba(26,29,78,0.42);
+      display:inline-flex;align-items:center;gap:5px;font-family:Inter,sans-serif;cursor:pointer;
+    ">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00D4AA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 22v-4a2 2 0 1 0-4 0v4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M18 5v17"/><path d="m4 6 8-4 8 4"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/>
+      </svg>
+      <span>Dasinya School</span>
+    </div>`,
+    iconSize: [130, 30],
+    iconAnchor: [65, 15],
+    popupAnchor: [0, -14],
+  });
+}
+
+/**
+ * Custom inline SVG bus marker icon with smooth transition class & active pulse halo.
+ */
+function createBusSvgIcon(label: string, isActive: boolean, isBus1: boolean) {
+  const pillBg = isActive ? (isBus1 ? '#0087A5' : '#0087A5') : '#6B70A6';
+  const pulseHtml = isActive
+    ? `<span class="dasinya-bus-pulse-ring" style="position:absolute;inset:-4px;border-radius:9999px;border:2px solid #00D4AA;pointer-events:none;"></span>`
+    : '';
+
+  return L.divIcon({
+    className: 'dasinya-smooth-bus-marker',
+    html: `<div style="position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+      ${pulseHtml}
+      <div style="
+        position:relative;padding:5px 10px;border-radius:9999px;
+        background:${pillBg};color:#ffffff;font-size:11px;font-weight:900;white-space:nowrap;
+        border:2.5px solid #ffffff;box-shadow:0 5px 16px rgba(0,135,165,0.48);
+        display:inline-flex;align-items:center;gap:5px;font-family:Inter,sans-serif;
+      ">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+        </svg>
+        <span>${escapeHtml(label)}</span>
+      </div>
+    </div>`,
+    iconSize: [86, 32],
+    iconAnchor: [43, 16],
+    popupAnchor: [0, -16],
+  });
 }
 
 // ---------------------------------------------------------------------------
-// Google Maps Platform (@vis.gl/react-google-maps + AdvancedMarkerElement)
-// ---------------------------------------------------------------------------
-
-interface MarkerWithRefProps extends AdvancedMarkerProps {
-  onMarkerSelect: (marker: google.maps.marker.AdvancedMarkerElement) => void;
-}
-
-const AdvancedMarkerWithRef: React.FC<MarkerWithRefProps> = ({
-  children,
-  onMarkerSelect,
-  ...advancedMarkerProps
-}) => {
-  const [markerRef, marker] = useAdvancedMarkerRef();
-
-  return (
-    <AdvancedMarker
-      ref={markerRef}
-      onClick={() => {
-        if (marker) {
-          onMarkerSelect(marker);
-        }
-      }}
-      {...advancedMarkerProps}
-    >
-      {children}
-    </AdvancedMarker>
-  );
-};
-
-interface GoogleFleetInnerProps extends LiveBusMapProps {
-  onFallbackToLeaflet: () => void;
-}
-
-const GoogleFleetInner: React.FC<GoogleFleetInnerProps> = ({
-  stops = [],
-  busState,
-  direction,
-  driverName,
-  driverCode,
-  highlightedStopId,
-  onSelectStop,
-  fleetBuses,
-  focusKey = 'default',
-  onFallbackToLeaflet,
-}) => {
-  const map = useMap();
-  const apiStatus = useApiLoadingStatus();
-  const routePolylineRef = useRef<google.maps.Polyline | null>(null);
-  const lastFittedFocusRef = useRef<string>('');
-  const lastHighlightedRef = useRef<string | null>(null);
-
-  const [selectedAnchor, setSelectedAnchor] =
-    useState<google.maps.marker.AdvancedMarkerElement | null>(null);
-  const [selectedStopInfo, setSelectedStopInfo] = useState<BusStop | null>(null);
-  const [selectedBusInfo, setSelectedBusInfo] = useState<FleetBusMarker | null>(null);
-  const [selectedSchoolInfo, setSelectedSchoolInfo] = useState<boolean>(false);
-
-  const effectiveDirection: TripDirection = direction || busState?.direction || 'pickup';
-
-  // Gracefully switch to Leaflet fallback if Maps authentication or load fails
-  useEffect(() => {
-    if (
-      apiStatus === APILoadingStatus.AUTH_FAILURE ||
-      apiStatus === APILoadingStatus.FAILED
-    ) {
-      onFallbackToLeaflet();
-    }
-  }, [apiStatus, onFallbackToLeaflet]);
-
-  const validStops = useMemo(
-    () =>
-      stops.filter(
-        (s): s is BusStop & { lat: number; lng: number } =>
-          typeof s.lat === 'number' && typeof s.lng === 'number'
-      ),
-    [stops]
-  );
-
-  const busMarkers = useMemo<FleetBusMarker[]>(() => {
-    if (fleetBuses && fleetBuses.length > 0) {
-      return fleetBuses.filter(
-        (fb) => typeof fb.state.lat === 'number' && typeof fb.state.lng === 'number'
-      );
-    }
-    if (busState && typeof busState.lat === 'number' && typeof busState.lng === 'number') {
-      return [
-        {
-          driver: {
-            id: busState.driverId,
-            code: driverCode || 'BUS',
-            pin: '',
-            name: driverName || 'School Bus',
-            nameEn: driverName || 'School Bus',
-            routeLabel: '',
-            routeLabelArKu: '',
-            stops: [],
-          },
-          state: busState,
-        },
-      ];
-    }
-    return [];
-  }, [fleetBuses, busState, driverCode, driverName]);
-
-  // Draw route path polyline via Maps JS SDK
-  useEffect(() => {
-    if (!map || typeof google === 'undefined' || !google.maps?.Polyline) return;
-
-    if (routePolylineRef.current) {
-      routePolylineRef.current.setMap(null);
-      routePolylineRef.current = null;
-    }
-
-    if (validStops.length >= 1) {
-      const stopCoords = validStops.map((s) => ({ lat: s.lat, lng: s.lng }));
-      const schoolPoint = { lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng };
-      const routePath =
-        effectiveDirection === 'dropoff'
-          ? [schoolPoint, ...stopCoords]
-          : [...stopCoords, schoolPoint];
-
-      const polyline = new google.maps.Polyline({
-        path: routePath,
-        strokeColor: '#0087A5',
-        strokeOpacity: 0.72,
-        strokeWeight: 3.5,
-        geodesic: true,
-      });
-      polyline.setMap(map);
-      routePolylineRef.current = polyline;
-    }
-
-    return () => {
-      if (routePolylineRef.current) {
-        routePolylineRef.current.setMap(null);
-        routePolylineRef.current = null;
-      }
-    };
-  }, [map, validStops, effectiveDirection]);
-
-  // Fit bounds when focusKey changes or pan when highlightedStopId changes interactively
-  useEffect(() => {
-    if (!map || typeof google === 'undefined' || !google.maps?.LatLngBounds) return;
-
-    if (lastFittedFocusRef.current !== focusKey) {
-      const bounds = new google.maps.LatLngBounds();
-      let pointCount = 0;
-
-      // Always include School Hub location in overview bounds
-      bounds.extend({ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng });
-      pointCount++;
-
-      for (const s of validStops) {
-        bounds.extend({ lat: s.lat, lng: s.lng });
-        pointCount++;
-      }
-      for (const b of busMarkers) {
-        if (typeof b.state.lat === 'number' && typeof b.state.lng === 'number') {
-          bounds.extend({ lat: b.state.lat, lng: b.state.lng });
-          pointCount++;
-        }
-      }
-
-      if (pointCount <= 1) {
-        map.setCenter({ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng });
-        map.setZoom(14);
-      } else {
-        map.fitBounds(bounds, 48);
-      }
-
-      lastFittedFocusRef.current = focusKey;
-      lastHighlightedRef.current = highlightedStopId || null;
-      return;
-    }
-
-    if (highlightedStopId && lastHighlightedRef.current !== highlightedStopId) {
-      lastHighlightedRef.current = highlightedStopId;
-      const target = validStops.find((s) => s.id === highlightedStopId);
-      if (target) {
-        map.panTo({ lat: target.lat, lng: target.lng });
-        if ((map.getZoom() || 0) < 14) {
-          map.setZoom(15);
-        }
-      }
-    }
-  }, [map, validStops, busMarkers, highlightedStopId, focusKey]);
-
-  const handleCloseInfoWindow = useCallback(() => {
-    setSelectedAnchor(null);
-    setSelectedStopInfo(null);
-    setSelectedBusInfo(null);
-    setSelectedSchoolInfo(false);
-  }, []);
-
-  return (
-    <GoogleMap
-      mapId="DEMO_MAP_ID"
-      internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
-      defaultCenter={DUHOK_CENTER}
-      defaultZoom={13}
-      gestureHandling="greedy"
-      streetViewControl={false}
-      mapTypeControl={true}
-      fullscreenControl={true}
-      className="w-full h-full"
-      style={{ width: '100%', height: '100%' }}
-    >
-      {/* Official School Hub Marker (All Buses Arrive & Depart Here) */}
-      <AdvancedMarkerWithRef
-        position={{ lat: SCHOOL_LOCATION.lat, lng: SCHOOL_LOCATION.lng }}
-        zIndex={950}
-        onMarkerSelect={(marker) => {
-          setSelectedBusInfo(null);
-          setSelectedStopInfo(null);
-          setSelectedSchoolInfo(true);
-          setSelectedAnchor(marker);
-        }}
-      >
-        <div
-          style={{
-            padding: '4px 10px',
-            borderRadius: '9999px',
-            background: '#1A1D4E',
-            color: '#ffffff',
-            fontSize: '11px',
-            fontWeight: 900,
-            whiteSpace: 'nowrap',
-            border: '2.5px solid #00A887',
-            boxShadow: '0 4px 14px rgba(26,29,78,0.42)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            cursor: 'pointer',
-          }}
-        >
-          <span>🏫</span>
-          <span>Dasinya School</span>
-        </div>
-      </AdvancedMarkerWithRef>
-
-      {/* Numbered Student House Pins */}
-      {validStops.map((stop, idx) => {
-        const status = busState?.studentStatuses?.[stop.id];
-        const isHighlighted = highlightedStopId === stop.id;
-        const colors = getStopColor(status, isHighlighted);
-        const size = isHighlighted ? 34 : 28;
-
-        return (
-          <AdvancedMarkerWithRef
-            key={stop.id}
-            position={{ lat: stop.lat, lng: stop.lng }}
-            zIndex={isHighlighted ? 900 : 100 + idx}
-            onMarkerSelect={(marker) => {
-              setSelectedSchoolInfo(false);
-              setSelectedBusInfo(null);
-              setSelectedStopInfo(stop);
-              setSelectedAnchor(marker);
-              if (onSelectStop) onSelectStop(stop.id);
-            }}
-          >
-            <div
-              style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '9999px',
-                background: colors.bg,
-                color: '#ffffff',
-                border: `2.5px solid ${colors.border}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                fontSize: '11px',
-                boxShadow: '0 3px 10px rgba(26,29,78,0.32)',
-                cursor: 'pointer',
-              }}
-            >
-              {stop.order}
-            </div>
-          </AdvancedMarkerWithRef>
-        );
-      })}
-
-      {/* Live School Bus Position Pins */}
-      {busMarkers.map((item) => {
-        const { driver, state } = item;
-        if (typeof state.lat !== 'number' || typeof state.lng !== 'number') return null;
-
-        return (
-          <AdvancedMarkerWithRef
-            key={`bus-${driver.id}`}
-            position={{ lat: state.lat, lng: state.lng }}
-            zIndex={1000}
-            collisionBehavior={CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY}
-            onMarkerSelect={(marker) => {
-              setSelectedSchoolInfo(false);
-              setSelectedStopInfo(null);
-              setSelectedBusInfo(item);
-              setSelectedAnchor(marker);
-            }}
-          >
-            <div
-              style={{
-                padding: '4px 10px',
-                borderRadius: '9999px',
-                background: state.active ? '#0087A5' : '#6B70A6',
-                color: '#ffffff',
-                fontSize: '11px',
-                fontWeight: 900,
-                whiteSpace: 'nowrap',
-                border: '2px solid #ffffff',
-                boxShadow: '0 4px 14px rgba(0,135,165,0.45)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              <span>🚌</span>
-              <span>{driver.code}</span>
-            </div>
-          </AdvancedMarkerWithRef>
-        );
-      })}
-
-      {/* InfoWindow anchored to clicked AdvancedMarker */}
-      {selectedAnchor && (selectedStopInfo || selectedBusInfo || selectedSchoolInfo) && (
-        <InfoWindow
-          anchor={selectedAnchor}
-          pixelOffset={[0, -6]}
-          onCloseClick={handleCloseInfoWindow}
-        >
-          {selectedSchoolInfo ? (
-            <div className="min-w-[185px] font-sans p-0.5">
-              <div className="text-[10px] font-extrabold text-[#00A887] uppercase">
-                🏫 School Bus Hub
-              </div>
-              <div className="text-xs font-black text-[#1A1D4E] mt-1">
-                {SCHOOL_LOCATION.name}
-              </div>
-              <div className="text-[10px] text-[#454A87] mt-0.5">
-                All buses arrive here (Pickup) & depart from here (Drop-off).
-              </div>
-              <a
-                href={SCHOOL_LOCATION.googleMapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block mt-2 px-2.5 py-1 rounded-lg bg-[#1A1D4E] text-white text-[11px] font-bold no-underline"
-              >
-                Open School in Google Maps
-              </a>
-            </div>
-          ) : selectedStopInfo ? (
-            <div className="min-w-[175px] font-sans p-0.5">
-              <div className="text-[10px] font-bold text-[#6B70A6]">
-                Stop #{selectedStopInfo.order} •{' '}
-                {(busState?.studentStatuses?.[selectedStopInfo.id] || 'waiting')
-                  .replace('_', ' ')
-                  .toUpperCase()}
-              </div>
-              <div
-                className="text-xs font-extrabold text-[#1A1D4E] mt-1"
-                dir="rtl"
-              >
-                {selectedStopInfo.studentNamesLabel}
-              </div>
-              {selectedStopInfo.landmarkNote && (
-                <div className="text-[10px] text-[#454A87] mt-0.5">
-                  {selectedStopInfo.landmarkNote}
-                </div>
-              )}
-              {selectedStopInfo.googleMapsUrl && (
-                <a
-                  href={selectedStopInfo.googleMapsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block mt-2 px-2.5 py-1 rounded-lg bg-[#0087A5] text-white text-[11px] font-bold no-underline"
-                >
-                  Open in Google Maps
-                </a>
-              )}
-            </div>
-          ) : selectedBusInfo ? (
-            <div className="min-w-[175px] font-sans p-0.5">
-              <div
-                className={`text-[10px] font-extrabold ${
-                  selectedBusInfo.state.active ? 'text-emerald-600' : 'text-[#6B70A6]'
-                }`}
-              >
-                {selectedBusInfo.state.active ? '● LIVE ROUTE ACTIVE' : '○ LAST KNOWN POSITION'}
-              </div>
-              <div className="text-xs font-black text-[#1A1D4E] mt-1">
-                {selectedBusInfo.driver.name} ({selectedBusInfo.driver.code})
-              </div>
-              {typeof selectedBusInfo.state.speedKmh === 'number' && (
-                <div className="text-[11px] text-[#454A87] mt-0.5">
-                  Speed: {Math.round(selectedBusInfo.state.speedKmh)} km/h
-                </div>
-              )}
-              {selectedBusInfo.state.updatedAt && (
-                <div className="text-[10px] text-[#8C90C2] mt-0.5">
-                  Updated:{' '}
-                  {new Date(selectedBusInfo.state.updatedAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  })}
-                </div>
-              )}
-            </div>
-          ) : null}
-        </InfoWindow>
-      )}
-    </GoogleMap>
-  );
-};
-
-// ---------------------------------------------------------------------------
-// Interactive Leaflet Fallback (used automatically when API key is not set)
+// OpenStreetMap + Leaflet Live Bus Map
 // ---------------------------------------------------------------------------
 
 const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
@@ -515,15 +163,35 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
   onSelectStop,
   fleetBuses,
   focusKey = 'default',
+  drawRouteLine,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const stopsLayerRef = useRef<L.LayerGroup | null>(null);
   const routeLineRef = useRef<L.Polyline | null>(null);
   const busesLayerRef = useRef<L.LayerGroup | null>(null);
+  const busMarkersMapRef = useRef<Map<string, L.Marker>>(new Map());
   const lastFittedFocusRef = useRef<string>('');
   const lastHighlightedRef = useRef<string | null>(null);
+
   const effectiveDirection: TripDirection = direction || busState?.direction || 'pickup';
+  const shouldDrawRouteLine =
+    typeof drawRouteLine === 'boolean' ? drawRouteLine : !fleetBuses || fleetBuses.length === 0;
+
+  // Resolve stops using parseGoogleMapsCoords (?q=lat,lng, @lat,lng, ll=lat,lng) + fallback lat/lng
+  const resolvedStops = useMemo(() => {
+    return stops
+      .map((stop) => {
+        const coords = resolveStopCoords(stop);
+        if (!coords) return null;
+        return {
+          stop,
+          lat: coords.lat,
+          lng: coords.lng,
+        };
+      })
+      .filter((item): item is { stop: BusStop; lat: number; lng: number } => Boolean(item));
+  }, [stops]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -549,6 +217,7 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
 
     return () => {
       window.clearTimeout(resizeTimer);
+      busMarkersMapRef.current.clear();
       map.remove();
       mapRef.current = null;
       stopsLayerRef.current = null;
@@ -557,6 +226,7 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
     };
   }, []);
 
+  // Static Student Pins + Official School Hub + Route Polyline
   useEffect(() => {
     const map = mapRef.current;
     const stopsLayer = stopsLayerRef.current;
@@ -570,29 +240,18 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
 
     const validCoords: [number, number][] = [];
 
-    for (const stop of stops) {
-      if (typeof stop.lat !== 'number' || typeof stop.lng !== 'number') continue;
-      validCoords.push([stop.lat, stop.lng]);
+    for (const { stop, lat, lng } of resolvedStops) {
+      validCoords.push([lat, lng]);
 
       const status = busState?.studentStatuses?.[stop.id];
       const isHighlighted = highlightedStopId === stop.id;
       const colors = getStopColor(status, isHighlighted);
-      const size = isHighlighted ? 34 : 28;
 
-      const icon = L.divIcon({
-        className: 'dasinya-stop-pin',
-        html: `<div style="
-          width:${size}px;height:${size}px;border-radius:9999px;
-          background:${colors.bg};color:#fff;border:2.5px solid ${colors.border};
-          display:flex;align-items:center;justify-content:center;
-          font-weight:800;font-size:11px;box-shadow:0 3px 10px rgba(26,29,78,0.32);
-          font-family:Inter,sans-serif;
-        ">${stop.order}</div>`,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
+      const icon = createStudentPinIcon(stop.order, colors.bg, colors.border, isHighlighted);
+      const marker = L.marker([lat, lng], {
+        icon,
+        zIndexOffset: isHighlighted ? 800 : 100,
       });
-
-      const marker = L.marker([stop.lat, stop.lng], { icon });
 
       const navButtonHtml = stop.googleMapsUrl
         ? `<a href="${escapeHtml(stop.googleMapsUrl)}" target="_blank" rel="noreferrer" style="
@@ -601,15 +260,16 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
           ">Open in Google Maps</a>`
         : '';
 
-      const statusText = status ? status.replace('_', ' ').toUpperCase() : 'WAITING';
+      const statusText = status ? status.replace('_', ' ').toUpperCase() : 'STUDENT STOP';
 
       marker.bindPopup(
-        `<div style="min-width:170px;font-family:Cairo,Inter,sans-serif;">
+        `<div style="min-width:175px;font-family:Cairo,Inter,sans-serif;">
           <div style="font-size:10px;color:#6B70A6;font-weight:700;">Stop #${stop.order} • ${statusText}</div>
           <div style="font-size:13px;font-weight:800;color:#1A1D4E;margin-top:2px;direction:rtl;text-align:right;">
             ${escapeHtml(stop.studentNamesLabel)}
           </div>
           ${stop.landmarkNote ? `<div style="font-size:10px;color:#454A87;margin-top:2px;">${escapeHtml(stop.landmarkNote)}</div>` : ''}
+          <div style="font-size:10px;font-family:monospace;color:#76A5B8;margin-top:3px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</div>
           ${navButtonHtml}
         </div>`
       );
@@ -622,28 +282,13 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
     }
 
     // Always render Official Dasinya Private School Hub Pin
-    const schoolIcon = L.divIcon({
-      className: 'dasinya-school-hub-pin',
-      html: `<div style="
-        padding:4px 9px;border-radius:9999px;
-        background:#1A1D4E;color:#fff;font-size:11px;font-weight:900;white-space:nowrap;
-        border:2.5px solid #00A887;box-shadow:0 4px 14px rgba(26,29,78,0.42);
-        display:flex;align-items:center;gap:4px;font-family:Inter,sans-serif;
-      ">
-        <span>🏫</span>
-        <span>Dasinya School</span>
-      </div>`,
-      iconSize: [122, 30],
-      iconAnchor: [61, 15],
-    });
-
     const schoolMarker = L.marker([SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng], {
-      icon: schoolIcon,
+      icon: createSchoolHubIcon(),
       zIndexOffset: 950,
     });
     schoolMarker.bindPopup(
       `<div style="min-width:185px;font-family:Cairo,Inter,sans-serif;">
-        <div style="font-size:10px;color:#00A887;font-weight:800;">🏫 SCHOOL BUS HUB</div>
+        <div style="font-size:10px;color:#00A887;font-weight:800;">SCHOOL BUS HUB</div>
         <div style="font-size:13px;font-weight:900;color:#1A1D4E;margin-top:2px;">
           ${escapeHtml(SCHOOL_LOCATION.name)}
         </div>
@@ -658,7 +303,7 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
     );
     schoolMarker.addTo(stopsLayer);
 
-    if (validCoords.length >= 1) {
+    if (shouldDrawRouteLine && validCoords.length >= 1) {
       const schoolPoint: [number, number] = [SCHOOL_LOCATION.lat, SCHOOL_LOCATION.lng];
       const routePoints =
         effectiveDirection === 'dropoff'
@@ -697,27 +342,28 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
       lastHighlightedRef.current = highlightedStopId || null;
     } else if (highlightedStopId && lastHighlightedRef.current !== highlightedStopId) {
       lastHighlightedRef.current = highlightedStopId;
-      const target = stops.find((s) => s.id === highlightedStopId);
-      if (target && typeof target.lat === 'number' && typeof target.lng === 'number') {
+      const target = resolvedStops.find((r) => r.stop.id === highlightedStopId);
+      if (target) {
         map.panTo([target.lat, target.lng], { animate: true });
       }
     }
   }, [
-    stops,
+    resolvedStops,
     busState?.studentStatuses,
     effectiveDirection,
     highlightedStopId,
     onSelectStop,
     focusKey,
+    shouldDrawRouteLine,
     fleetBuses,
     busState?.lat,
     busState?.lng,
   ]);
 
+  // Smooth Real-Time Moving Bus Markers (updates existing L.Marker in place via setLatLng)
   useEffect(() => {
     const busesLayer = busesLayerRef.current;
     if (!busesLayer) return;
-    busesLayer.clearLayers();
 
     const items: FleetBusMarker[] = [];
     if (fleetBuses && fleetBuses.length > 0) {
@@ -726,7 +372,7 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
       items.push({
         driver: {
           id: busState.driverId,
-          code: driverCode || 'BUS',
+          code: driverCode || (busState.driverId === DEFAULT_SUPABASE_BUS_ID ? 'BUS-1' : 'BUS'),
           pin: '',
           name: driverName || 'School Bus',
           nameEn: driverName || 'School Bus',
@@ -738,28 +384,18 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
       });
     }
 
+    const activeBusKeys = new Set<string>();
+
     for (const item of items) {
       const { state, driver } = item;
       if (typeof state.lat !== 'number' || typeof state.lng !== 'number') continue;
 
+      const busKey = driver.id || state.driverId;
+      activeBusKeys.add(busKey);
+
       const isActive = state.active;
-      const busIcon = L.divIcon({
-        className: 'dasinya-live-bus-pin',
-        html: `<div style="position:relative;display:flex;flex-direction:column;align-items:center;">
-          <div style="
-            padding:4px 9px;border-radius:9999px;
-            background:${isActive ? '#0087A5' : '#6B70A6'};
-            color:#fff;font-size:11px;font-weight:900;white-space:nowrap;
-            border:2px solid #ffffff;box-shadow:0 4px 14px rgba(0,135,165,0.45);
-            display:flex;align-items:center;gap:4px;
-          ">
-            <span>🚌</span>
-            <span>${escapeHtml(driver.code)}</span>
-          </div>
-        </div>`,
-        iconSize: [74, 30],
-        iconAnchor: [37, 15],
-      });
+      const isBus1 = busKey === DEFAULT_SUPABASE_BUS_ID || driver.code === 'BUS-1';
+      const busIcon = createBusSvgIcon(driver.code, isActive, isBus1);
 
       const updatedStr = state.updatedAt
         ? new Date(state.updatedAt).toLocaleTimeString([], {
@@ -769,20 +405,43 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
           })
         : '';
 
-      const marker = L.marker([state.lat, state.lng], { icon: busIcon, zIndexOffset: 1000 });
-      marker.bindPopup(
-        `<div style="min-width:170px;font-family:Cairo,Inter,sans-serif;">
-          <div style="font-size:10px;font-weight:800;color:${isActive ? '#059669' : '#6B70A6'};">
-            ${isActive ? '● LIVE ROUTE ACTIVE' : '○ LAST KNOWN POSITION'}
-          </div>
-          <div style="font-size:13px;font-weight:900;color:#1A1D4E;margin-top:2px;">
-            ${escapeHtml(driver.name)} (${escapeHtml(driver.code)})
-          </div>
-          ${typeof state.speedKmh === 'number' ? `<div style="font-size:11px;color:#454A87;margin-top:2px;">Speed: ${Math.round(state.speedKmh)} km/h</div>` : ''}
-          ${updatedStr ? `<div style="font-size:10px;color:#8C90C2;margin-top:2px;">Updated: ${escapeHtml(updatedStr)}</div>` : ''}
-        </div>`
-      );
-      marker.addTo(busesLayer);
+      const popupHtml = `<div style="min-width:180px;font-family:Cairo,Inter,sans-serif;">
+        <div style="font-size:10px;font-weight:800;color:${isActive ? '#059669' : '#6B70A6'};">
+          ${isActive ? '● LIVE GPS TRACKING ACTIVE' : '○ LAST KNOWN POSITION'}
+        </div>
+        <div style="font-size:13px;font-weight:900;color:#1A1D4E;margin-top:2px;">
+          ${escapeHtml(driver.name)} (${escapeHtml(driver.code)})
+        </div>
+        <div style="font-size:10px;font-family:monospace;color:#76A5B8;margin-top:2px;">
+          ${state.lat.toFixed(5)}, ${state.lng.toFixed(5)}
+        </div>
+        ${typeof state.speedKmh === 'number' ? `<div style="font-size:11px;color:#454A87;margin-top:2px;">Speed: ${Math.round(state.speedKmh)} km/h</div>` : ''}
+        ${updatedStr ? `<div style="font-size:10px;color:#8C90C2;margin-top:2px;">Updated: ${escapeHtml(updatedStr)}</div>` : ''}
+      </div>`;
+
+      const existingMarker = busMarkersMapRef.current.get(busKey);
+      if (existingMarker) {
+        // Move marker smoothly in real time without destroying/recreating it
+        existingMarker.setLatLng([state.lat, state.lng]);
+        existingMarker.setIcon(busIcon);
+        existingMarker.setPopupContent(popupHtml);
+      } else {
+        const marker = L.marker([state.lat, state.lng], {
+          icon: busIcon,
+          zIndexOffset: 1000,
+        });
+        marker.bindPopup(popupHtml);
+        marker.addTo(busesLayer);
+        busMarkersMapRef.current.set(busKey, marker);
+      }
+    }
+
+    // Remove stale bus markers no longer in items
+    for (const [key, marker] of busMarkersMapRef.current.entries()) {
+      if (!activeBusKeys.has(key)) {
+        busesLayer.removeLayer(marker);
+        busMarkersMapRef.current.delete(key);
+      }
     }
   }, [busState, driverName, driverCode, fleetBuses]);
 
@@ -790,71 +449,17 @@ const LeafletLiveBusMap: React.FC<LiveBusMapProps> = ({
 };
 
 // ---------------------------------------------------------------------------
-// Unified LiveBusMap Wrapper
+// Unified LiveBusMap Wrapper (OpenStreetMap / Leaflet)
 // ---------------------------------------------------------------------------
 
 export const LiveBusMap: React.FC<LiveBusMapProps> = (props) => {
   const { heightClass = 'h-[420px] sm:h-[480px]' } = props;
-  const envKey = normalizeConfiguredKey(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
-  const [runtimeKey, setRuntimeKey] = useState<string>(envKey);
-  const [googleFailed, setGoogleFailed] = useState<boolean>(false);
-
-  // Check server /api/config once if build-time key is unset
-  useEffect(() => {
-    if (envKey) return;
-    let active = true;
-    fetch('/api/config')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!active || !data) return;
-        const serverKey = normalizeConfiguredKey(data.googleMapsApiKey);
-        if (serverKey) {
-          setRuntimeKey(serverKey);
-        }
-      })
-      .catch(() => {
-        // Ignore config lookup failure and stay on Leaflet fallback
-      });
-    return () => {
-      active = false;
-    };
-  }, [envKey]);
-
-  // Listen for runtime Maps auth failures (gm_authFailure) so we switch cleanly to fallback
-  useEffect(() => {
-    if (!runtimeKey) return;
-    const prevAuthFailure = (window as unknown as { gm_authFailure?: () => void }).gm_authFailure;
-    (window as unknown as { gm_authFailure?: () => void }).gm_authFailure = () => {
-      setGoogleFailed(true);
-      if (typeof prevAuthFailure === 'function') prevAuthFailure();
-    };
-    return () => {
-      (window as unknown as { gm_authFailure?: () => void }).gm_authFailure = prevAuthFailure;
-    };
-  }, [runtimeKey]);
-
-  const useGoogleMaps = Boolean(runtimeKey) && !googleFailed;
 
   return (
     <div
       className={`relative w-full ${heightClass} rounded-2xl overflow-hidden border border-[#C8E5EC] bg-[#F0F8FA]`}
     >
-      {useGoogleMaps ? (
-        <APIProvider
-          apiKey={runtimeKey}
-          libraries={['marker']}
-          language="en"
-          region="IQ"
-          onError={() => setGoogleFailed(true)}
-        >
-          <GoogleFleetInner
-            {...props}
-            onFallbackToLeaflet={() => setGoogleFailed(true)}
-          />
-        </APIProvider>
-      ) : (
-        <LeafletLiveBusMap {...props} />
-      )}
+      <LeafletLiveBusMap {...props} />
     </div>
   );
 };

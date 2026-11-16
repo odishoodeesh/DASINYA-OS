@@ -26,7 +26,12 @@ import {
   ClipboardList,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
-import { BUS_DRIVER_ROUTES, BusDriverRoute } from '../data/busRoutes';
+import {
+  ALL_BUS_STOPS,
+  BUS_DRIVER_ROUTES,
+  BusDriverRoute,
+  DEFAULT_SUPABASE_BUS_ID,
+} from '../data/busRoutes';
 import { ExamGradeKey, ExamScheduleRow } from '../data/examsSchedule';
 import { LiveBusState } from '../hooks/useBusTracking';
 import { LiveBusMap } from './LiveBusMap';
@@ -307,8 +312,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           s.name.toLowerCase().includes(q) ||
           s.id.toLowerCase().includes(q) ||
           s.rollNumber.toLowerCase().includes(q) ||
-          (s.guardianPassword || '').toLowerCase().includes(q) ||
-          (s.guardianPasswordAlt || '').toLowerCase().includes(q)
+          (s.guardianPassword || '').toLowerCase().includes(q)
         );
       }
       return true;
@@ -1019,7 +1023,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                   <th className="py-3 px-3">ID</th>
                   <th className="py-3 px-3">Roll No</th>
                   <th className="py-3 px-3">Recorded Marks</th>
-                  <th className="py-3 px-3">Student / Parent Passwords</th>
+                  <th className="py-3 px-3">Student / Parent Password</th>
                   <th className="py-3 px-3 text-center">Marksheet</th>
                 </tr>
               </thead>
@@ -1030,7 +1034,6 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                     (c) => getStudentSubjectTermScore(s, c.name, dailyRecords) !== null
                   ).length;
                   const primaryKey = `${s.id}-primary`;
-                  const altKey = `${s.id}-alt`;
 
                   return (
                     <tr key={s.id} className="hover:bg-[#F5F6FF]/50 transition-colors">
@@ -1072,21 +1075,6 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                             </button>
                           ) : (
                             <span className="text-[#8C90C2]">—</span>
-                          )}
-                          {s.guardianPasswordAlt && (
-                            <button
-                              type="button"
-                              onClick={() => handleCopyPassword(s.guardianPasswordAlt!, altKey)}
-                              title="Click to copy alternate/sibling password"
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#E1E9FF] text-[#454A87] font-semibold text-[11px] cursor-pointer transition-colors"
-                            >
-                              <span>Alt: {s.guardianPasswordAlt}</span>
-                              {copiedPwdKey === altKey ? (
-                                <Check className="w-2.5 h-2.5 text-emerald-600" />
-                              ) : (
-                                <Copy className="w-2.5 h-2.5 opacity-60" />
-                              )}
-                            </button>
                           )}
                         </div>
                       </td>
@@ -1207,6 +1195,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             ? null
             : BUS_DRIVER_ROUTES.find((d) => d.id === selectedDriverId) || null;
 
+        const bus1Live = liveBuses[DEFAULT_SUPABASE_BUS_ID];
         const fleetMarkers = BUS_DRIVER_ROUTES.map((driver) => ({
           driver,
           state: liveBuses[driver.id],
@@ -1215,7 +1204,38 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             Boolean(item.state && typeof item.state.lat === 'number' && typeof item.state.lng === 'number')
         );
 
-        const activeBusCount = BUS_DRIVER_ROUTES.filter((d) => liveBuses[d.id]?.active).length;
+        if (
+          bus1Live &&
+          typeof bus1Live.lat === 'number' &&
+          typeof bus1Live.lng === 'number'
+        ) {
+          fleetMarkers.push({
+            driver: {
+              id: DEFAULT_SUPABASE_BUS_ID,
+              code: 'BUS-1',
+              pin: '',
+              name: BUS_DRIVER_ROUTES[0]?.name || 'Bus 1 Live GPS',
+              nameEn: 'Bus 1 (Supabase Live GPS)',
+              routeLabel: 'Live Supabase Realtime Tracker',
+              routeLabelArKu: 'التتبع المباشر عبر Supabase',
+              stops: BUS_DRIVER_ROUTES[0]?.stops || [],
+            },
+            state: bus1Live,
+          });
+        }
+
+        const activeBusCount =
+          BUS_DRIVER_ROUTES.filter((d) => liveBuses[d.id]?.active).length +
+          (bus1Live?.active ? 1 : 0);
+
+        const selectedBusState = selectedDriver
+          ? liveBuses[selectedDriver.id]?.lat !== null &&
+            typeof liveBuses[selectedDriver.id]?.lat === 'number'
+            ? liveBuses[selectedDriver.id]
+            : selectedDriver.id === 'drv-mohammed-abdulfatah'
+            ? bus1Live || liveBuses[selectedDriver.id]
+            : liveBuses[selectedDriver.id]
+          : null;
 
         return (
           <div className="space-y-6">
@@ -1233,7 +1253,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                     </span>
                   </h3>
                   <p className="text-xs text-[#6B70A6]">
-                    {activeBusCount} / {BUS_DRIVER_ROUTES.length} active buses • {wsConnected ? 'Real-Time WebSocket Connected' : 'Connecting...'}
+                    {activeBusCount} / {BUS_DRIVER_ROUTES.length} active buses • {wsConnected ? 'Real-Time Feed Connected' : 'Connecting...'}
                   </p>
                 </div>
 
@@ -1244,7 +1264,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                     onChange={(e) => setSelectedDriverId(e.target.value)}
                     className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
                   >
-                    <option value="ALL">All Buses Fleet View ({BUS_DRIVER_ROUTES.length})</option>
+                    <option value="ALL">All Buses &amp; Student Pins ({ALL_BUS_STOPS.length} stops)</option>
                     {BUS_DRIVER_ROUTES.map((d) => (
                       <option key={d.id} value={d.id}>
                         {d.code} — {d.name} ({d.stops.length} stops)
@@ -1255,11 +1275,12 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
               </div>
 
               <LiveBusMap
-                stops={selectedDriver ? selectedDriver.stops : []}
-                busState={selectedDriver ? liveBuses[selectedDriver.id] : null}
+                stops={selectedDriver ? selectedDriver.stops : ALL_BUS_STOPS}
+                busState={selectedBusState}
                 driverName={selectedDriver?.name}
                 driverCode={selectedDriver?.code}
                 fleetBuses={selectedDriver ? undefined : fleetMarkers}
+                drawRouteLine={Boolean(selectedDriver)}
                 focusKey={`admin-${selectedDriverId}`}
                 heightClass="h-[420px] sm:h-[480px]"
               />

@@ -88,13 +88,15 @@ import {
   calcGrade49GrandTotal100,
 } from './data/teacherPortal';
 import {
+  ALL_BUS_STOPS,
   BUS_DRIVER_ROUTES,
   BusDriverRoute,
+  DEFAULT_SUPABASE_BUS_ID,
   SCHOOL_LOCATION,
   authenticateDriver,
   findBusForStudent,
 } from './data/busRoutes';
-import { useBusTracking } from './hooks/useBusTracking';
+import { LiveBusState, useBusTracking } from './hooks/useBusTracking';
 import {
   Grade13DailyRecordTable,
   Grade49DailyRecordTable,
@@ -102,8 +104,10 @@ import {
 } from './components/DailyRecordTables';
 import { AdminSummaryPanel } from './components/AdminSummaryPanel';
 import { DriverPortal } from './components/DriverPortal';
+import { DriverRouteTrackerPage } from './components/DriverRouteTrackerPage';
 import { LiveBusMap } from './components/LiveBusMap';
 import { ExamsScheduleView } from './components/ExamsScheduleView';
+import { FoodMenuView } from './components/FoodMenuView';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -300,114 +304,33 @@ interface AuthenticatedStaff {
   assignedSection?: string;
 }
 
-// Weekly Cafeteria Nutrition Schedule (Sunday to Thursday)
-export const WEEKLY_FOOD_MENU = [
-  {
-    dayKey: 'sunday',
-    dayEn: 'Sunday',
-    dayKu: 'ئێک شەمبی',
-    dayAr: 'الأحد',
-    mainDishEn: 'Grilled Lemon Herb Chicken Breast with Steamed Fragrant Basmati Rice & Roasted Vegetables',
-    mainDishKu: 'سنگێ مریشکێ یێ برژاندی ب بهاراتێن لیمۆنێ دگەل برنجێ کوردی و کەسکاتیێن برژاندی',
-    mainDishAr: 'صدر دجاج مشوي بالليمون والأعشاب مع أرز بسمتي بالبخار وخضروات مشوية',
-    sideDishEn: 'Warm Yellow Lentil Soup & Fresh Kurdish Garden Salad with Olive Oil',
-    sideDishKu: 'شۆربایا نیسکێ یا زەرد و زەڵاتەیا باخچەیی یا تەڕ دگەل زەیتا زەیتوونێ',
-    sideDishAr: 'شوربة عدس أصفر دافئة وسلطة خضراء طازجة بزيت الزيتون والليمون',
-    snackEn: 'Crisp Red Apple Slices with Organic Honey Dip & Whole Wheat Breadstick',
-    snackKu: 'سێڤێن سۆرێن قەرمۆچک دگەل هەنگڤینێ سرۆشتی و نانێ گەنمێ تەڕ',
-    snackAr: 'شرائح تفاح أحمر طازج مع عسل عضوي وخبز قمح كامل مقرمش',
-    beverageEn: 'Fresh Laban (Ayran) & Mineral Spring Water',
-    beverageKu: 'دەوێ تەڕ و فێنک و ئاڤا کانیا یا پاقژ',
-    beverageAr: 'لبن عيران بارد ومياه معدنية نقية',
-    calories: '540 kcal',
-    tags: ['High Protein', 'Halal', 'Nut-Free', 'Chef Special']
-  },
-  {
-    dayKey: 'monday',
-    dayEn: 'Monday',
-    dayKu: 'دوو شەمبی',
-    dayAr: 'الاثنين',
-    mainDishEn: 'Traditional Home-style Kurdish Dolma (Stuffed Grape Leaves, Cabbage & Squash)',
-    mainDishKu: 'دۆلمەیا خۆمالی یا کوردی یا گەرم دگەل گەلایێن مێوێ، کەلەمی و کوزیان',
-    mainDishAr: 'دولمة كوردية تقليدية محشوة بأوراق العنب والملفوف والكوسا الطازجة',
-    sideDishEn: 'Creamy Cucumber & Mint Strained Yogurt (Cacik)',
-    sideDishKu: 'ماست و خەیارێن هوورکری دگەل نەعناعێ و سیر و زەیتا زەیتوونێ',
-    sideDishAr: 'سلطة لبن زبادي بالخيار والنعناع والثوم وزيت الزيتون',
-    snackEn: 'Fresh Sweet Pears, Medjool Dates & Walnut Bites',
-    snackKu: 'هرمیێن شیرین، خورمایێن مەدجوول و پارچەیێن گۆمێ',
-    snackAr: 'إجاص حلو المذاق وتمر مجدول طبيعي وقطات الجوز الصحية',
-    beverageEn: 'Natural Pomegranate & Fresh Berry Infusion',
-    beverageKu: 'ئاڤا هەنارێ یا سروشتی دگەل شەربەتا تووران',
-    beverageAr: 'عصير رمان وتوت طبيعي بارد ومياه نقية',
-    calories: '580 kcal',
-    tags: ['Traditional', 'Halal', 'Fiber Rich']
-  },
-  {
-    dayKey: 'tuesday',
-    dayEn: 'Tuesday',
-    dayKu: 'سێ شەمبی',
-    dayAr: 'الثلاثاء',
-    mainDishEn: 'Slow-Cooked Tender Beef Stew with Sweet Carrots, Green Peas & Vermicelli Rice',
-    mainDishKu: 'شلانکا گۆشتێ کەڤری دگەل بەزلە و گێزەران و برنجێ شعرەیێ',
-    mainDishAr: 'مرق لحم العجل الطري مع البازلاء والجزر ورز بالشعرية الذهبية',
-    sideDishEn: 'Fresh Mediterranean Cabbage & Lemon Herb Salad',
-    sideDishKu: 'زەڵاتەیا کەلەمی دگەل ئاڤا لیمۆنێ و زەیتا زەیتوونێ',
-    sideDishAr: 'سلطة ملفوف متوسطية بزيت الزيتون والليمون والأعشاب',
-    snackEn: 'Sweet Orange Wedges & Cavendish Banana Energy Bowl',
-    snackKu: 'پرتەقالێن شرین و مۆزێن تەڕ دگەل دەخل و دان',
-    snackAr: 'شرائح برتقال حلو وموز طازج مع حبوب الشوفان الطبيعية',
-    beverageEn: 'Freshly Squeezed Orange Juice & Mineral Water',
-    beverageKu: 'ئاڤا پرتەقالان یا تەڕ و ئاڤا پاقژ',
-    beverageAr: 'عصير برتقال طبيعي معصور طازجاً ومياه نقية',
-    calories: '560 kcal',
-    tags: ['Rich in Iron', 'Halal', 'Nut-Free']
-  },
-  {
-    dayKey: 'wednesday',
-    dayEn: 'Wednesday',
-    dayKu: 'چوار شەمبی',
-    dayAr: 'الأربعاء',
-    mainDishEn: 'Baked Herb-Crusted Chicken Escalope with Creamy Mashed Potatoes & Gravy',
-    mainDishKu: 'إسکالوب مریشکێ یێ برژاندی دگەل پەتاتێن پۆڕە یێن نەرم',
-    mainDishAr: 'إسكالوب دجاج مخبوز بالأعشاب مع بطاطا بوريه كريمية ومرقة خفيفة',
-    sideDishEn: 'Steamed Sweet Corn, Broccoli Florets & Garden Vegetable Soup',
-    sideDishKu: 'گەنمەشامی و برۆکلیێ کەلاندی دگەل شۆربایا کەسکاتیێ',
-    sideDishAr: 'ذرة حلوة وبروكلي على البخار مع شوربة خضار مشكلة دافئة',
-    snackEn: 'Warm Oatmeal Raisin Biscuit & Mixed Dried Berries',
-    snackKu: 'بسکویتا شۆفان دگەل مێوژ و فێقیێ هشککری',
-    snackAr: 'بسكويت الشوفان بالزبيب وتوت مجفف طبيعي',
-    beverageEn: 'Calcium-Fortified Milk & Mineral Water',
-    beverageKu: 'شیری ساخلەم یێ پاقژ و ئاڤا کانیا',
-    beverageAr: 'حليب طازج مدعم بالكالسيوم ومياه معدنية نقية',
-    calories: '525 kcal',
-    tags: ['Omega-3 Rich', 'Halal', 'Nut-Free']
-  },
-  {
-    dayKey: 'thursday',
-    dayEn: 'Thursday',
-    dayKu: 'پێنج شەمبی',
-    dayAr: 'الخميس',
-    mainDishEn: 'Chef\'s Artisan Margherita Stone-Baked Pizza Slice with Lean Mozzarella & Fresh Basil',
-    mainDishKu: 'پیتزایا مارگریتا یا تەنوورێ دگەل پەنیری مۆزارێلا یێ ساخلەم و ریحانێ',
-    mainDishAr: 'بيتزا مارغريتا مخبوزة على الحجر مع جبن موزاريلا قليل الدسم وريحان طازج',
-    sideDishEn: 'Fresh Tomato Basil Soup & Crunchy Cucumber & Carrot Batons',
-    sideDishKu: 'شۆربایا تەماتێ دگەل ریحانێ و گێزەرێن قەرمۆچک',
-    sideDishAr: 'شوربة طماطم بالريحان وأصابع خيار وجزر مقرمشة',
-    snackEn: 'Mixed Seasonal Fruit Medley (Strawberries, Grapes & Melon Slices)',
-    snackKu: 'فێقیێ وەرزی یێ تێکەل (شلیک، تری، گندۆر)',
-    snackAr: 'سلطة فواكه موسمية مشكلة (فراولة، عنب، شمام)',
-    beverageEn: 'Fresh Pomegranate Nectar & Mineral Water',
-    beverageKu: 'شەربەتا هەنارێ یا خۆش و ئاڤا پاقژ',
-    beverageAr: 'عصير رمان طازج ومياه معدنية نقية',
-    calories: '530 kcal',
-    tags: ['Student Favorite', 'Halal', 'Nut-Free']
-  }
-];
+// Cafeteria 4-week menu is defined in ./data/foodMenu.ts and rendered via FoodMenuView
 
 // Timetable period time slots (Official 7 periods + 2 breaks from aSc Timetables)
 export const TIMETABLE_SLOTS = OFFICIAL_TIMETABLE_PERIODS;
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState<string>(() =>
+    typeof window !== 'undefined' ? window.location.pathname : '/'
+  );
+  const [showPublicLiveMap, setShowPublicLiveMap] = useState<boolean>(false);
+
+  useEffect(() => {
+    const onPopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const navigateTo = (path: string) => {
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+      setCurrentPath(path);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  };
+
   const [students, setStudents] = useState<StudentRecord[]>(() => {
     try {
       const saved = localStorage.getItem('dasinya_students_roster_v3');
@@ -741,8 +664,7 @@ export default function App() {
     }
 
     const matched = students.filter(s => 
-      (s.guardianPassword && s.guardianPassword.trim() === pwdToVerify) ||
-      (s.guardianPasswordAlt && s.guardianPasswordAlt.trim() === pwdToVerify)
+      Boolean(s.guardianPassword && s.guardianPassword.trim() === pwdToVerify)
     );
 
     if (matched.length > 0) {
@@ -973,7 +895,7 @@ export default function App() {
 
   // CSV Export for Admin
   const handleExportCsv = () => {
-    const headers = ['Serial', 'ID', 'Name', 'Grade', 'Section', 'Roll Number', 'Gender', 'Attendance', 'Conduct', 'Guardian Email', 'Student / Guardian Password', 'Alt / Sibling Password'];
+    const headers = ['Serial', 'ID', 'Name', 'Grade', 'Section', 'Roll Number', 'Gender', 'Attendance', 'Conduct', 'Guardian Email', 'Student / Guardian Password'];
     const rows = students.map(s => [
       s.serial || '',
       s.id,
@@ -985,8 +907,7 @@ export default function App() {
       s.attendance,
       s.conduct,
       s.guardianEmail || '',
-      s.guardianPassword || '',
-      s.guardianPasswordAlt || ''
+      s.guardianPassword || ''
     ]);
     const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
@@ -1040,6 +961,11 @@ export default function App() {
   }, [currentStudent, staffAvailableStudents, t]);
 
   const activeLangOption = SUPPORTED_LANGUAGES.find(l => l.code === language) || SUPPORTED_LANGUAGES[0];
+
+  // Dedicated mobile-friendly /driver GPS route
+  if (currentPath.replace(/\/+$/, '') === '/driver') {
+    return <DriverRouteTrackerPage onNavigateHome={() => navigateTo('/')} />;
+  }
 
   return (
     <div 
@@ -1625,6 +1551,112 @@ export default function App() {
               </button>
             </form>
           </div>
+
+          {/* Quick Links: Mobile /driver GPS Tracker & Live OpenStreetMap Bus Map */}
+          <div className="w-full max-w-2xl mt-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowPublicLiveMap((prev) => !prev)}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold border-2 transition-all cursor-pointer flex items-center gap-2 ${
+                  showPublicLiveMap
+                    ? 'bg-[#0087A5] text-white border-[#0087A5] shadow-md'
+                    : 'bg-white text-[#1A1D4E] border-[#E1E9FF] hover:border-[#0087A5]'
+                }`}
+              >
+                <MapPin className="w-4 h-4" />
+                <span>
+                  {showPublicLiveMap ? 'Hide Live School Bus Map' : 'Live Bus & Student Pins Map'}
+                </span>
+                {liveBuses[DEFAULT_SUPABASE_BUS_ID]?.active && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                )}
+              </button>
+
+              <a
+                href="/driver"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/driver');
+                }}
+                className="px-4 py-2.5 rounded-2xl text-xs font-extrabold border-2 border-[#B6EADF] bg-[#E6FAF6] hover:bg-[#D3F5EE] text-[#006F59] transition-all flex items-center gap-2 shadow-2xs"
+              >
+                <Radio className="w-4 h-4" />
+                <span>Open Driver GPS Page (/driver)</span>
+              </a>
+            </div>
+
+            {showPublicLiveMap && (() => {
+              const bus1Live = liveBuses[DEFAULT_SUPABASE_BUS_ID];
+              const publicFleet = BUS_DRIVER_ROUTES.map((d) => ({
+                driver: d,
+                state: liveBuses[d.id],
+              })).filter(
+                (item): item is { driver: BusDriverRoute; state: LiveBusState } =>
+                  Boolean(
+                    item.state &&
+                      typeof item.state.lat === 'number' &&
+                      typeof item.state.lng === 'number'
+                  )
+              );
+
+              if (
+                bus1Live &&
+                typeof bus1Live.lat === 'number' &&
+                typeof bus1Live.lng === 'number'
+              ) {
+                publicFleet.push({
+                  driver: {
+                    id: DEFAULT_SUPABASE_BUS_ID,
+                    code: 'BUS-1',
+                    pin: '',
+                    name: BUS_DRIVER_ROUTES[0]?.name || 'Bus 1 Live GPS',
+                    nameEn: 'Bus 1 (Supabase Realtime)',
+                    routeLabel: 'Live GPS Broadcast',
+                    routeLabelArKu: 'البث المباشر',
+                    stops: BUS_DRIVER_ROUTES[0]?.stops || [],
+                  },
+                  state: bus1Live,
+                });
+              }
+
+              return (
+                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-5 shadow-[0_8px_28px_rgba(0,135,165,0.08)] text-left space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#E1E9FF]">
+                    <div>
+                      <h3 className="text-sm sm:text-base font-black text-[#1A1D4E] flex items-center gap-2">
+                        <Bus className="w-4 h-4 text-[#0087A5]" />
+                        <span>Live OpenStreetMap • Student Pins &amp; Bus 1 Realtime</span>
+                      </h3>
+                      <p className="text-[11px] text-[#6B70A6]">
+                        {ALL_BUS_STOPS.length} student stops parsed •{' '}
+                        {bus1Live
+                          ? `Bus 1 last updated ${bus1Live.updatedAt ? new Date(bus1Live.updatedAt).toLocaleTimeString() : 'just now'}`
+                          : 'Waiting for Bus 1 GPS broadcast from /driver'}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
+                        wsConnected
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-[#F5F6FF] text-[#6B70A6] border border-[#E1E9FF]'
+                      }`}
+                    >
+                      {wsConnected ? '● REALTIME LIVE' : 'Connecting...'}
+                    </span>
+                  </div>
+
+                  <LiveBusMap
+                    stops={ALL_BUS_STOPS}
+                    fleetBuses={publicFleet}
+                    drawRouteLine={false}
+                    focusKey="public-live-map"
+                    heightClass="h-[380px] sm:h-[440px]"
+                  />
+                </div>
+              );
+            })()}
+          </div>
         </main>
       )}
 
@@ -2159,45 +2191,11 @@ export default function App() {
               {/* ---------------------------------------------------- */}
               {activePortalTab === 'food_menu' && (
                 <div className="space-y-4">
-                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
-                    <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-[#E1E9FF]">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D4AA] to-[#2CC9A7] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,212,170,0.3)]">
-                        <Utensils className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">{t.foodMenuTitle}</h3>
-                        <p className="text-xs text-[#6B70A6]">{t.foodMenuSubtitle}</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {WEEKLY_FOOD_MENU.map((item) => (
-                        <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/40 hover:bg-white hover:border-[#0087A5] transition-all hover:shadow-[0_4px_16px_rgba(0,135,165,0.08)]">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-bold text-[#0087A5] text-sm">
-                              {language === 'ku' ? item.dayKu : language === 'ar' ? item.dayAr : item.dayEn}
-                            </span>
-                            <span className="text-[10px] font-mono bg-[#E1E9FF] text-[#0087A5] font-bold px-2.5 py-0.5 rounded-full">
-                              {item.calories}
-                            </span>
-                          </div>
-                          <p className="text-xs font-semibold text-[#1A1D4E] mb-1">
-                            {language === 'ku' ? item.mainDishKu : language === 'ar' ? item.mainDishAr : item.mainDishEn}
-                          </p>
-                          <p className="text-xs text-[#6B70A6] mb-2">
-                            {language === 'ku' ? item.sideDishKu : language === 'ar' ? item.sideDishAr : item.sideDishEn}
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {item.tags.map((tag, tIdx) => (
-                              <span key={tIdx} className="text-[10px] bg-white border border-[#E1E9FF] text-[#454A87] px-2 py-0.5 rounded-md font-medium">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <FoodMenuView
+                    language={language}
+                    title={t.foodMenuTitle}
+                    subtitle={t.foodMenuSubtitle}
+                  />
                 </div>
               )}
 
@@ -2915,7 +2913,13 @@ export default function App() {
 
                         <LiveBusMap
                           stops={[studentStop]}
-                          busState={busState}
+                          busState={
+                            busState && typeof busState.lat === 'number'
+                              ? busState
+                              : driver.id === 'drv-mohammed-abdulfatah'
+                              ? liveBuses[DEFAULT_SUPABASE_BUS_ID] || busState
+                              : busState
+                          }
                           driverName={driver.name}
                           driverCode={driver.code}
                           highlightedStopId={studentStop.id}
@@ -3227,10 +3231,10 @@ export default function App() {
                   </h3>
                   <p className="text-xs text-[#6B70A6]">
                     {language === 'ku'
-                      ? 'کلیک ل سەر کەشف نمرەی بکە بۆ بینینا هەمی بابەتێن قوتابی'
+                      ? 'کلیک ل سەر کەشف نمرەی بکە بۆ بینینا تۆمارا قوتابی بۆ بابەت و پۆلا تە یا دیارکری'
                       : language === 'ar'
-                      ? 'اضغط على عرض الشهادة لمعاينة كشف درجات الطالب الكامل'
-                      : 'Click View Marksheet to inspect any student’s full Daily Student Record report'}
+                      ? 'اضغط على عرض الكشف لمعاينة سجل درجات الطالب لمادتك وصفك المخصص فقط'
+                      : 'Click View Marksheet to inspect any student’s Daily Student Record for your assigned subject & class'}
                   </p>
                 </div>
                 <div className="relative">
@@ -3255,19 +3259,17 @@ export default function App() {
                       <th className="py-3 px-3">{t.studentName}</th>
                       <th className="py-3 px-3">{t.rollNumber}</th>
                       <th className="py-3 px-3">{t.idNumber}</th>
-                      <th className="py-3 px-3">
-                        {getTranslatedSubject(teacherSubject, language)} ({isGrade13(staffGrade) ? '100' : '100%'})
-                      </th>
+                      {(allowedSubjects.length > 0 ? allowedSubjects : [teacherSubject]).map((subName) => (
+                        <th key={subName} className="py-3 px-3">
+                          {getTranslatedSubject(subName, language)} ({isGrade13(staffGrade) ? '100' : '100%'})
+                        </th>
+                      ))}
                       <th className="py-3 px-3 text-center">Marksheet</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E1E9FF]">
                     {staffFilteredStudents.map((s, idx) => {
-                      const rec = getEffectiveDailyRecord(s, teacherSubject, dailyRecords);
-                      const grand =
-                        rec.kind === 'g13'
-                          ? calcGrade13GrandTotal(rec)
-                          : calcGrade49GrandTotal100(rec);
+                      const rosterSubjects = allowedSubjects.length > 0 ? allowedSubjects : [teacherSubject];
 
                       return (
                         <tr key={s.id} className="hover:bg-[#F5F6FF]/60 transition-colors">
@@ -3275,9 +3277,18 @@ export default function App() {
                           <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
                           <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
                           <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
-                          <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
-                            {typeof grand === 'number' ? grand : ''}
-                          </td>
+                          {rosterSubjects.map((subName) => {
+                            const rec = getEffectiveDailyRecord(s, subName, dailyRecords);
+                            const grand =
+                              rec.kind === 'g13'
+                                ? calcGrade13GrandTotal(rec)
+                                : calcGrade49GrandTotal100(rec);
+                            return (
+                              <td key={subName} className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
+                                {typeof grand === 'number' ? grand : ''}
+                              </td>
+                            );
+                          })}
                           <td className="py-2.5 px-3 text-center">
                             <button
                               onClick={() => setModalStudent(s)}
@@ -3491,18 +3502,11 @@ export default function App() {
           )}
 
           {staffTab === 'food_menu' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
-              <h3 className="text-base font-bold text-[#1A1D4E]">Weekly Cafeteria Schedule</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {WEEKLY_FOOD_MENU.map(item => (
-                  <div key={item.dayKey} className="border border-[#E1E9FF] rounded-2xl p-4 bg-[#F5F6FF]/30 hover:bg-white hover:border-[#0087A5] transition-all">
-                    <span className="font-bold text-[#0087A5] text-sm block mb-1">{item.dayEn}</span>
-                    <p className="text-xs font-semibold text-[#1A1D4E]">{item.mainDishEn}</p>
-                    <p className="text-xs text-[#6B70A6] mt-1">{item.sideDishEn}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <FoodMenuView
+              language={language}
+              title={t.foodMenuTitle}
+              subtitle={t.foodMenuSubtitle}
+            />
           )}
         </main>
       )}
@@ -3548,24 +3552,72 @@ export default function App() {
           onUpdateStudentStatus={updateStudentStatus}
           onResetStatuses={resetStatuses}
           onSignOut={handleSignOut}
+          onOpenMobileRoute={() => navigateTo('/driver')}
         />
       )}
 
       {/* ======================================================== */}
       {/* UNIVERSAL MARKSHEET MODAL (FOR TEACHER / STAFF / ADMIN)  */}
       {/* ======================================================== */}
-      {modalStudent && (
+      {modalStudent && (() => {
+        const isTeacherScope = selectedPortal === 'teacher' || authStaff?.role === 'teacher';
+        const teacherClassAssignment = isTeacherScope
+          ? authStaff?.assignedClasses?.find(
+              (a) => a.grade === modalStudent.grade && a.section === modalStudent.section
+            )
+          : undefined;
+        const allowedTeacherSubjects = isTeacherScope
+          ? teacherClassAssignment?.subjects || []
+          : [];
+        const allowedSubjectLabel = allowedTeacherSubjects
+          .map((sub) => getTranslatedSubject(sub, language))
+          .join(', ');
+
+        const curriculum = GRADE_CURRICULUM[modalStudent.grade] || OFFICIAL_SUBJECTS;
+        const scopedCurriculum = isTeacherScope
+          ? curriculum.filter((cSub) =>
+              allowedTeacherSubjects.some(
+                (sub) => sub.toLowerCase() === cSub.name.toLowerCase()
+              )
+            )
+          : curriculum;
+
+        const isG13 = isGrade13(modalStudent.grade);
+        const rows: DailyRecordRowItem[] = scopedCurriculum.map((cSub) => ({
+          rowKey: cSub.name,
+          label: getTranslatedSubject(cSub.name, language),
+          record: getEffectiveDailyRecord(modalStudent, cSub.name, dailyRecords),
+        }));
+
+        return (
         <div className="fixed inset-0 bg-neutral-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white border border-[#E1E9FF] rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-y-auto p-5 sm:p-7 shadow-[0_20px_60px_rgba(0,135,165,0.25)] relative space-y-5">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E1E9FF]">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">
-                  {modalStudent.name} • {t.studentMarksheetTitle}
+                  {modalStudent.name} •{' '}
+                  {isTeacherScope && allowedSubjectLabel
+                    ? `${allowedSubjectLabel} ${language === 'ku' ? 'کەشف نمرە' : language === 'ar' ? 'كشف الدرجات' : 'Subject Marksheet'}`
+                    : t.studentMarksheetTitle}
                 </h3>
                 <p className="text-xs text-[#6B70A6]">
                   {formatGradeLabel(modalStudent.grade, language)} - {formatClassLabel(modalStudent.section, language)} • Roll No: {modalStudent.rollNumber} • ID: {modalStudent.id}
                 </p>
+                {isTeacherScope && (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#E1F3F7] text-[#006F89] text-[11px] font-bold">
+                      <Lock className="w-3 h-3" />
+                      <span>
+                        {language === 'ku'
+                          ? `بتنێ بابەت و پۆلا تە: ${allowedSubjectLabel || '-'}`
+                          : language === 'ar'
+                          ? `مادتك وصفك المخصص فقط: ${allowedSubjectLabel || '-'}`
+                          : `Assigned Subject & Class Only: ${allowedSubjectLabel || '-'}`}
+                      </span>
+                    </span>
+                  </div>
+                )}
                 {authStaff?.role === 'admin' && modalStudent.guardianPassword && (
                   <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#E1F3F7] text-[#006F89] font-mono text-[11px] font-bold">
@@ -3575,11 +3627,6 @@ export default function App() {
                         {modalStudent.guardianPassword}
                       </span>
                     </span>
-                    {modalStudent.guardianPasswordAlt && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] font-mono text-[11px] font-semibold">
-                        Alt: {modalStudent.guardianPasswordAlt}
-                      </span>
-                    )}
                   </div>
                 )}
               </div>
@@ -3592,35 +3639,35 @@ export default function App() {
             </div>
 
             {/* Official Daily Student Record Marksheet */}
-            {(() => {
-              const curriculum = GRADE_CURRICULUM[modalStudent.grade] || OFFICIAL_SUBJECTS;
-              const isG13 = isGrade13(modalStudent.grade);
-              const rows: DailyRecordRowItem[] = curriculum.map((cSub) => ({
-                rowKey: cSub.name,
-                label: getTranslatedSubject(cSub.name, language),
-                record: getEffectiveDailyRecord(modalStudent, cSub.name, dailyRecords),
-              }));
-
-              return isG13 ? (
-                <Grade13DailyRecordTable
-                  mode="student"
-                  language={language}
-                  isRtl={isRtl}
-                  gradeLabel={formatGradeLabel(modalStudent.grade, language)}
-                  sectionLabel={formatClassLabel(modalStudent.section, language)}
-                  rows={rows}
-                />
-              ) : (
-                <Grade49DailyRecordTable
-                  mode="student"
-                  language={language}
-                  isRtl={isRtl}
-                  gradeLabel={formatGradeLabel(modalStudent.grade, language)}
-                  sectionLabel={formatClassLabel(modalStudent.section, language)}
-                  rows={rows}
-                />
-              );
-            })()}
+            {rows.length === 0 && isTeacherScope ? (
+              <div className="p-6 text-center rounded-2xl bg-[#F5F6FF] border border-[#E1E9FF] text-xs font-bold text-[#454A87]">
+                {language === 'ku'
+                  ? 'ئەڤ قوتابیە نە د پۆل و بابەتێ تە یێ دیارکری دایە.'
+                  : language === 'ar'
+                  ? 'هذا الطالب غير مسجل ضمن صفك ومادتك المخصصة.'
+                  : 'This student is not within your assigned class and subject.'}
+              </div>
+            ) : isG13 ? (
+              <Grade13DailyRecordTable
+                mode="student"
+                language={language}
+                isRtl={isRtl}
+                gradeLabel={formatGradeLabel(modalStudent.grade, language)}
+                sectionLabel={formatClassLabel(modalStudent.section, language)}
+                subjectLabel={isTeacherScope ? allowedSubjectLabel : undefined}
+                rows={rows}
+              />
+            ) : (
+              <Grade49DailyRecordTable
+                mode="student"
+                language={language}
+                isRtl={isRtl}
+                gradeLabel={formatGradeLabel(modalStudent.grade, language)}
+                sectionLabel={formatClassLabel(modalStudent.section, language)}
+                subjectLabel={isTeacherScope ? allowedSubjectLabel : undefined}
+                rows={rows}
+              />
+            )}
 
             {/* Modal Actions */}
             <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E1E9FF]">
@@ -3633,7 +3680,8 @@ export default function App() {
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Footer */}
       <footer className="w-full border-t border-[#E1E9FF] py-6 px-4 text-center text-xs text-[#8C90C2] bg-white">
