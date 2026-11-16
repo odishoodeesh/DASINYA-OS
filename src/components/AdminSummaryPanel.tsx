@@ -22,6 +22,7 @@ import {
   KeyRound,
   Copy,
   Check,
+  Layers,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
 import { BUS_DRIVER_ROUTES, BusDriverRoute } from '../data/busRoutes';
@@ -60,6 +61,7 @@ interface AdminSummaryPanelProps {
   language: Language;
   isRtl: boolean;
   onSelectModalStudent: (student: StudentRecord) => void;
+  onUpdateStudentClass: (studentId: string, newGrade: string, newSection: string) => void;
   onExportStudentsCsv: () => void;
   onSignOut: () => void;
 }
@@ -125,10 +127,11 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   language,
   isRtl,
   onSelectModalStudent,
+  onUpdateStudentClass,
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control'>('summary');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
@@ -604,6 +607,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : language === 'ar'
                 ? `حافلات المدرسة (${BUS_DRIVER_ROUTES.length})`
                 : `Live Buses (${BUS_DRIVER_ROUTES.length})`}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('class_control')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'class_control'
+                ? 'bg-[#0087A5] text-white shadow-xs'
+                : 'text-[#454A87] hover:bg-[#F5F6FF]'
+            }`}
+          >
+            <Layers className="w-4 h-4 text-[#00A887]" />
+            <span>
+              {language === 'ku'
+                ? 'کۆنترۆلا پۆلان'
+                : language === 'ar'
+                ? 'إدارة وترتيب الصفوف'
+                : 'Class Control'}
             </span>
           </button>
         </div>
@@ -1284,7 +1306,112 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             </div>
           </div>
         );
-      })()}
+       })()}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 5: CLASS CONTROL SECTION                       */}
+      {/* ======================================================== */}
+      {adminTab === 'class_control' && (
+        <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
+            <div>
+              <h3 className="text-base font-black text-[#1A1D4E] flex items-center gap-2">
+                <Layers className="w-5 h-5 text-[#00A887]" />
+                <span>
+                  {language === 'ku'
+                    ? 'کۆنترۆلا پۆلان و ڕیزبەندی قوتابیان'
+                    : language === 'ar'
+                    ? 'إدارة وترتيب صفوف الطلاب'
+                    : 'Class Control & Student Section Assignment'}
+                </span>
+              </h3>
+              <p className="text-xs text-[#6B70A6] mt-0.5">
+                {language === 'ku'
+                  ? 'دەتوانى بە ئاسانی پۆل یان بەشی هەر قوتابیەک بگۆڕیت (پۆلی ١ تا ٩ - بەشەکانی A, B, C)'
+                  : language === 'ar'
+                  ? 'يمكنك بسهولة تغيير صف أو شعبة أي طالب (الصفوف 1-9، الشعب A, B, C)'
+                  : 'Easily change any student\'s grade or section (Grades 1–9, Sections A, B, C) with instant auto-sync.'}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-[#8C90C2]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search student name or ID..."
+                className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-1.5 text-xs w-56 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+              />
+            </div>
+          </div>
+
+          <div className="border border-[#E1E9FF] rounded-2xl overflow-x-auto touch-pan-x max-h-[600px]">
+            <table className="w-full min-w-[760px] text-left text-xs">
+              <thead className="bg-[#1A1D4E] text-white sticky top-0 z-10">
+                <tr>
+                  <th className="py-3 px-3">#</th>
+                  <th className="py-3 px-3">Student Name</th>
+                  <th className="py-3 px-3">Student ID</th>
+                  <th className="py-3 px-3">Roll No</th>
+                  <th className="py-3 px-3">Current Grade</th>
+                  <th className="py-3 px-3">Current Section</th>
+                  <th className="py-3 px-3 text-center">Change Class (A-B-C)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E1E9FF]">
+                {filteredStudents.map((student, index) => (
+                  <tr key={student.id} className="hover:bg-[#F5F6FF]/70 transition-colors">
+                    <td className="py-2.5 px-3 font-mono text-[#8C90C2]">{index + 1}</td>
+                    <td className="py-2.5 px-3 font-bold text-[#1A1D4E] whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => onSelectModalStudent(student)}
+                        className="hover:text-[#0087A5] underline decoration-[#0087A5]/30 cursor-pointer text-start"
+                      >
+                        {student.name}
+                      </button>
+                    </td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">{student.id}</td>
+                    <td className="py-2.5 px-3 font-mono text-[#454A87]">{student.rollNumber}</td>
+                    <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">
+                      <select
+                        value={student.grade}
+                        onChange={(e) => onUpdateStudentClass(student.id, e.target.value, student.section)}
+                        className="bg-white border border-[#0087A5] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5] cursor-pointer shadow-2xs"
+                      >
+                        {gradeKeys.map((g) => (
+                          <option key={g} value={g}>
+                            {formatGradeLabel(g, language)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">
+                      <select
+                        value={student.section}
+                        onChange={(e) => onUpdateStudentClass(student.id, student.grade, e.target.value)}
+                        className="bg-white border border-[#00A887] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#00A887] cursor-pointer shadow-2xs"
+                      >
+                        {(schoolStructure[student.grade] || ['Class A', 'Class B', 'Class C']).map((sec) => (
+                          <option key={sec} value={sec}>
+                            {formatClassLabel(sec, language)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-2.5 px-3 text-center">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+                        <Check className="w-3 h-3 text-emerald-600" />
+                        <span>Active</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

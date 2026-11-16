@@ -400,7 +400,28 @@ export const WEEKLY_FOOD_MENU = [
 export const TIMETABLE_SLOTS = OFFICIAL_TIMETABLE_PERIODS;
 
 export default function App() {
-  const [students] = useState<StudentRecord[]>(IMPORTED_STUDENTS);
+  const [students, setStudents] = useState<StudentRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem('dasinya_students_roster_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return IMPORTED_STUDENTS;
+  });
+
+  const handleUpdateStudentClass = (studentId: string, newGrade: string, newSection: string) => {
+    setStudents((prev) => {
+      const next = prev.map((s) => s.id === studentId ? { ...s, grade: newGrade, section: newSection } : s);
+      try {
+        localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(next));
+      } catch {}
+      seedStudentsToSupabase(next).catch(() => {});
+      return next;
+    });
+  };
+
   const [language, setLanguage] = useState<Language>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
@@ -3374,6 +3395,7 @@ export default function App() {
           language={language}
           isRtl={isRtl}
           onSelectModalStudent={(s) => setModalStudent(s)}
+          onUpdateStudentClass={handleUpdateStudentClass}
           onExportStudentsCsv={handleExportCsv}
           onSignOut={handleSignOut}
         />
