@@ -28,6 +28,7 @@ import {
   Printer,
   Loader2,
   AlertCircle,
+  FileText,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
 import {
@@ -42,6 +43,15 @@ import { LiveBusMap } from './LiveBusMap';
 import { ExamsScheduleView } from './ExamsScheduleView';
 import { BehaviourReportCard } from './BehaviourReportCard';
 import { exportBehaviourReportPdf, printBehaviourReport } from '../lib/behaviourPdf';
+import {
+  AdminExportDatasetKey,
+  AdminExportSourceData,
+  ExportPdfProgress,
+  exportAllToExcelWorkbook,
+  exportAllToPdf,
+  exportDatasetToExcel,
+  exportDatasetToPdf,
+} from '../lib/adminExport';
 import {
   BEHAVIOUR_MONTHS,
   MonthlyBehaviourReport,
@@ -165,13 +175,19 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams' | 'behaviour'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams' | 'behaviour' | 'export'>('summary');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
   const [copiedPwdKey, setCopiedPwdKey] = useState<string | null>(null);
+
+  // Export Center state
+  const [exportGradeScope, setExportGradeScope] = useState<string>('ALL');
+  const [exportBusyKey, setExportBusyKey] = useState<string | null>(null);
+  const [exportPdfProgress, setExportPdfProgress] = useState<ExportPdfProgress | null>(null);
+  const [exportNotice, setExportNotice] = useState<{ ok: boolean; text: string } | null>(null);
 
   // Monthly Behaviour Report viewer state (read-only in Admin; Mentor-only edit in Teacher Portal)
   const [behGrade, setBehGrade] = useState<string>('Grade 1');
@@ -712,6 +728,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : language === 'ar'
                 ? 'تقرير السلوك الشهري'
                 : 'Behaviour Reports'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('export')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'export'
+                ? 'bg-[#1A1D4E] text-white shadow-xs'
+                : 'text-[#1A1D4E] bg-[#EEF0FF]/70 hover:bg-[#E1E9FF]'
+            }`}
+          >
+            <FileSpreadsheet className="w-4 h-4 text-[#00A887]" />
+            <span>
+              {language === 'ku'
+                ? 'دەرئێخستن (Excel / PDF)'
+                : language === 'ar'
+                ? 'مركز التصدير (Excel / PDF)'
+                : 'Export Center (Excel / PDF)'}
             </span>
           </button>
         </div>
@@ -1844,6 +1879,399 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 No students found in {behGrade} — {behSection}.
               </div>
             )}
+          </div>
+        );
+      })()}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 8: EXPORT CENTER (EXCEL .XLSX & PDF)           */}
+      {/* ======================================================== */}
+      {adminTab === 'export' && (() => {
+        const exportSource: AdminExportSourceData = {
+          students,
+          liveBuses,
+          classSummaries,
+          officialSubjectNames: officialSubjects.map((s) => s.name),
+          behaviourReports,
+          examRows,
+          schoolLogoUrl,
+          gradeFilter: exportGradeScope,
+        };
+
+        const runExcel = (key: AdminExportDatasetKey | 'ALL') => {
+          if (exportBusyKey) return;
+          setExportNotice(null);
+          try {
+            if (key === 'ALL') {
+              exportAllToExcelWorkbook(exportSource);
+              setExportNotice({
+                ok: true,
+                text:
+                  language === 'ku'
+                    ? 'هەمی داتا ب شێوێ فایلا Excel (7 شیت) هاتنە داگرتن'
+                    : language === 'ar'
+                    ? 'تم تنزيل ملف Excel الشامل لجميع البيانات (7 أوراق عمل)'
+                    : 'Master Excel workbook (.xlsx with all 7 sheets) downloaded successfully.',
+              });
+            } else {
+              exportDatasetToExcel(key, exportSource);
+              setExportNotice({
+                ok: true,
+                text:
+                  language === 'ku'
+                    ? 'فایلا Excel هاتە داگرتن'
+                    : language === 'ar'
+                    ? 'تم تنزيل ملف Excel بنجاح'
+                    : 'Excel (.xlsx) file downloaded successfully.',
+              });
+            }
+          } catch (err) {
+            setExportNotice({
+              ok: false,
+              text: err instanceof Error ? err.message : 'Excel export failed.',
+            });
+          }
+        };
+
+        const runPdf = async (key: AdminExportDatasetKey | 'ALL') => {
+          if (exportBusyKey) return;
+          const busyId = `pdf:${key}`;
+          setExportBusyKey(busyId);
+          setExportPdfProgress(null);
+          setExportNotice(null);
+          try {
+            if (key === 'ALL') {
+              await exportAllToPdf(exportSource, (p) => setExportPdfProgress(p));
+              setExportNotice({
+                ok: true,
+                text:
+                  language === 'ku'
+                    ? 'راپۆرتا گشتی یا PDF هاتە داگرتن'
+                    : language === 'ar'
+                    ? 'تم تنزيل ملف PDF الشامل لجميع البيانات بنجاح'
+                    : 'Complete School PDF bundle downloaded successfully.',
+              });
+            } else {
+              await exportDatasetToPdf(key, exportSource, (p) => setExportPdfProgress(p));
+              setExportNotice({
+                ok: true,
+                text:
+                  language === 'ku'
+                    ? 'فایلا PDF هاتە داگرتن'
+                    : language === 'ar'
+                    ? 'تم تنزيل ملف PDF بنجاح'
+                    : 'PDF file downloaded successfully.',
+              });
+            }
+          } catch (err) {
+            console.error('Admin PDF export error:', err);
+            setExportNotice({
+              ok: false,
+              text: err instanceof Error ? err.message : 'PDF export failed.',
+            });
+          } finally {
+            setExportBusyKey(null);
+            setExportPdfProgress(null);
+          }
+        };
+
+        const scopedStudentCount =
+          exportGradeScope === 'ALL'
+            ? students.length
+            : students.filter((s) => s.grade === exportGradeScope).length;
+
+        const datasetCards: Array<{
+          key: AdminExportDatasetKey;
+          title: string;
+          titleKu: string;
+          titleAr: string;
+          countLabel: string;
+          description: string;
+          icon: React.ReactNode;
+          accentBg: string;
+        }> = [
+          {
+            key: 'teachers',
+            title: 'Teachers List & Details',
+            titleKu: 'لیستا مامۆستایان و زانیاری',
+            titleAr: 'قائمة المعلمين وتفاصيلهم',
+            countLabel: `${TEACHER_ACCOUNTS.length} Teachers • 16 Mentors`,
+            description:
+              'Full name, ID, Mentor class badge, subject(s), login email, phone password, and all assigned classes.',
+            icon: <GraduationCap className="w-5 h-5 text-[#0087A5]" />,
+            accentBg: 'bg-[#E1F3F7]',
+          },
+          {
+            key: 'students',
+            title: 'Students & Guardians',
+            titleKu: 'قوتابی و سەرپەرشتیار',
+            titleAr: 'الطلاب وأولياء الأمور',
+            countLabel: `${scopedStudentCount} Students`,
+            description:
+              'Student IDs, roll numbers, full names, grade & section, guardian phone/email, portal passwords, and bus assignments.',
+            icon: <Users className="w-5 h-5 text-[#FF7F2A]" />,
+            accentBg: 'bg-[#FFF2E8]',
+          },
+          {
+            key: 'locations',
+            title: 'Student Locations & Bus Stops',
+            titleKu: 'جهێن قوتابیان و نەخشە',
+            titleAr: 'مواقع الطلاب ومحطات الحافلات',
+            countLabel: `${ALL_BUS_STOPS.length} Mapped Stops`,
+            description:
+              'Bus route, driver name, stop order, student names, latitude & longitude coordinates, and Google Maps links.',
+            icon: <MapPin className="w-5 h-5 text-[#00A887]" />,
+            accentBg: 'bg-[#E6FAF6]',
+          },
+          {
+            key: 'drivers',
+            title: 'Drivers & Bus Fleet',
+            titleKu: 'شوفێر و پاسێن قوتابخانێ',
+            titleAr: 'السائقون وأسطول الحافلات',
+            countLabel: `${BUS_DRIVER_ROUTES.length} Bus Routes`,
+            description:
+              'Driver names (KU/AR & EN), bus codes, driver PINs, route coverage, total stops, and live GPS status.',
+            icon: <Bus className="w-5 h-5 text-[#1A1D4E]" />,
+            accentBg: 'bg-[#EEF0FF]',
+          },
+          {
+            key: 'class_summary',
+            title: 'Class Academic Summary',
+            titleKu: 'پوختەیا ئەنجامێن پۆلان',
+            titleAr: 'الملخص الأكاديمي للصفوف',
+            countLabel: `${classSummaries.length} Classes`,
+            description:
+              'Class mentor, student count, average score, pass rate %, graded entries, and per-subject averages.',
+            icon: <BarChart3 className="w-5 h-5 text-[#0087A5]" />,
+            accentBg: 'bg-[#E1F3F7]',
+          },
+          {
+            key: 'behaviour',
+            title: 'Monthly Behaviour Reports',
+            titleKu: 'راپۆرتێن رەوشتی یێن هەیڤانە',
+            titleAr: 'تقارير السلوك الشهرية',
+            countLabel: `${Object.keys(behaviourReports).length} Saved Reports`,
+            description:
+              'Saved monthly student behaviour reports with mentor name, social worker, averages, incidents, and publish status.',
+            icon: <Heart className="w-5 h-5 text-[#5B35A8]" />,
+            accentBg: 'bg-[#F3EEFF]',
+          },
+          {
+            key: 'exams',
+            title: 'Exams Schedule',
+            titleKu: 'خشتەیێ ئەزموونان',
+            titleAr: 'جدول الامتحانات',
+            countLabel: `${examRows.length} Exam Days`,
+            description:
+              'Official exam dates, days, time slots, and subjects scheduled across Grades 1 through 9.',
+            icon: <ClipboardList className="w-5 h-5 text-[#FF7F2A]" />,
+            accentBg: 'bg-[#FFF2E8]',
+          },
+        ];
+
+        return (
+          <div className="space-y-6">
+            {/* Master Export All Banner */}
+            <div className="bg-gradient-to-br from-[#1A1D4E] via-[#0F395C] to-[#0087A5] text-white rounded-3xl p-5 sm:p-7 shadow-[0_10px_28px_rgba(26,29,78,0.22)] space-y-4">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-[10px] font-mono font-bold uppercase tracking-wider">
+                    <FileSpreadsheet className="w-3.5 h-3.5 text-[#00D4AA]" />
+                    <span>
+                      {language === 'ku'
+                        ? 'دەرئێخستنا هەمی داتایان'
+                        : language === 'ar'
+                        ? 'التصدير الشامل لجميع البيانات'
+                        : 'Master School Data Export'}
+                    </span>
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black">
+                    {language === 'ku'
+                      ? 'هەمی داتایان وەک Excel یان PDF داگرە'
+                      : language === 'ar'
+                      ? 'تصدير جميع بيانات المدرسة بصيغة Excel أو PDF'
+                      : 'Export Everything as Excel (.xlsx) or PDF'}
+                  </h3>
+                  <p className="text-xs text-white/85 max-w-2xl">
+                    {language === 'ku'
+                      ? 'مامۆستا و ڕابەر، قوتابی و پاسوۆرد، جهێن قوتابیان، شوفێر، پۆل، سلوک و خشتەیێ ئەزموونان د ئێک فایلدا.'
+                      : language === 'ar'
+                      ? 'قم بتنزيل ملف واحد شامل لجميع المعلمين والطلاب والمواقع والسائقين والدرجات والسلوك والامتحانات، أو قم بتنزيل كل قسم بشكل منفصل.'
+                      : 'Download a single master Excel workbook (7 separate sheets) or a complete multi-page Arabic/Kurdish-ready PDF containing all school records, or export any section individually below.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    disabled={Boolean(exportBusyKey)}
+                    onClick={() => runExcel('ALL')}
+                    className="px-4 py-3 rounded-2xl bg-[#00A887] hover:bg-[#008E72] disabled:opacity-60 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
+                  >
+                    <FileSpreadsheet className="w-4 h-4" />
+                    <span>
+                      {language === 'ku'
+                        ? 'داگرتنا هەمی ب Excel (.xlsx)'
+                        : language === 'ar'
+                        ? 'تصدير الكل Excel (.xlsx)'
+                        : 'Export ALL to Excel (.xlsx)'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={Boolean(exportBusyKey)}
+                    onClick={() => runPdf('ALL')}
+                    className="px-4 py-3 rounded-2xl bg-white text-[#1A1D4E] hover:bg-[#F0F8FA] disabled:opacity-60 text-xs font-extrabold flex items-center justify-center gap-2 shadow-md cursor-pointer transition-all"
+                  >
+                    {exportBusyKey === 'pdf:ALL' ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-[#0087A5]" />
+                    ) : (
+                      <FileText className="w-4 h-4 text-[#FF7F2A]" />
+                    )}
+                    <span>
+                      {exportBusyKey === 'pdf:ALL'
+                        ? exportPdfProgress
+                          ? `PDF ${exportPdfProgress.currentPage}/${exportPdfProgress.totalPages}...`
+                          : 'Generating PDF...'
+                        : language === 'ku'
+                        ? 'داگرتنا هەمی ب PDF'
+                        : language === 'ar'
+                        ? 'تصدير الكل PDF'
+                        : 'Export ALL to PDF (.pdf)'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Optional Grade Scope Filter inside Export Center */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/15">
+                <div className="flex items-center gap-2 text-xs">
+                  <Filter className="w-3.5 h-3.5 text-[#2AD4FF]" />
+                  <span className="font-bold text-white/90">
+                    {language === 'ku'
+                      ? 'فلتەرێ پۆلێ (قوتابی / جە / رەوشت):'
+                      : language === 'ar'
+                      ? 'نطاق التصدير حسب الصف:'
+                      : 'Grade Scope (applies to Students, Locations, Summary & Behaviour):'}
+                  </span>
+                  <select
+                    value={exportGradeScope}
+                    onChange={(e) => setExportGradeScope(e.target.value)}
+                    className="bg-white/15 border border-white/30 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none"
+                  >
+                    <option value="ALL" className="text-[#1A1D4E]">
+                      All Grades (1 – 9)
+                    </option>
+                    {gradeKeys.map((g) => (
+                      <option key={g} value={g} className="text-[#1A1D4E]">
+                        {formatGradeLabel(g, language)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {exportPdfProgress && (
+                  <div className="flex items-center gap-2 text-[11px] font-mono bg-white/15 px-3 py-1 rounded-xl">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#00D4AA]" />
+                    <span>
+                      Page {exportPdfProgress.currentPage} / {exportPdfProgress.totalPages} —{' '}
+                      {exportPdfProgress.sectionLabel}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {exportNotice && (
+              <div
+                className={`p-3.5 rounded-2xl text-xs font-bold flex items-center gap-2 border ${
+                  exportNotice.ok
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                }`}
+              >
+                {exportNotice.ok ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span>{exportNotice.text}</span>
+              </div>
+            )}
+
+            {/* Individual Dataset Export Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {datasetCards.map((card) => {
+                const isPdfBusy = exportBusyKey === `pdf:${card.key}`;
+                return (
+                  <div
+                    key={card.key}
+                    className="bg-white border border-[#E1E9FF] rounded-3xl p-5 shadow-[0_6px_20px_rgba(0,135,165,0.05)] flex flex-col justify-between gap-4 hover:border-[#0087A5]/45 transition-all"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-11 h-11 rounded-2xl ${card.accentBg} flex items-center justify-center shrink-0`}
+                          >
+                            {card.icon}
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-black text-[#1A1D4E]">
+                              {language === 'ku'
+                                ? card.titleKu
+                                : language === 'ar'
+                                ? card.titleAr
+                                : card.title}
+                            </h4>
+                            <span className="inline-block text-[10px] font-mono font-bold text-[#0087A5]">
+                              {card.countLabel}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-[#6B70A6] leading-relaxed">
+                        {card.description}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[#E1E9FF]">
+                      <button
+                        type="button"
+                        disabled={Boolean(exportBusyKey)}
+                        onClick={() => runExcel(card.key)}
+                        className="px-3 py-2.5 rounded-xl bg-[#E6FAF6] hover:bg-[#D1F5EE] border border-[#B6EADF] disabled:opacity-60 text-[#006F59] text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                      >
+                        <FileSpreadsheet className="w-3.5 h-3.5" />
+                        <span>Excel (.xlsx)</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={Boolean(exportBusyKey)}
+                        onClick={() => runPdf(card.key)}
+                        className="px-3 py-2.5 rounded-xl bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#D8E1FF] disabled:opacity-60 text-[#1A1D4E] text-xs font-extrabold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                      >
+                        {isPdfBusy ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0087A5]" />
+                        ) : (
+                          <FileText className="w-3.5 h-3.5 text-[#FF7F2A]" />
+                        )}
+                        <span>
+                          {isPdfBusy
+                            ? exportPdfProgress
+                              ? `${exportPdfProgress.currentPage}/${exportPdfProgress.totalPages}`
+                              : '...'
+                            : 'PDF (.pdf)'}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       })()}

@@ -47,16 +47,20 @@ html {
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
-    font-size: 8.5px !important;
+    font-size: 7.5px !important;
   }
   body.dasinya-printing-behaviour #printable-behaviour-print-clone table {
-    font-size: 8.5px !important;
+    font-size: 7.5px !important;
+    line-height: 1.15 !important;
     width: 100% !important;
     page-break-inside: avoid;
   }
   body.dasinya-printing-behaviour #printable-behaviour-print-clone td,
   body.dasinya-printing-behaviour #printable-behaviour-print-clone th {
-    padding: 1.5px 4px !important;
+    padding: 1.5px 3px !important;
+  }
+  body.dasinya-printing-behaviour #printable-behaviour-print-clone td > div.h-6 {
+    height: 14px !important;
   }
 
   body:not(.dasinya-printing-behaviour) * {

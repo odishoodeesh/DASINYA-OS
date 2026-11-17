@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * Reliable A4 Landscape PDF Export & Clean Print helper for Monthly Behaviour Reports
+ * Reliable A4 Portrait PDF Export & Clean Print helper for Monthly Behaviour Reports
  */
 
 import html2canvas from 'html2canvas';
@@ -158,7 +158,7 @@ export async function exportBehaviourReportPdf({
   );
 
   const sanitizedProdCss = collectSanitizedProdCssFromLiveDocument();
-  const captureWidth = 1160;
+  const captureWidth = 920;
 
   const canvas = await html2canvas(sourceEl, {
     scale: 2,
@@ -167,7 +167,7 @@ export async function exportBehaviourReportPdf({
     backgroundColor: '#ffffff',
     logging: false,
     width: captureWidth,
-    windowWidth: 1280,
+    windowWidth: 1100,
     onclone: (clonedDoc, clonedEl) => {
       sanitizeClonedStylesheets(clonedDoc, sanitizedProdCss);
 
@@ -176,32 +176,49 @@ export async function exportBehaviourReportPdf({
       clonedDoc.body.style.backgroundColor = '#ffffff';
       clonedEl.style.overflow = 'visible';
 
-      // Force crisp desktop 2-column A4 Landscape width regardless of current screen size
-      clonedEl.style.width = `${captureWidth}px`;
-      clonedEl.style.maxWidth = `${captureWidth}px`;
-      clonedEl.style.minWidth = `${captureWidth}px`;
-      clonedEl.style.padding = '14px';
-      clonedEl.style.margin = '0';
-      clonedEl.style.backgroundColor = '#ffffff';
-      clonedEl.style.boxShadow = 'none';
-      clonedEl.style.borderRadius = '0px';
-      clonedEl.style.border = '1px solid #94A3B8';
-      clonedEl.style.boxSizing = 'border-box';
+      // Inject compact Portrait A4 table & cell rules for crisp 1-page Portrait A4 fit
+      const portraitRule = clonedDoc.createElement('style');
+      portraitRule.textContent = `
+        #${elementId} {
+          width: ${captureWidth}px !important;
+          max-width: ${captureWidth}px !important;
+          min-width: ${captureWidth}px !important;
+          padding: 10px 12px !important;
+          margin: 0 !important;
+          background: #ffffff !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          border: 1px solid #94A3B8 !important;
+          box-sizing: border-box !important;
+        }
+        #${elementId} table {
+          font-size: 8.5px !important;
+          line-height: 1.2 !important;
+        }
+        #${elementId} td,
+        #${elementId} th {
+          padding: 2px 4px !important;
+        }
+        #${elementId} td > div.h-6 {
+          height: 17px !important;
+        }
+      `;
+      clonedDoc.head.appendChild(portraitRule);
 
       // Force top trilingual header to 3 columns
       const topTitleGrid = clonedEl.querySelector('[data-behaviour-title-row="true"]') as HTMLElement | null;
       if (topTitleGrid) {
         topTitleGrid.style.display = 'grid';
         topTitleGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
-        topTitleGrid.style.gap = '8px';
+        topTitleGrid.style.gap = '6px';
       }
 
-      // Force 2-column side-by-side A4 body layout
+      // Force 2-column side-by-side body layout proportioned for Portrait A4
       const bodyGrid = clonedEl.querySelector('[data-behaviour-grid="true"]') as HTMLElement | null;
       if (bodyGrid) {
         bodyGrid.style.display = 'grid';
         bodyGrid.style.gridTemplateColumns = '1fr 1fr';
-        bodyGrid.style.gap = '10px';
+        bodyGrid.style.gap = '8px';
         bodyGrid.style.alignItems = 'start';
       }
 
@@ -226,7 +243,7 @@ export async function exportBehaviourReportPdf({
 
   const imgData = canvas.toDataURL('image/png', 1.0);
   const pdf = new jsPDF({
-    orientation: 'landscape',
+    orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
     compress: true,
@@ -238,12 +255,12 @@ export async function exportBehaviourReportPdf({
   const availWidth = pdfWidth - margin * 2;
   const availHeight = pdfHeight - margin * 2;
 
-  // Uniform proportional scaling so the entire 2-column form fits crisply on 1 Landscape A4 page
+  // Uniform proportional scaling so the entire report fits crisply on 1 Portrait A4 page
   const scale = Math.min(availWidth / canvas.width, availHeight / canvas.height);
   const drawWidth = canvas.width * scale;
   const drawHeight = canvas.height * scale;
   const offsetX = (pdfWidth - drawWidth) / 2;
-  const offsetY = (pdfHeight - drawHeight) / 2;
+  const offsetY = margin;
 
   pdf.addImage(imgData, 'PNG', offsetX, offsetY, drawWidth, drawHeight);
 
@@ -300,7 +317,7 @@ export function printBehaviourReport(elementId = 'printable-behaviour'): void {
 
   const styleTag = document.createElement('style');
   styleTag.id = 'dasinya-behaviour-page-rule';
-  styleTag.textContent = '@page { size: A4 landscape; margin: 6mm; }';
+  styleTag.textContent = '@page { size: A4 portrait; margin: 6mm; }';
   document.head.appendChild(styleTag);
 
   replaceInputsWithSpans(clone, liveInputValues);
