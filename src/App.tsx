@@ -59,7 +59,17 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { seedStudentsToSupabase } from './lib/supabase';
+import {
+  DAILY_RECORDS_TABLE,
+  SupabaseDailyRecordRow,
+  fetchDailyRecordsFromSupabase,
+  fetchStudentsFromSupabase,
+  seedStudentsToSupabase,
+  supabase,
+  updateStudentClassInSupabase,
+  upsertAllDailyRecordsToSupabase,
+  upsertDailyRecordToSupabase,
+} from './lib/supabase';
 import { IMPORTED_STUDENTS, StudentRecord, SubjectMark } from './data/importedStudents';
 import { 
   getClassTimetable, 
@@ -346,7 +356,11 @@ export default function App() {
       try {
         localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(next));
       } catch {}
-      seedStudentsToSupabase(next).catch(() => {});
+      updateStudentClassInSupabase(studentId, newGrade, newSection).then((res) => {
+        if (!res.ok) {
+          seedStudentsToSupabase(next).catch(() => {});
+        }
+      }).catch(() => {});
       return next;
     });
   };
@@ -416,12 +430,18 @@ export default function App() {
     (selectedPortal === 'driver' && Boolean(authDriver)) ||
     (selectedPortal === 'admin' && Boolean(authStaff && authStaff.role === 'admin'));
 
-  // Persistent Teacher-entered Daily Student Records (localStorage + authentic Term 1 marks)
+  // Persistent Teacher-entered Daily Student Records (Supabase DB + localStorage cache)
   const [dailyRecords, setDailyRecords] = useState<Record<string, DailySubjectRecord>>(() =>
     loadStoredDailyRecords()
   );
+  const dailyRecordsRef = useRef<Record<string, DailySubjectRecord>>(dailyRecords);
+  dailyRecordsRef.current = dailyRecords;
+  const pendingMarkTimersRef = useRef<Record<string, number>>({});
   const [teacherSubject, setTeacherSubject] = useState<string>('Kurdish');
   const [teacherSavedNotice, setTeacherSavedNotice] = useState<boolean>(false);
+  const [teacherSyncStatus, setTeacherSyncStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [teacherSyncError, setTeacherSyncError] = useState<string>('');
+  const [teacherLastDbSyncAt, setTeacherLastDbSyncAt] = useState<string | null>(null);
 
   // Form input states
   const [loginUsername, setLoginUsername] = useState<string>('');
@@ -499,10 +519,110 @@ export default function App() {
     }
   };
 
-  // Auto-sync students roster to Supabase on mount in background
+  // Hydrate students roster & teacher daily marks from Supabase on mount + Realtime sync
   useEffect(() => {
-    seedStudentsToSupabase(students).catch(() => {});
-  }, [students]);
+    let active = true;
+
+    fetchStudentsFromSupabase().then((remoteStudents) => {
+      if (!active) return;
+      if (remoteStudents && remoteStudents.length > 0) {
+        const classById = new Map<string, { grade: string; section: string }>();
+        for (const row of remoteStudents) {
+          if (row.id && row.grade && row.section) {
+            classById.set(row.id, { grade: row.grade, section: row.section });
+          }
+        }
+        setStudents((prev) => {
+          const next = prev.map((s) => {
+            const remote = classById.get(s.id);
+            return remote ? { ...s, grade: remote.grade, section: remote.section } : s;
+          });
+          try {
+            localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(next));
+          } catch {}
+          return next;
+        });
+      } else if (remoteStudents && remoteStudents.length === 0) {
+        seedStudentsToSupabase(students).catch(() => {});
+      }
+    });
+
+    fetchDailyRecordsFromSupabase().then((res) => {
+      if (!active || !res.ok) return;
+      if (Object.keys(res.records).length > 0) {
+        setDailyRecords((prev) => {
+          const merged = { ...prev, ...res.records };
+          saveStoredDailyRecords(merged);
+          return merged;
+        });
+      }
+    });
+
+    const sb = supabase;
+    if (!sb) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const channel = sb
+      .channel('realtime-academic-sync')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: DAILY_RECORDS_TABLE },
+        (payload) => {
+          if (!active) return;
+          if (payload.eventType === 'DELETE') {
+            const oldId = (payload.old as Partial<SupabaseDailyRecordRow> | undefined)?.id;
+            if (!oldId) return;
+            setDailyRecords((prev) => {
+              if (!(oldId in prev)) return prev;
+              const copy = { ...prev };
+              delete copy[oldId];
+              saveStoredDailyRecords(copy);
+              return copy;
+            });
+            return;
+          }
+          const row = payload.new as Partial<SupabaseDailyRecordRow> | undefined;
+          if (row?.id && row.record && typeof row.record === 'object') {
+            const recKey = row.id;
+            const recVal = row.record;
+            setDailyRecords((prev) => {
+              const next = { ...prev, [recKey]: recVal };
+              saveStoredDailyRecords(next);
+              return next;
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'students' },
+        (payload) => {
+          if (!active) return;
+          const updated = payload.new as { id?: string; grade?: string; section?: string } | undefined;
+          if (!updated?.id || !updated.grade || !updated.section) return;
+          setStudents((prev) => {
+            const next = prev.map((s) =>
+              s.id === updated.id
+                ? { ...s, grade: updated.grade!, section: updated.section! }
+                : s
+            );
+            try {
+              localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(next));
+            } catch {}
+            return next;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      active = false;
+      sb.removeChannel(channel);
+    };
+  }, []);
 
   // Scroll to top on portal tab, active student, teacher tab, or authentication changes
   useEffect(() => {
@@ -714,28 +834,73 @@ export default function App() {
     setActivePortalTab(null);
   };
 
-  // Teacher marks entry handler (updates state + persists to localStorage)
+  // Teacher marks entry handler (updates state + localStorage + debounced Supabase database upsert)
   const handleTeacherRecordChange = (studentId: string, updated: DailySubjectRecord) => {
-    const key = makeDailyRecordKey(studentId, teacherSubject);
+    const subjectForKey = teacherSubject;
+    const key = makeDailyRecordKey(studentId, subjectForKey);
     setDailyRecords((prev) => {
       const next = { ...prev, [key]: updated };
+      dailyRecordsRef.current = next;
       saveStoredDailyRecords(next);
       return next;
     });
     setTeacherSavedNotice(false);
+    setTeacherSyncStatus('saving');
+    setTeacherSyncError('');
+
+    if (pendingMarkTimersRef.current[key]) {
+      window.clearTimeout(pendingMarkTimersRef.current[key]);
+    }
+    pendingMarkTimersRef.current[key] = window.setTimeout(async () => {
+      delete pendingMarkTimersRef.current[key];
+      const res = await upsertDailyRecordToSupabase({
+        key,
+        studentId,
+        subject: subjectForKey,
+        record: updated,
+        updatedBy: authStaff?.email,
+      });
+      if (res.ok) {
+        setTeacherSyncStatus('saved');
+        setTeacherSyncError('');
+        setTeacherLastDbSyncAt(new Date().toISOString());
+      } else {
+        setTeacherSyncStatus('error');
+        setTeacherSyncError(res.error || 'Could not save mark to database.');
+      }
+    }, 350);
   };
 
-  const handleTeacherSaveAll = () => {
-    saveStoredDailyRecords(dailyRecords);
-    setTeacherSavedNotice(true);
-    setTimeout(() => setTeacherSavedNotice(false), 3000);
+  const handleTeacherSaveAll = async () => {
+    // Flush any pending per-cell debounce timers first
+    for (const timerId of Object.values(pendingMarkTimersRef.current)) {
+      window.clearTimeout(timerId);
+    }
+    pendingMarkTimersRef.current = {};
+
+    const latest = dailyRecordsRef.current;
+    saveStoredDailyRecords(latest);
+    setTeacherSyncStatus('saving');
+    setTeacherSyncError('');
+
+    const res = await upsertAllDailyRecordsToSupabase(latest, authStaff?.email);
+    if (res.ok) {
+      setTeacherSyncStatus('saved');
+      setTeacherSavedNotice(true);
+      setTeacherLastDbSyncAt(new Date().toISOString());
+      setTimeout(() => setTeacherSavedNotice(false), 3500);
+    } else {
+      setTeacherSyncStatus('error');
+      setTeacherSyncError(res.error || 'Failed to save marks to Supabase database.');
+    }
   };
 
-  // Active student in Parent/Student portal
+  // Active student in Parent/Student portal (resolved against live students state so DB class updates reflect immediately)
   const activeGuardianStudent = useMemo(() => {
     if (!authGuardian || !authGuardian.students.length) return null;
-    return authGuardian.students.find(s => s.id === selectedChildId) || authGuardian.students[0];
-  }, [authGuardian, selectedChildId]);
+    const fallback = authGuardian.students.find(s => s.id === selectedChildId) || authGuardian.students[0];
+    return students.find(s => s.id === fallback.id) || fallback;
+  }, [authGuardian, selectedChildId, students]);
 
   // Active student in Staff/Teacher/Admin view
   const activeStaffStudent = useMemo(() => {
@@ -3071,21 +3236,50 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  {teacherSavedNotice && (
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {teacherSyncStatus === 'saving' && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F0F8FA] border border-[#C8E5EC] text-[#0087A5] text-xs font-bold">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>
+                        {language === 'ku'
+                          ? 'پاشەکەفتکرن ل ناڤ داتابەیسێ...'
+                          : language === 'ar'
+                          ? 'جاري الحفظ في قاعدة البيانات...'
+                          : 'Saving to Database...'}
+                      </span>
+                    </span>
+                  )}
+                  {(teacherSavedNotice || teacherSyncStatus === 'saved') && teacherSyncStatus !== 'saving' && (
                     <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>
-                        {language === 'ku' ? 'نمرە هاتنە تۆمارکرن' : language === 'ar' ? 'تم حفظ الدرجات بنجاح' : 'Marks Saved'}
+                        {language === 'ku'
+                          ? 'نمرە ل ناڤ داتابەیسێ هاتنە تۆمارکرن'
+                          : language === 'ar'
+                          ? 'تم حفظ الدرجات في قاعدة البيانات'
+                          : `Saved to Database${teacherLastDbSyncAt ? ` (${new Date(teacherLastDbSyncAt).toLocaleTimeString()})` : ''}`}
+                      </span>
+                    </span>
+                  )}
+                  {teacherSyncStatus === 'error' && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold max-w-xs truncate" title={teacherSyncError}>
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span className="truncate">
+                        {teacherSyncError || 'Database sync error'}
                       </span>
                     </span>
                   )}
                   <button
                     type="button"
+                    disabled={teacherSyncStatus === 'saving'}
                     onClick={handleTeacherSaveAll}
-                    className="px-4 py-2.5 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer"
+                    className="px-4 py-2.5 bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer"
                   >
-                    <Save className="w-4 h-4" />
+                    {teacherSyncStatus === 'saving' ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
                     <span>
                       {language === 'ku' ? 'پاشەکەفتکرنا نمران' : language === 'ar' ? 'حفظ الدرجات' : 'Save Marks'}
                     </span>

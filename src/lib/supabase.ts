@@ -4,6 +4,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import type { DailySubjectRecord } from '../data/teacherPortal';
 
 const DEFAULT_PROJECT_URL = 'https://knwkwzwjhepobqxpamkd.supabase.co';
 const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtud2t3endqaGVwb2JxeHBhbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MTM4NzAsImV4cCI6MjExMDM4OTg3MH0.UNZ8-ym7wth5BxUAcFmHeGvfjaqmv484dz8Dn14W52o';
@@ -102,16 +103,58 @@ export async function checkSupabaseConnection(): Promise<{ connected: boolean; h
 }
 
 /**
- * Fetch students from Supabase
+ * Fetch all students from Supabase (paginated beyond 1000-row REST limit)
  */
 export async function fetchStudentsFromSupabase(): Promise<SupabaseStudentRow[] | null> {
   if (!supabase) return null;
   try {
-    const { data, error } = await supabase.from('students').select('*');
-    if (error || !data) return null;
-    return data as SupabaseStudentRow[];
+    const allRows: SupabaseStudentRow[] = [];
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from('students')
+        .select('*')
+        .range(from, from + pageSize - 1);
+
+      if (error || !data) {
+        return allRows.length > 0 ? allRows : null;
+      }
+
+      allRows.push(...(data as SupabaseStudentRow[]));
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    return allRows;
   } catch {
     return null;
+  }
+}
+
+/**
+ * Update a student's grade & class section in Supabase `students` table
+ */
+export async function updateStudentClassInSupabase(
+  studentId: string,
+  grade: string,
+  section: string
+): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) {
+    return { ok: false, error: 'Supabase client is not initialized.' };
+  }
+  try {
+    const { error } = await supabase
+      .from('students')
+      .update({ grade, section })
+      .eq('id', studentId);
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: true };
+  } catch (err: any) {
+    return { ok: false, error: err?.message || 'Failed to update student class' };
   }
 }
 
@@ -260,4 +303,162 @@ export async function fetchAllBusLocations(): Promise<BusLocationRow[]> {
   }
 }
 
+export const DAILY_RECORDS_TABLE = 'daily_records';
 
+export interface SupabaseDailyRecordRow {
+  id: string;
+  student_id: string;
+  subject: string;
+  record: DailySubjectRecord;
+  updated_by?: string | null;
+  updated_at?: string;
+}
+
+function parseDailyRecordKeyParts(key: string): { studentId: string; subject: string } {
+  const sepIdx = key.indexOf('__');
+  if (sepIdx === -1) {
+    return { studentId: key, subject: 'general' };
+  }
+  return {
+    studentId: key.slice(0, sepIdx),
+    subject: key.slice(sepIdx + 2) || 'general',
+  };
+}
+
+/**
+ * Fetch all teacher-uploaded marks from Supabase `daily_records` table
+ */
+export async function fetchDailyRecordsFromSupabase(): Promise<{
+  ok: boolean;
+  records: Record<string, DailySubjectRecord>;
+  error?: string;
+}> {
+  if (!supabase) {
+    return { ok: false, records: {}, error: 'Supabase client is not initialized.' };
+  }
+  try {
+    const records: Record<string, DailySubjectRecord> = {};
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from(DAILY_RECORDS_TABLE)
+        .select('id, student_id, subject, record, updated_at')
+        .range(from, from + pageSize - 1);
+
+      if (error) {
+        return { ok: false, records, error: error.message };
+      }
+
+      if (!data || data.length === 0) break;
+
+      for (const row of data as SupabaseDailyRecordRow[]) {
+        if (row.id && row.record && typeof row.record === 'object') {
+          records[row.id] = row.record;
+        }
+      }
+
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    return { ok: true, records };
+  } catch (err: any) {
+    return {
+      ok: false,
+      records: {},
+      error: err?.message || 'Failed to fetch marks from Supabase.',
+    };
+  }
+}
+
+/**
+ * Upsert a single student + subject mark record into Supabase `daily_records`
+ */
+export async function upsertDailyRecordToSupabase(params: {
+  key: string;
+  studentId: string;
+  subject: string;
+  record: DailySubjectRecord;
+  updatedBy?: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) {
+    return { ok: false, error: 'Supabase client is not initialized.' };
+  }
+  try {
+    const row: SupabaseDailyRecordRow = {
+      id: params.key,
+      student_id: params.studentId,
+      subject: params.subject,
+      record: params.record,
+      updated_by: params.updatedBy || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from(DAILY_RECORDS_TABLE)
+      .upsert(row, { onConflict: 'id' });
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: true };
+  } catch (err: any) {
+    return { ok: false, error: err?.message || 'Failed to save mark to Supabase.' };
+  }
+}
+
+/**
+ * Batch upsert all daily mark records into Supabase `daily_records`
+ */
+export async function upsertAllDailyRecordsToSupabase(
+  records: Record<string, DailySubjectRecord>,
+  updatedBy?: string
+): Promise<{ ok: boolean; count: number; error?: string }> {
+  if (!supabase) {
+    return { ok: false, count: 0, error: 'Supabase client is not initialized.' };
+  }
+
+  const entries = Object.entries(records).filter(
+    ([, rec]) => rec && typeof rec === 'object'
+  );
+  if (entries.length === 0) {
+    return { ok: true, count: 0 };
+  }
+
+  const nowIso = new Date().toISOString();
+  const rows: SupabaseDailyRecordRow[] = entries.map(([key, rec]) => {
+    const { studentId, subject } = parseDailyRecordKeyParts(key);
+    return {
+      id: key,
+      student_id: studentId,
+      subject,
+      record: rec,
+      updated_by: updatedBy || null,
+      updated_at: nowIso,
+    };
+  });
+
+  try {
+    let savedCount = 0;
+    for (let i = 0; i < rows.length; i += 100) {
+      const batch = rows.slice(i, i + 100);
+      const { error } = await supabase
+        .from(DAILY_RECORDS_TABLE)
+        .upsert(batch, { onConflict: 'id' });
+
+      if (error) {
+        return { ok: false, count: savedCount, error: error.message };
+      }
+      savedCount += batch.length;
+    }
+    return { ok: true, count: savedCount };
+  } catch (err: any) {
+    return {
+      ok: false,
+      count: 0,
+      error: err?.message || 'Failed to save marks batch to Supabase.',
+    };
+  }
+}
