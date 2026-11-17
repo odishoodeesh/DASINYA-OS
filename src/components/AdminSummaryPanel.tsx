@@ -24,6 +24,10 @@ import {
   Check,
   Layers,
   ClipboardList,
+  Heart,
+  Printer,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
 import {
@@ -36,8 +40,20 @@ import { ExamGradeKey, ExamScheduleRow } from '../data/examsSchedule';
 import { LiveBusState } from '../hooks/useBusTracking';
 import { LiveBusMap } from './LiveBusMap';
 import { ExamsScheduleView } from './ExamsScheduleView';
+import { BehaviourReportCard } from './BehaviourReportCard';
+import { exportBehaviourReportPdf, printBehaviourReport } from '../lib/behaviourPdf';
+import {
+  BEHAVIOUR_MONTHS,
+  MonthlyBehaviourReport,
+  createEmptyBehaviourReport,
+  getDefaultBehaviourMonthKey,
+  makeBehaviourReportKey,
+} from '../data/behaviourReport';
 import {
   TEACHER_ACCOUNTS,
+  CLASS_MENTORS,
+  getMentorAssignmentForTeacher,
+  getMentorForClass,
   DailySubjectRecord,
   getEffectiveDailyRecord,
   isGrade13,
@@ -74,6 +90,7 @@ interface AdminSummaryPanelProps {
   onUpdateExamCell: (rowId: string, grade: ExamGradeKey, value: string) => void;
   onResetExamSchedule: () => void;
   schoolLogoUrl: string;
+  behaviourReports: Record<string, MonthlyBehaviourReport>;
   onExportStudentsCsv: () => void;
   onSignOut: () => void;
 }
@@ -144,16 +161,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   onUpdateExamCell,
   onResetExamSchedule,
   schoolLogoUrl,
+  behaviourReports,
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams' | 'behaviour'>('summary');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
   const [copiedPwdKey, setCopiedPwdKey] = useState<string | null>(null);
+
+  // Monthly Behaviour Report viewer state (read-only in Admin; Mentor-only edit in Teacher Portal)
+  const [behGrade, setBehGrade] = useState<string>('Grade 1');
+  const [behSection, setBehSection] = useState<string>('Class A');
+  const [behMonthKey, setBehMonthKey] = useState<string>(() => getDefaultBehaviourMonthKey());
+  const [behStudentId, setBehStudentId] = useState<string>(() => students[0]?.id || '');
+  const [behDownloadingPdf, setBehDownloadingPdf] = useState<boolean>(false);
+  const [behSaveMessage, setBehSaveMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
 
   const handleCopyPassword = (pwd: string, key: string) => {
@@ -322,13 +348,20 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   const filteredTeachers = useMemo(() => {
     if (!teacherSearch.trim()) return TEACHER_ACCOUNTS;
     const q = teacherSearch.toLowerCase().trim();
-    return TEACHER_ACCOUNTS.filter(
-      (t) =>
+    return TEACHER_ACCOUNTS.filter((t) => {
+      const m = getMentorAssignmentForTeacher(t.id);
+      return (
         t.name.toLowerCase().includes(q) ||
         t.email.toLowerCase().includes(q) ||
         t.subjectLabel.toLowerCase().includes(q) ||
-        t.phone.replace(/\s+/g, '').includes(q.replace(/\s+/g, ''))
-    );
+        t.phone.replace(/\s+/g, '').includes(q.replace(/\s+/g, '')) ||
+        (m
+          ? m.classCode.toLowerCase().includes(q) ||
+            m.mentorShortName.toLowerCase().includes(q) ||
+            'mentor'.includes(q)
+          : false)
+      );
+    });
   }, [teacherSearch]);
 
   const handleExportSummaryCsv = () => {
@@ -660,6 +693,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : language === 'ar'
                 ? 'جدول الامتحانات'
                 : 'Exams Schedule'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('behaviour')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'behaviour'
+                ? 'bg-[#0087A5] text-white shadow-xs'
+                : 'text-[#454A87] hover:bg-[#F5F6FF]'
+            }`}
+          >
+            <Heart className="w-4 h-4 text-[#FF7F2A]" />
+            <span>
+              {language === 'ku'
+                ? 'راپۆرتا سلوکی (هەیڤانە)'
+                : language === 'ar'
+                ? 'تقرير السلوك الشهري'
+                : 'Behaviour Reports'}
             </span>
           </button>
         </div>
@@ -1104,10 +1156,10 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
             <div>
               <h3 className="text-base font-bold text-[#1A1D4E]">
-                Official Teachers Directory ({filteredTeachers.length} / {TEACHER_ACCOUNTS.length})
+                Official Teachers &amp; Class Mentors Directory ({filteredTeachers.length} / {TEACHER_ACCOUNTS.length})
               </h3>
               <p className="text-xs text-[#6B70A6]">
-                Official teacher credentials (Email + Phone Password) and assigned class mark entry progress
+                Official teacher credentials (Email + Phone Password), {CLASS_MENTORS.length} designated Class Mentors (Behaviour Entry), and subject progress
               </p>
             </div>
             <div className="relative">
@@ -1116,29 +1168,44 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 type="text"
                 value={teacherSearch}
                 onChange={(e) => setTeacherSearch(e.target.value)}
-                placeholder="Search teacher, email, or subject..."
+                placeholder="Search teacher, mentor, class (1A)..."
                 className="pl-9 pr-3 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-64 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
               />
             </div>
           </div>
 
           <div className="border border-[#E1E9FF] rounded-2xl overflow-x-auto touch-pan-x max-h-[580px]">
-            <table className="w-full min-w-[780px] text-left text-xs">
+            <table className="w-full min-w-[860px] text-left text-xs">
               <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E] sticky top-0 z-10">
                 <tr>
                   <th className="py-3 px-3">ID</th>
                   <th className="py-3 px-3">Teacher Name</th>
+                  <th className="py-3 px-3">Class Mentor</th>
                   <th className="py-3 px-3">Subject(s)</th>
                   <th className="py-3 px-3">Login Email</th>
                   <th className="py-3 px-3">Phone (Password)</th>
-                  <th className="py-3 px-3">Assigned Classes & Progress</th>
+                  <th className="py-3 px-3">Assigned Classes &amp; Progress</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E1E9FF]">
-                {filteredTeachers.map((teacher) => (
+                {filteredTeachers.map((teacher) => {
+                  const mentorAssign = getMentorAssignmentForTeacher(teacher.id);
+                  return (
                   <tr key={teacher.id} className="hover:bg-[#F5F6FF]/50 transition-colors align-top">
                     <td className="py-2.5 px-3 font-mono font-bold text-[#8C90C2]">{teacher.id}</td>
                     <td className="py-2.5 px-3 font-bold text-[#1A1D4E] whitespace-nowrap">{teacher.name}</td>
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      {mentorAssign ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F3EEFF] border border-[#BB8FFF]/50 text-[#5B35A8] text-[10px] font-black">
+                          <Heart className="w-3 h-3" />
+                          <span>
+                            {mentorAssign.classCode} ({mentorAssign.mentorShortName})
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-semibold text-[#8C90C2]">—</span>
+                      )}
+                    </td>
                     <td className="py-2.5 px-3 font-semibold text-[#0087A5] whitespace-nowrap">
                       {teacher.subjectLabel}
                     </td>
@@ -1179,7 +1246,8 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1478,6 +1546,307 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           onResetSchedule={onResetExamSchedule}
         />
       )}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 7: MONTHLY BEHAVIOUR REPORTS (VIEW / PRINT)    */}
+      {/* Mentor-Only Insertion Rule: Only Class Mentors insert.   */}
+      {/* ======================================================== */}
+      {adminTab === 'behaviour' && (() => {
+        const classStudents = students.filter(
+          (s) => s.grade === behGrade && s.section === behSection
+        );
+        const activeStudent =
+          classStudents.find((s) => s.id === behStudentId) || classStudents[0] || null;
+        const activeKey = activeStudent
+          ? makeBehaviourReportKey(activeStudent.id, behMonthKey)
+          : '';
+        const classMentor = getMentorForClass(behGrade, behSection);
+        const savedReport = activeKey ? behaviourReports[activeKey] : undefined;
+        const currentReport = activeStudent
+          ? savedReport ||
+            createEmptyBehaviourReport(
+              activeStudent.id,
+              behMonthKey,
+              classMentor?.teacher.name || ''
+            )
+          : null;
+
+        const handleDownloadBehaviourPdf = async () => {
+          if (!activeStudent || behDownloadingPdf) return;
+          setBehDownloadingPdf(true);
+          setBehSaveMessage(null);
+          try {
+            await exportBehaviourReportPdf({
+              elementId: 'printable-behaviour',
+              studentName: activeStudent.name,
+              monthKey: behMonthKey,
+            });
+          } catch (err) {
+            console.error('Behaviour PDF export error:', err);
+            setBehSaveMessage({
+              ok: false,
+              text:
+                err instanceof Error
+                  ? err.message
+                  : 'Could not generate Behaviour Report PDF.',
+            });
+          } finally {
+            setBehDownloadingPdf(false);
+          }
+        };
+
+        return (
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-6 shadow-xs space-y-5">
+            {/* Mentor-Only Notice Banner */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#F3EEFF] border border-[#BB8FFF]/45">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#5B35A8] text-white flex items-center justify-center shrink-0">
+                  <Heart className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-[#1A1D4E]">
+                    {language === 'ku'
+                      ? 'تۆمارکرنا رەوشتی بتنێ بۆ ڕابەرێ پۆلێ یە'
+                      : language === 'ar'
+                      ? 'إدخال تقارير السلوك مخصص لمرشد الصف فقط'
+                      : 'Mentor-Only Behaviour Entry (Admin Read-Only & Export View)'}
+                  </p>
+                  <p className="text-[11px] text-[#454A87]">
+                    {classMentor ? (
+                      <>
+                        {language === 'ku'
+                          ? `ڕابەرێ پۆلا ${classMentor.assignment.classCode}: `
+                          : language === 'ar'
+                          ? `مرشد الصف ${classMentor.assignment.classCode}: `
+                          : `Assigned Class Mentor (${classMentor.assignment.classCode}): `}
+                        <strong className="text-[#5B35A8]">
+                          {classMentor.assignment.mentorShortName} — {classMentor.teacher.name}
+                        </strong>
+                        {' • '}
+                        <span className="font-mono text-[10px]">{classMentor.teacher.email}</span>
+                      </>
+                    ) : (
+                      'No mentor assigned to this class.'
+                    )}
+                  </p>
+                </div>
+              </div>
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold shrink-0 ${
+                  savedReport
+                    ? savedReport.published
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                    : 'bg-white text-[#6B70A6] border border-[#E1E9FF]'
+                }`}
+              >
+                {savedReport
+                  ? savedReport.published
+                    ? language === 'ku'
+                      ? 'بەردەستە بۆ سەرپەرشتیاران'
+                      : language === 'ar'
+                      ? 'منشور لأولياء الأمور'
+                      : 'Submitted & Published by Mentor'
+                    : 'Saved Draft by Mentor'
+                  : language === 'ku'
+                  ? 'هێشتا ژ لایێ ڕابەری نەهاتیە تۆمارکرن'
+                  : language === 'ar'
+                  ? 'لم يتم الإدخال من المرشد بعد'
+                  : 'Not Entered by Mentor Yet'}
+              </span>
+            </div>
+
+            {/* Toolbar: Grade, Section, Student, Month, Save PDF, Print A4 */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-4 border-b border-[#E1E9FF]">
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'پۆل' : language === 'ar' ? 'الصف' : 'Grade'}
+                  </label>
+                  <select
+                    value={behGrade}
+                    onChange={(e) => {
+                      const nextGrade = e.target.value;
+                      const nextSections = schoolStructure[nextGrade] || ['Class A'];
+                      const nextSec = nextSections.includes(behSection)
+                        ? behSection
+                        : nextSections[0];
+                      setBehGrade(nextGrade);
+                      setBehSection(nextSec);
+                      const firstSt = students.find(
+                        (s) => s.grade === nextGrade && s.section === nextSec
+                      );
+                      if (firstSt) setBehStudentId(firstSt.id);
+                      setBehSaveMessage(null);
+                    }}
+                    className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                  >
+                    {gradeKeys.map((g) => (
+                      <option key={g} value={g}>
+                        {formatGradeLabel(g, language)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'هۆبە' : language === 'ar' ? 'الشعبة' : 'Section'}
+                  </label>
+                  <select
+                    value={behSection}
+                    onChange={(e) => {
+                      const nextSec = e.target.value;
+                      setBehSection(nextSec);
+                      const firstSt = students.find(
+                        (s) => s.grade === behGrade && s.section === nextSec
+                      );
+                      if (firstSt) setBehStudentId(firstSt.id);
+                      setBehSaveMessage(null);
+                    }}
+                    className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                  >
+                    {(schoolStructure[behGrade] || ['Class A', 'Class B', 'Class C']).map((sec) => (
+                      <option key={sec} value={sec}>
+                        {formatClassLabel(sec, language)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'قوتابی' : language === 'ar' ? 'الطالب' : 'Student'}
+                  </label>
+                  <select
+                    value={activeStudent?.id || ''}
+                    onChange={(e) => {
+                      setBehStudentId(e.target.value);
+                      setBehSaveMessage(null);
+                    }}
+                    className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5] min-w-[210px]"
+                  >
+                    {classStudents.map((st) => {
+                      const hasSaved = Boolean(
+                        behaviourReports[makeBehaviourReportKey(st.id, behMonthKey)]
+                      );
+                      return (
+                        <option key={st.id} value={st.id}>
+                          {hasSaved ? '✓ ' : ''}
+                          {st.name} ({st.rollNumber})
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'هەیڤ' : language === 'ar' ? 'الشهر' : 'Month'}
+                  </label>
+                  <select
+                    value={behMonthKey}
+                    onChange={(e) => {
+                      setBehMonthKey(e.target.value);
+                      setBehSaveMessage(null);
+                    }}
+                    className="bg-[#F0F8FA] border border-[#C8E5EC] rounded-xl px-3 py-2 text-xs font-black text-[#0087A5] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                  >
+                    {BEHAVIOUR_MONTHS.map((m) => {
+                      const hasSaved = activeStudent
+                        ? Boolean(
+                            behaviourReports[makeBehaviourReportKey(activeStudent.id, m.key)]
+                          )
+                        : false;
+                      return (
+                        <option key={m.key} value={m.key}>
+                          {hasSaved ? '✓ ' : ''}
+                          {language === 'ku'
+                            ? m.labelKu
+                            : language === 'ar'
+                            ? m.labelAr
+                            : m.labelEn}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  disabled={!activeStudent || behDownloadingPdf}
+                  onClick={handleDownloadBehaviourPdf}
+                  className="px-3.5 py-2 rounded-xl bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  {behDownloadingPdf ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Download className="w-3.5 h-3.5" />
+                  )}
+                  <span>
+                    {behDownloadingPdf
+                      ? language === 'ku'
+                        ? 'دروستکرنا PDF...'
+                        : language === 'ar'
+                        ? 'جاري إنشاء PDF...'
+                        : 'Generating PDF...'
+                      : language === 'ku'
+                      ? 'داگرتنا PDF'
+                      : language === 'ar'
+                      ? 'حفظ PDF'
+                      : 'Save PDF'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!activeStudent}
+                  onClick={() => printBehaviourReport('printable-behaviour')}
+                  className="px-3.5 py-2 rounded-xl bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#E1E9FF] text-xs font-bold text-[#1A1D4E] flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#0087A5]" />
+                  <span>{language === 'ku' ? 'چاپکرنا A4' : language === 'ar' ? 'طباعة A4' : 'Print A4'}</span>
+                </button>
+              </div>
+            </div>
+
+            {behSaveMessage && (
+              <div
+                className={`p-3 rounded-2xl text-xs font-bold flex items-center gap-2 border ${
+                  behSaveMessage.ok
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                }`}
+              >
+                {behSaveMessage.ok ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span>{behSaveMessage.text}</span>
+              </div>
+            )}
+
+            {activeStudent && currentReport ? (
+              <BehaviourReportCard
+                mode="view"
+                report={currentReport}
+                studentName={activeStudent.name}
+                gradeLabel={formatGradeLabel(activeStudent.grade, language)}
+                sectionLabel={formatClassLabel(activeStudent.section, language)}
+                schoolLogoUrl={schoolLogoUrl}
+                language={language}
+              />
+            ) : (
+              <div className="p-8 text-center text-xs text-[#6B70A6] bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                No students found in {behGrade} — {behSection}.
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </main>
   );
 };

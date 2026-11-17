@@ -5,6 +5,7 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { DailySubjectRecord } from '../data/teacherPortal';
+import type { MonthlyBehaviourReport } from '../data/behaviourReport';
 
 const DEFAULT_PROJECT_URL = 'https://knwkwzwjhepobqxpamkd.supabase.co';
 const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtud2t3endqaGVwb2JxeHBhbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MTM4NzAsImV4cCI6MjExMDM4OTg3MH0.UNZ8-ym7wth5BxUAcFmHeGvfjaqmv484dz8Dn14W52o';
@@ -462,3 +463,105 @@ export async function upsertAllDailyRecordsToSupabase(
     };
   }
 }
+
+export const BEHAVIOUR_REPORTS_TABLE = 'behaviour_reports';
+
+export interface SupabaseBehaviourReportRow {
+  id: string;
+  student_id: string;
+  month_key: string;
+  report: MonthlyBehaviourReport;
+  published?: boolean;
+  updated_by?: string | null;
+  updated_at?: string;
+}
+
+/**
+ * Fetch all monthly behaviour reports from Supabase `behaviour_reports` table
+ */
+export async function fetchBehaviourReportsFromSupabase(): Promise<{
+  ok: boolean;
+  reports: Record<string, MonthlyBehaviourReport>;
+  error?: string;
+}> {
+  if (!supabase) {
+    return { ok: false, reports: {}, error: 'Supabase client is not initialized.' };
+  }
+  try {
+    const reports: Record<string, MonthlyBehaviourReport> = {};
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from(BEHAVIOUR_REPORTS_TABLE)
+        .select('id, student_id, month_key, report, published, updated_at')
+        .range(from, from + pageSize - 1);
+
+      if (error) {
+        return { ok: false, reports, error: error.message };
+      }
+
+      if (!data || data.length === 0) break;
+
+      for (const row of data as SupabaseBehaviourReportRow[]) {
+        if (row.id && row.report && typeof row.report === 'object') {
+          reports[row.id] = {
+            ...row.report,
+            published: row.published ?? row.report.published ?? true,
+            updatedAt: row.updated_at || row.report.updatedAt || new Date().toISOString(),
+          };
+        }
+      }
+
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    return { ok: true, reports };
+  } catch (err: any) {
+    return {
+      ok: false,
+      reports: {},
+      error: err?.message || 'Failed to fetch behaviour reports from Supabase.',
+    };
+  }
+}
+
+/**
+ * Upsert a single student's monthly behaviour report into Supabase `behaviour_reports`
+ */
+export async function upsertBehaviourReportToSupabase(
+  report: MonthlyBehaviourReport,
+  updatedBy?: string
+): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) {
+    return { ok: false, error: 'Supabase client is not initialized.' };
+  }
+  try {
+    const row: SupabaseBehaviourReportRow = {
+      id: report.id,
+      student_id: report.studentId,
+      month_key: report.monthKey,
+      report,
+      published: report.published,
+      updated_by: updatedBy || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from(BEHAVIOUR_REPORTS_TABLE)
+      .upsert(row, { onConflict: 'id' });
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: true };
+  } catch (err: any) {
+    return {
+      ok: false,
+      error: err?.message || 'Failed to save behaviour report to Supabase.',
+    };
+  }
+}
+

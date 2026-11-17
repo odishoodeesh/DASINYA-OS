@@ -60,14 +60,18 @@ import {
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
+  BEHAVIOUR_REPORTS_TABLE,
   DAILY_RECORDS_TABLE,
+  SupabaseBehaviourReportRow,
   SupabaseDailyRecordRow,
+  fetchBehaviourReportsFromSupabase,
   fetchDailyRecordsFromSupabase,
   fetchStudentsFromSupabase,
   seedStudentsToSupabase,
   supabase,
   updateStudentClassInSupabase,
   upsertAllDailyRecordsToSupabase,
+  upsertBehaviourReportToSupabase,
   upsertDailyRecordToSupabase,
 } from './lib/supabase';
 import { IMPORTED_STUDENTS, StudentRecord, SubjectMark } from './data/importedStudents';
@@ -87,15 +91,16 @@ import {
 } from './data/examsSchedule';
 import {
   TeacherClassAssignment,
+  ClassMentorAssignment,
   authenticateTeacher,
+  getMentorAssignmentForTeacher,
+  isTeacherMentorOfClass,
   DailySubjectRecord,
   loadStoredDailyRecords,
   saveStoredDailyRecords,
   makeDailyRecordKey,
   getEffectiveDailyRecord,
   isGrade13,
-  calcGrade13GrandTotal,
-  calcGrade49GrandTotal100,
 } from './data/teacherPortal';
 import {
   BUS_DRIVER_ROUTES,
@@ -117,6 +122,17 @@ import { DriverRouteTrackerPage } from './components/DriverRouteTrackerPage';
 import { LiveBusMap } from './components/LiveBusMap';
 import { ExamsScheduleView } from './components/ExamsScheduleView';
 import { FoodMenuView } from './components/FoodMenuView';
+import { BehaviourReportCard } from './components/BehaviourReportCard';
+import { exportBehaviourReportPdf, printBehaviourReport } from './lib/behaviourPdf';
+import {
+  BEHAVIOUR_MONTHS,
+  MonthlyBehaviourReport,
+  createEmptyBehaviourReport,
+  getDefaultBehaviourMonthKey,
+  loadStoredBehaviourReports,
+  makeBehaviourReportKey,
+  saveStoredBehaviourReports,
+} from './data/behaviourReport';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -311,6 +327,7 @@ interface AuthenticatedStaff {
   assignedClasses?: TeacherClassAssignment[];
   assignedGrade?: string;
   assignedSection?: string;
+  mentorClass?: ClassMentorAssignment | null;
 }
 
 // Cafeteria 4-week menu is defined in ./data/foodMenu.ts and rendered via FoodMenuView
@@ -443,6 +460,57 @@ export default function App() {
   const [teacherSyncError, setTeacherSyncError] = useState<string>('');
   const [teacherLastDbSyncAt, setTeacherLastDbSyncAt] = useState<string | null>(null);
 
+  // Monthly Behaviour Reports (Supabase DB + localStorage cache)
+  const [behaviourReports, setBehaviourReports] = useState<Record<string, MonthlyBehaviourReport>>(() =>
+    loadStoredBehaviourReports()
+  );
+  const [selectedBehaviourMonthKey, setSelectedBehaviourMonthKey] = useState<string>(() =>
+    getDefaultBehaviourMonthKey()
+  );
+
+  // Mentor Behaviour Editor state (strictly accessible only by each class's assigned Mentor)
+  const [teacherPortalView, setTeacherPortalView] = useState<'marks' | 'behaviour'>('marks');
+  const [mentorBehMonthKey, setMentorBehMonthKey] = useState<string>(() =>
+    getDefaultBehaviourMonthKey()
+  );
+  const [mentorBehStudentId, setMentorBehStudentId] = useState<string>('');
+  const [mentorBehDraft, setMentorBehDraft] = useState<MonthlyBehaviourReport | null>(null);
+  const [mentorBehSaving, setMentorBehSaving] = useState<boolean>(false);
+  const [mentorBehDownloadingPdf, setMentorBehDownloadingPdf] = useState<boolean>(false);
+  const [mentorBehMessage, setMentorBehMessage] = useState<{ ok: boolean; text: string } | null>(
+    null
+  );
+
+  const handleSaveBehaviourReport = async (
+    report: MonthlyBehaviourReport
+  ): Promise<{ ok: boolean; error?: string }> => {
+    const targetStudent = students.find((s) => s.id === report.studentId);
+    if (
+      !authStaff ||
+      authStaff.role !== 'teacher' ||
+      !authStaff.mentorClass ||
+      !targetStudent ||
+      !isTeacherMentorOfClass(authStaff.username, targetStudent.grade, targetStudent.section)
+    ) {
+      return {
+        ok: false,
+        error:
+          language === 'ku'
+            ? 'بتنێ ڕابەرێ پۆلێ دشێت راپۆرتا رەوشتی تۆمار بکەت'
+            : language === 'ar'
+            ? 'مرشد الصف فقط يمكنه إدخال أو تعديل تقارير السلوك لهذا الصف'
+            : 'Only the designated Class Mentor can insert or edit behaviour reports for this class.',
+      };
+    }
+
+    setBehaviourReports((prev) => {
+      const next = { ...prev, [report.id]: report };
+      saveStoredBehaviourReports(next);
+      return next;
+    });
+    return upsertBehaviourReportToSupabase(report, authStaff.email || authStaff.name);
+  };
+
   // Form input states
   const [loginUsername, setLoginUsername] = useState<string>('');
   const [loginPassword, setLoginPassword] = useState<string>('');
@@ -466,6 +534,7 @@ export default function App() {
   // Category filter for marksheet
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
+  const [behaviourPdfError, setBehaviourPdfError] = useState<string>('');
 
   // Administrative / Teacher View State
   const officialGrades = useMemo(() => Object.keys(SCHOOL_STRUCTURE), []);
@@ -474,8 +543,7 @@ export default function App() {
   const [staffStudentId, setStaffStudentId] = useState<string>('');
   const [staffSearchQuery, setStaffSearchQuery] = useState<string>('');
 
-  // Sub-tabs for Teacher / Staff
-  const [teacherTab, setTeacherTab] = useState<'daily_record' | 'roster' | 'timetable' | 'exams'>('daily_record');
+  // Sub-tabs for Staff
   const [staffTab, setStaffTab] = useState<'students' | 'timetables' | 'food_menu'>('students');
 
   // Quick modal for inspecting student marksheet in Staff/Teacher/Admin
@@ -558,6 +626,17 @@ export default function App() {
       }
     });
 
+    fetchBehaviourReportsFromSupabase().then((res) => {
+      if (!active || !res.ok) return;
+      if (Object.keys(res.reports).length > 0) {
+        setBehaviourReports((prev) => {
+          const merged = { ...prev, ...res.reports };
+          saveStoredBehaviourReports(merged);
+          return merged;
+        });
+      }
+    });
+
     const sb = supabase;
     if (!sb) {
       return () => {
@@ -598,6 +677,39 @@ export default function App() {
       )
       .on(
         'postgres_changes',
+        { event: '*', schema: 'public', table: BEHAVIOUR_REPORTS_TABLE },
+        (payload) => {
+          if (!active) return;
+          if (payload.eventType === 'DELETE') {
+            const oldId = (payload.old as Partial<SupabaseBehaviourReportRow> | undefined)?.id;
+            if (!oldId) return;
+            setBehaviourReports((prev) => {
+              if (!(oldId in prev)) return prev;
+              const copy = { ...prev };
+              delete copy[oldId];
+              saveStoredBehaviourReports(copy);
+              return copy;
+            });
+            return;
+          }
+          const row = payload.new as Partial<SupabaseBehaviourReportRow> | undefined;
+          if (row?.id && row.report && typeof row.report === 'object') {
+            const repKey = row.id;
+            const repVal: MonthlyBehaviourReport = {
+              ...row.report,
+              published: row.published ?? row.report.published ?? true,
+              updatedAt: row.updated_at || row.report.updatedAt || new Date().toISOString(),
+            };
+            setBehaviourReports((prev) => {
+              const next = { ...prev, [repKey]: repVal };
+              saveStoredBehaviourReports(next);
+              return next;
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'students' },
         (payload) => {
           if (!active) return;
@@ -624,10 +736,10 @@ export default function App() {
     };
   }, []);
 
-  // Scroll to top on portal tab, active student, teacher tab, or authentication changes
+  // Scroll to top on portal tab, active student, or authentication changes
   useEffect(() => {
     scrollToTop(true);
-  }, [activePortalTab, teacherTab, selectedChildId, isPortalAuthenticated]);
+  }, [activePortalTab, selectedChildId, isPortalAuthenticated]);
 
   // Global listener: WHEN CLICKING ON ANY BUTTON, USER SHOULD SEE THE TOP OF THE PAGE, NOT BOTTOM.
   useEffect(() => {
@@ -737,6 +849,7 @@ export default function App() {
           section: 'Class A',
           subjects: ['Kurdish'],
         };
+        const mentorClass = getMentorAssignmentForTeacher(teacherAcc.id);
         setAuthGuardian(null);
         setAuthStaff({
           role: 'teacher',
@@ -747,11 +860,22 @@ export default function App() {
           assignedClasses: teacherAcc.assignedClasses,
           assignedGrade: firstAssignment.grade,
           assignedSection: firstAssignment.section,
+          mentorClass,
         });
+        setTeacherPortalView('marks');
+        setMentorBehDraft(null);
+        setMentorBehMessage(null);
+        if (mentorClass) {
+          const firstMentorStudent = students.find(
+            (s) => s.grade === mentorClass.grade && s.section === mentorClass.section
+          );
+          setMentorBehStudentId(firstMentorStudent?.id || '');
+        } else {
+          setMentorBehStudentId('');
+        }
         setStaffGrade(firstAssignment.grade);
         setStaffClass(firstAssignment.section);
-        setTeacherSubject(firstAssignment.subjects[0] || 'Kurdish');
-        setTeacherTab('daily_record');
+        setTeacherSubject(firstAssignment.subjects[0] || '');
         setStaffSearchQuery('');
         setLoginError('');
         setLoginUsername('');
@@ -815,9 +939,12 @@ export default function App() {
     setAuthGuardian(null);
     setAuthStaff(null);
     setAuthDriver(null);
+    setTeacherPortalView('marks');
+    setMentorBehDraft(null);
+    setMentorBehMessage(null);
+    setMentorBehStudentId('');
     setSelectedChildId('');
     setActivePortalTab(null);
-    setTeacherTab('daily_record');
     setModalStudent(null);
     setLoginUsername('');
     setLoginPassword('');
@@ -827,7 +954,6 @@ export default function App() {
   // Return to portal home view
   const handleSwitchPortal = () => {
     if (selectedPortal === 'teacher' && authStaff) {
-      setTeacherTab('daily_record');
       setModalStudent(null);
       return;
     }
@@ -835,8 +961,12 @@ export default function App() {
   };
 
   // Teacher marks entry handler (updates state + localStorage + debounced Supabase database upsert)
-  const handleTeacherRecordChange = (studentId: string, updated: DailySubjectRecord) => {
-    const subjectForKey = teacherSubject;
+  const handleTeacherRecordChange = (
+    studentId: string,
+    updated: DailySubjectRecord,
+    subjectOverride?: string
+  ) => {
+    const subjectForKey = subjectOverride || teacherSubject;
     const key = makeDailyRecordKey(studentId, subjectForKey);
     setDailyRecords((prev) => {
       const next = { ...prev, [key]: updated };
@@ -1051,6 +1181,26 @@ export default function App() {
       pdf.save(`${studentNameClean}_Term1_${filenameSuffix}.pdf`);
     } catch (err) {
       console.error('Error generating PDF:', err);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
+  const handleDownloadBehaviourReportPdf = async () => {
+    if (!currentStudent || isGeneratingPdf) return;
+    setBehaviourPdfError('');
+    setIsGeneratingPdf(true);
+    try {
+      await exportBehaviourReportPdf({
+        elementId: 'printable-behaviour',
+        studentName: currentStudent.name,
+        monthKey: selectedBehaviourMonthKey,
+      });
+    } catch (err) {
+      console.error('Error exporting behaviour PDF:', err);
+      setBehaviourPdfError(
+        err instanceof Error ? err.message : 'Could not generate Behaviour Report PDF.'
+      );
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -2350,34 +2500,165 @@ export default function App() {
               )}
 
               {/* ---------------------------------------------------- */}
-              {/* SECTION 5: BEHAVIOUR REPORT                          */}
+              {/* SECTION 5: MONTHLY BEHAVIOUR REPORT                  */}
               {/* ---------------------------------------------------- */}
-              {activePortalTab === 'behaviour' && (
-                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-6">
+              {activePortalTab === 'behaviour' && (() => {
+                const selectedReportKey = makeBehaviourReportKey(
+                  currentStudent.id,
+                  selectedBehaviourMonthKey
+                );
+                const monthlyReport = behaviourReports[selectedReportKey];
+                const isPublishedMonthly = Boolean(monthlyReport && monthlyReport.published);
+                const publishedMonthsForStudent = BEHAVIOUR_MONTHS.filter((m) => {
+                  const rep = behaviourReports[makeBehaviourReportKey(currentStudent.id, m.key)];
+                  return Boolean(rep && rep.published);
+                });
+
+                return (
+                <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-6">
                   {/* Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3 print:hidden">
                     <div className="flex items-center gap-3.5">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#BB8FFF] to-[#FF7F2A] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(187,143,255,0.3)] shrink-0">
                         <Heart className="w-6 h-6" />
                       </div>
                       <div>
-                        <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">{t.tabBehaviourReport}</h3>
+                        <h3 className="text-base sm:text-lg font-bold text-[#1A1D4E]">
+                          {language === 'ku'
+                            ? 'راپۆرتا هەیڤانە یا سلوک و رەوشتی'
+                            : language === 'ar'
+                            ? 'تقرير السلوك الشهري'
+                            : 'Monthly Behaviour Report'}
+                        </h3>
                         <p className="text-xs text-[#6B70A6]">
-                          {language === 'ku' 
-                            ? 'راپۆرتا فەرمی یا سلوک، رەوشت و ئامادەبوونا قوتابی' 
-                            : language === 'ar' 
-                            ? 'سجل السلوك والمواظبة والانضباط المدرسي الرسمي' 
-                            : 'Official Student Conduct, Discipline & Attendance Record'}
+                          {language === 'ku'
+                            ? 'کارتا فەرمی یا هەیڤانە بۆ سلوک، رەوشت و ئامادەبوونا قوتابی'
+                            : language === 'ar'
+                            ? 'بطاقة التقرير الشهري للسلوك والانضباط والمواد الدراسية'
+                            : 'Official Monthly Student Conduct, Learning & Incidents Report'}
                         </p>
                       </div>
                     </div>
-                    <span className="self-start sm:self-center px-3.5 py-1 bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] font-mono text-xs rounded-xl font-bold">
-                      {currentStudent.rollNumber}
-                    </span>
+
+                    <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+                      {isPublishedMonthly && (
+                        <>
+                          <button
+                            type="button"
+                            disabled={isGeneratingPdf}
+                            onClick={handleDownloadBehaviourReportPdf}
+                            className="px-3.5 py-2 rounded-xl bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                          >
+                            {isGeneratingPdf ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Download className="w-3.5 h-3.5" />
+                            )}
+                            <span>
+                              {isGeneratingPdf
+                                ? language === 'ku'
+                                  ? 'دروستکرنا PDF...'
+                                  : language === 'ar'
+                                  ? 'جاري إنشاء PDF...'
+                                  : 'Generating PDF...'
+                                : language === 'ku'
+                                ? 'داگرتنا PDF'
+                                : language === 'ar'
+                                ? 'حفظ PDF'
+                                : 'Save PDF'}
+                            </span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => printBehaviourReport('printable-behaviour')}
+                            className="px-3.5 py-2 rounded-xl bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#E1E9FF] text-[#1A1D4E] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-[#0087A5]" />
+                            <span>
+                              {language === 'ku'
+                                ? 'چاپکرنا A4'
+                                : language === 'ar'
+                                ? 'طباعة A4'
+                                : 'Print A4'}
+                            </span>
+                          </button>
+                        </>
+                      )}
+                      <span className="px-3.5 py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] text-[#454A87] font-mono text-xs rounded-xl font-bold">
+                        {currentStudent.rollNumber}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Real uploaded behaviour data check */}
-                  {currentStudent.behaviourReport?.uploaded ? (
+                  {behaviourPdfError && (
+                    <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2 print:hidden">
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span>{behaviourPdfError}</span>
+                    </div>
+                  )}
+
+                  {/* Monthly Selector Strip */}
+                  <div className="space-y-2 print:hidden">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B70A6]">
+                        {language === 'ku' ? 'هەیڤێ هەلبژێرە' : language === 'ar' ? 'اختر الشهر' : 'Select Month'}
+                      </span>
+                      <span className="text-[11px] font-mono font-bold text-[#00A887]">
+                        {publishedMonthsForStudent.length}{' '}
+                        {language === 'ku' ? 'راپۆرت بەردەستن' : language === 'ar' ? 'تقارير متاحة' : 'Published'}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {BEHAVIOUR_MONTHS.map((m) => {
+                        const rep = behaviourReports[makeBehaviourReportKey(currentStudent.id, m.key)];
+                        const hasPublished = Boolean(rep && rep.published);
+                        const isSelected = selectedBehaviourMonthKey === m.key;
+                        return (
+                          <button
+                            key={m.key}
+                            type="button"
+                            onClick={() => setSelectedBehaviourMonthKey(m.key)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                              isSelected
+                                ? 'bg-[#0087A5] text-white border-[#0087A5] shadow-xs'
+                                : hasPublished
+                                ? 'bg-[#E6FAF6] text-[#006F59] border-[#B6EADF] hover:bg-[#D3F5EE]'
+                                : 'bg-[#F5F6FF] text-[#6B70A6] border-[#E1E9FF] hover:bg-[#E1E9FF]/60'
+                            }`}
+                          >
+                            {hasPublished && (
+                              <span
+                                className={`w-2 h-2 rounded-full ${
+                                  isSelected ? 'bg-white' : 'bg-[#00A887]'
+                                }`}
+                              />
+                            )}
+                            <span>
+                              {language === 'ku'
+                                ? m.labelKu
+                                : language === 'ar'
+                                ? m.labelAr
+                                : m.labelEn}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Full A4 Monthly Report Card when published */}
+                  {isPublishedMonthly && monthlyReport ? (
+                    <BehaviourReportCard
+                      mode="view"
+                      report={monthlyReport}
+                      studentName={currentStudent.name}
+                      gradeLabel={formatGradeLabel(currentStudent.grade, language)}
+                      sectionLabel={formatClassLabel(currentStudent.section, language)}
+                      schoolLogoUrl={SCHOOL_LOGO_URL}
+                      language={language}
+                    />
+                  ) : currentStudent.behaviourReport?.uploaded ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {currentStudent.behaviourReport.conductStanding && (
@@ -2412,7 +2693,6 @@ export default function App() {
                       )}
                     </div>
                   ) : (
-                    /* Clean authentic state when no behaviour report has been uploaded yet */
                     <div className="space-y-6">
                       <div className="p-8 rounded-3xl border-2 border-dashed border-[#E1E9FF] bg-[#F5F6FF]/60 text-center flex flex-col items-center justify-center space-y-3">
                         <div className="w-14 h-14 rounded-2xl bg-[#E1E9FF] text-[#0087A5] flex items-center justify-center shadow-xs">
@@ -2420,26 +2700,25 @@ export default function App() {
                         </div>
                         <div className="space-y-1.5 max-w-lg">
                           <span className="inline-block px-3 py-1 rounded-full bg-[#FFF2E8] text-[#FF6D00] text-[10px] font-bold uppercase tracking-wider">
-                            {language === 'ku' ? 'هێشتا نەهاتیە بارکرن' : language === 'ar' ? 'لم يتم الرفع بعد' : 'Awaiting Official Upload'}
+                            {language === 'ku' ? 'هێشتا نەهاتیە بارکرن' : language === 'ar' ? 'لم يتم الرفع بعد' : 'Awaiting Monthly Upload'}
                           </span>
                           <h4 className="text-base font-bold text-[#1A1D4E] pt-1">
-                            {language === 'ku' 
-                              ? 'چ راپۆرتێن سلوکی بۆ ڤی قوتابی نەهاتینە بارکرن' 
-                              : language === 'ar' 
-                              ? 'لا يوجد تقرير سلوك مرفوع لهذا الطالب حالياً' 
-                              : 'No Official Behaviour Report Uploaded Yet'}
+                            {language === 'ku'
+                              ? 'چ راپۆرتێن سلوکی بۆ ڤێ هەیڤێ نەهاتینە بارکرن'
+                              : language === 'ar'
+                              ? 'لا يوجد تقرير سلوك مرفوع لهذا الشهر حالياً'
+                              : 'No Behaviour Report Published for This Month Yet'}
                           </h4>
                           <p className="text-xs text-[#6B70A6] leading-relaxed">
-                            {language === 'ku' 
-                              ? 'راپۆرتا سلوکی، ئامادەبوون و رەوشتێ قوتابی دێ ل ڤێرێ دەربکەڤیت پشتی کو ژ لایێ کارگێریا قوتابخانێ و چاڤدێرێ پەروەردەیی ڤە بهێتە پەسەندکرن و بارکرن.' 
-                              : language === 'ar' 
-                              ? 'سيتم عرض تقرير السلوك والمواظبة والملاحظات التربوية المعتمدة هنا مباشرة فور اعتمادها ورفعها من إدارة المدرسة.' 
-                              : 'Official student conduct records, counselor evaluations, and attendance summaries will be published here directly once officially approved and uploaded by the school administration.'}
+                            {language === 'ku'
+                              ? 'راپۆرتا سلوکی یا هەیڤانە دێ ل ڤێرێ دەربکەڤیت پشتی کو ژ لایێ کارگێریا قوتابخانێ و چاڤدێرێ پەروەردەیی ڤە بهێتە پەسەندکرن و بارکرن.'
+                              : language === 'ar'
+                              ? 'سيتم عرض بطاقة تقرير السلوك الشهري هنا مباشرة فور اعتمادها ورفعها من إدارة المدرسة والمرشدة الاجتماعية.'
+                              : 'Once the school social worker and administration publish this month’s behaviour card, the full A4 report will appear here.'}
                           </p>
                         </div>
                       </div>
 
-                      {/* Authentic Student Record Details */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div className="p-3.5 bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
                           <span className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">{t.studentName}</span>
@@ -2468,7 +2747,8 @@ export default function App() {
                     </div>
                   )}
                 </div>
-              )}
+                );
+              })()}
 
               {/* ---------------------------------------------------- */}
               {/* SECTION 6: ACADEMIC CALENDAR                         */}
@@ -3044,15 +3324,117 @@ export default function App() {
       )}
 
       {/* ======================================================== */}
-      {/* VIEW 3: TEACHER PORTAL (AUTHENTICATED, CLASS-LOCKED)     */}
+      {/* VIEW 3: TEACHER PORTAL (ASSIGNED CLASSES & SUBJECT MARKS */}
+      {/* + BEHAVIOUR REPORT ACCESS STRICTLY FOR CLASS MENTORS)    */}
       {/* ======================================================== */}
       {selectedPortal === 'teacher' && isPortalAuthenticated && authStaff && (() => {
         const teacherAssignments = authStaff.assignedClasses || [];
+        const mentorClass = authStaff.mentorClass || null;
+        const activeView: 'marks' | 'behaviour' =
+          mentorClass && teacherPortalView === 'behaviour' ? 'behaviour' : 'marks';
+
         const activeAssignment =
           teacherAssignments.find(
             (a) => a.grade === staffGrade && a.section === staffClass
           ) || teacherAssignments[0];
+
+        const scopedGrade = activeAssignment?.grade || staffGrade;
+        const scopedClass = activeAssignment?.section || staffClass;
         const allowedSubjects = activeAssignment?.subjects || [];
+        const scopedSubject = allowedSubjects.includes(teacherSubject)
+          ? teacherSubject
+          : allowedSubjects[0] || '';
+
+        const scopedClassStudents = students.filter(
+          (s) => s.grade === scopedGrade && s.section === scopedClass
+        );
+        const scopedFilteredStudents = !staffSearchQuery.trim()
+          ? scopedClassStudents
+          : scopedClassStudents.filter((s) => {
+              const q = staffSearchQuery.toLowerCase();
+              return (
+                s.name.toLowerCase().includes(q) ||
+                s.id.toLowerCase().includes(q) ||
+                s.rollNumber.toLowerCase().includes(q)
+              );
+            });
+
+        // Mentored Class Students (only populated when teacher is a designated Class Mentor)
+        const mentorStudents = mentorClass
+          ? students.filter(
+              (s) => s.grade === mentorClass.grade && s.section === mentorClass.section
+            )
+          : [];
+        const activeMentorStudent =
+          mentorStudents.find((s) => s.id === mentorBehStudentId) || mentorStudents[0] || null;
+        const activeMentorReportKey = activeMentorStudent
+          ? makeBehaviourReportKey(activeMentorStudent.id, mentorBehMonthKey)
+          : '';
+        const storedMentorReport = activeMentorStudent
+          ? behaviourReports[activeMentorReportKey] ||
+            createEmptyBehaviourReport(
+              activeMentorStudent.id,
+              mentorBehMonthKey,
+              authStaff.name
+            )
+          : null;
+        const currentMentorReport =
+          mentorBehDraft && activeMentorStudent && mentorBehDraft.id === activeMentorReportKey
+            ? mentorBehDraft
+            : storedMentorReport;
+
+        const handleMentorSaveBehaviourReport = async () => {
+          if (!currentMentorReport || !mentorClass) return;
+          setMentorBehSaving(true);
+          setMentorBehMessage(null);
+          const payload: MonthlyBehaviourReport = {
+            ...currentMentorReport,
+            supervisor: currentMentorReport.supervisor || authStaff.name,
+            updatedAt: new Date().toISOString(),
+          };
+          const res = await handleSaveBehaviourReport(payload);
+          setMentorBehSaving(false);
+          if (res.ok) {
+            setMentorBehDraft(null);
+            setMentorBehMessage({
+              ok: true,
+              text:
+                language === 'ku'
+                  ? 'راپۆرتا هەیڤانە یا رەوشتی ل ناڤ داتابەیسێ هاتە پاشەکەفتکرن'
+                  : language === 'ar'
+                  ? 'تم حفظ تقرير السلوك الشهري في قاعدة البيانات بنجاح'
+                  : 'Monthly Behaviour Report Saved to Database',
+            });
+          } else {
+            setMentorBehMessage({
+              ok: false,
+              text: res.error || 'Could not save behaviour report to database.',
+            });
+          }
+        };
+
+        const handleMentorDownloadBehaviourPdf = async () => {
+          if (!activeMentorStudent || mentorBehDownloadingPdf) return;
+          setMentorBehDownloadingPdf(true);
+          setMentorBehMessage(null);
+          try {
+            await exportBehaviourReportPdf({
+              elementId: 'printable-behaviour',
+              studentName: activeMentorStudent.name,
+              monthKey: mentorBehMonthKey,
+            });
+          } catch (err) {
+            setMentorBehMessage({
+              ok: false,
+              text:
+                err instanceof Error
+                  ? err.message
+                  : 'Could not generate Behaviour Report PDF.',
+            });
+          } finally {
+            setMentorBehDownloadingPdf(false);
+          }
+        };
 
         return (
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
@@ -3067,26 +3449,41 @@ export default function App() {
                   <span className="text-[10px] font-mono uppercase tracking-wider bg-white/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full font-bold text-white">
                     {t.portalTeacher}
                   </span>
-                  {authStaff.subjectLabel && (
+                  {scopedSubject && (
                     <span className="text-[10px] font-mono bg-white/20 px-2.5 py-0.5 rounded-full font-bold text-white">
-                      {authStaff.subjectLabel}
+                      {getTranslatedSubject(scopedSubject, language)}
                     </span>
                   )}
                   <span className="text-[10px] font-mono bg-white/20 px-2.5 py-0.5 rounded-full font-bold text-white flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    {formatGradeLabel(staffGrade, language)} • {formatClassLabel(staffClass, language)}
+                    {formatGradeLabel(scopedGrade, language)} • {formatClassLabel(scopedClass, language)}
                   </span>
+                  {mentorClass && (
+                    <span className="text-[10px] font-mono bg-[#1A1D4E] px-2.5 py-0.5 rounded-full font-black text-white flex items-center gap-1 shadow-xs">
+                      <Heart className="w-3 h-3 text-[#FF7F2A]" />
+                      {language === 'ku'
+                        ? `ڕابەرێ پۆلا ${mentorClass.classCode}`
+                        : language === 'ar'
+                        ? `مرشد الصف ${mentorClass.classCode}`
+                        : `Class Mentor: ${mentorClass.classCode} (${mentorClass.mentorShortName})`}
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black mt-1">
                   {authStaff.name}
                 </h2>
                 <p className="text-xs text-white/90">
-                  {authStaff.email ? `${authStaff.email} • ` : ''}
-                  {language === 'ku'
-                    ? `ساڵا خوێندنێ ٢٠٢٦–٢٠٢٧ (${teacherAssignments.length} پۆلێن تۆمارکری)`
+                  {mentorClass
+                    ? language === 'ku'
+                      ? `نمرەیێن پۆلێن تە + تۆمارکرنا رەوشتی بتنێ بۆ پۆلا ${mentorClass.classCode}`
+                      : language === 'ar'
+                      ? `درجات صفوفك المخصصة + إدخال تقارير السلوك للصف ${mentorClass.classCode} فقط`
+                      : `Assigned Subject Marks + Class Mentor Behaviour Entry (${mentorClass.classCode} Only)`
+                    : language === 'ku'
+                    ? `بتنێ پۆل و بابەتێن تە یێن تۆمارکری (${teacherAssignments.length})`
                     : language === 'ar'
-                    ? `السنة الدراسية ٢٠٢٦–٢٠٢٧ (${teacherAssignments.length} صفوف مخصصة)`
-                    : `Academic Year 2026–2027 • ${teacherAssignments.length} Assigned Class${teacherAssignments.length === 1 ? '' : 'es'}`}
+                    ? `فقط صفوفك وموادك المخصصة (${teacherAssignments.length})`
+                    : `Assigned Classes & Subject Marks Only • ${teacherAssignments.length} Class${teacherAssignments.length === 1 ? '' : 'es'}`}
                 </p>
               </div>
             </div>
@@ -3102,18 +3499,63 @@ export default function App() {
             </div>
           </div>
 
-          {/* Teacher Controls: Scoped Assigned Classes Selector & Tabs */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white border border-[#E1E9FF] p-4 rounded-2xl shadow-xs">
-            <div className="flex flex-wrap items-center gap-3">
-              {teacherAssignments.length > 1 ? (
-                <div className="flex items-center gap-2.5 bg-[#F0F8FA] border border-[#C8E5EC] px-3 py-1.5 rounded-xl">
-                  <Lock className="w-4 h-4 text-[#0087A5] shrink-0" />
+          {/* Mode Switcher Bar (ONLY visible if this Teacher is a designated Class Mentor) */}
+          {mentorClass && (
+            <div className="flex flex-wrap items-center gap-2.5 print:hidden">
+              <button
+                type="button"
+                onClick={() => setTeacherPortalView('marks')}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer border ${
+                  activeView === 'marks'
+                    ? 'bg-[#0087A5] text-white border-[#0087A5] shadow-sm'
+                    : 'bg-white text-[#1A1D4E] border-[#E1E9FF] hover:bg-[#F5F6FF]'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>
+                  {language === 'ku'
+                    ? 'نمرەیێن بابەتان'
+                    : language === 'ar'
+                    ? 'إدخال درجات المواد'
+                    : 'Subject Marks'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherPortalView('behaviour')}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer border ${
+                  activeView === 'behaviour'
+                    ? 'bg-[#5B35A8] text-white border-[#5B35A8] shadow-sm'
+                    : 'bg-white text-[#5B35A8] border-[#D8CEFA] hover:bg-[#F3EEFF]'
+                }`}
+              >
+                <Heart className="w-4 h-4" />
+                <span>
+                  {language === 'ku'
+                    ? `راپۆرتا رەوشتی — پۆلا ${mentorClass.classCode}`
+                    : language === 'ar'
+                    ? `تقرير السلوك الشهري — صف ${mentorClass.classCode}`
+                    : `Mentor Behaviour Report (${mentorClass.classCode})`}
+                </span>
+              </button>
+            </div>
+          )}
+
+          {/* MODE A: Assigned Classes + Assigned Subjects Marks View */}
+          {activeView === 'marks' && (
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
+            {/* Toolbar: Assigned Class, Assigned Subject, Search, Save Marks */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 pb-4 border-b border-[#E1E9FF]">
+              <div className="flex flex-wrap items-end gap-3">
+                {/* Assigned Class Selector */}
+                {teacherAssignments.length > 1 ? (
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#76A5B8]">
-                      {language === 'ku' ? 'پۆلێن تە یێن دیارکری' : language === 'ar' ? 'الصفوف المخصصة لك' : 'Your Assigned Classes'}
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                      {language === 'ku' ? 'پۆلێن تە' : language === 'ar' ? 'صفوفك المخصصة' : 'Your Classes'}
                     </label>
                     <select
-                      value={`${staffGrade}|${staffClass}`}
+                      value={`${scopedGrade}|${scopedClass}`}
                       onChange={(e) => {
                         const [nextGrade, nextSection] = e.target.value.split('|');
                         setStaffGrade(nextGrade);
@@ -3122,327 +3564,380 @@ export default function App() {
                           (a) => a.grade === nextGrade && a.section === nextSection
                         );
                         if (matchAssign && !matchAssign.subjects.includes(teacherSubject)) {
-                          setTeacherSubject(matchAssign.subjects[0] || teacherSubject);
+                          setTeacherSubject(matchAssign.subjects[0] || '');
                         }
                         setTeacherSavedNotice(false);
                       }}
-                      className="bg-transparent text-xs font-black text-[#0D2D35] focus:outline-none cursor-pointer pr-2"
+                      className="bg-[#F0F8FA] border border-[#C8E5EC] rounded-xl px-3.5 py-2 text-xs font-black text-[#0D2D35] focus:outline-none focus:ring-2 focus:ring-[#0087A5] min-w-[200px]"
                     >
                       {teacherAssignments.map((assign) => (
                         <option key={`${assign.grade}|${assign.section}`} value={`${assign.grade}|${assign.section}`}>
-                          {formatGradeLabel(assign.grade, language)} — {formatClassLabel(assign.section, language)} ({assign.subjects.join(', ')})
+                          {formatGradeLabel(assign.grade, language)} — {formatClassLabel(assign.section, language)}
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2.5 bg-[#F0F8FA] border border-[#C8E5EC] px-3.5 py-2 rounded-xl">
-                  <Lock className="w-4 h-4 text-[#0087A5] shrink-0" />
+                ) : (
                   <div>
-                    <span className="block text-[10px] font-bold uppercase tracking-wider text-[#76A5B8]">
-                      {language === 'ku' ? 'پۆلا دیارکری' : language === 'ar' ? 'الصف المخصص للمعلم' : 'Assigned Class'}
-                    </span>
-                    <span className="text-xs font-black text-[#0D2D35]">
-                      {formatGradeLabel(staffGrade, language)} — {formatClassLabel(staffClass, language)} ({staffAvailableStudents.length}{' '}
-                      {language === 'ku' ? 'قوتابی' : language === 'ar' ? 'طالب' : 'Students'})
-                    </span>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                      {language === 'ku' ? 'پۆلا تە' : language === 'ar' ? 'صفك المخصص' : 'Assigned Class'}
+                    </label>
+                    <div className="inline-flex items-center gap-2 bg-[#F0F8FA] border border-[#C8E5EC] rounded-xl px-3.5 py-2 text-xs font-black text-[#0D2D35]">
+                      <Lock className="w-3.5 h-3.5 text-[#0087A5]" />
+                      <span>
+                        {formatGradeLabel(scopedGrade, language)} — {formatClassLabel(scopedClass, language)} ({scopedClassStudents.length})
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
 
-            <div className="flex flex-wrap items-center gap-1.5 bg-[#F5F6FF] p-1 rounded-xl border border-[#E1E9FF]">
-              <button
-                onClick={() => setTeacherTab('daily_record')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'daily_record' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
-                }`}
-              >
-                {language === 'ku' ? 'تۆمارا رۆژانە (نمرە دانان)' : language === 'ar' ? 'سجل المتابعة اليومية (إدخال الدرجات)' : 'Daily Student Record (Insert Marks)'}
-              </button>
-              <button
-                onClick={() => setTeacherTab('roster')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'roster' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
-                }`}
-              >
-                {language === 'ku' ? 'لیستا قوتابیان و کەشف' : language === 'ar' ? 'قائمة الطلاب وكشف الدرجات' : 'Class Roster & Marksheets'}
-              </button>
-              <button
-                onClick={() => setTeacherTab('timetable')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'timetable' ? 'bg-[#0087A5] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
-                }`}
-              >
-                {language === 'ku' ? 'خشتەیێ وانان' : language === 'ar' ? 'الجدول الدراسي' : 'Class Timetable'}
-              </button>
-              <button
-                onClick={() => setTeacherTab('exams')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  teacherTab === 'exams' ? 'bg-[#1A1D4E] text-white shadow-xs' : 'text-[#454A87] hover:text-[#1A1D4E]'
-                }`}
-              >
-                {language === 'ku' ? 'خشتەیێ ئەزموونان' : language === 'ar' ? 'جدول الامتحانات' : 'Exams Schedule'}
-              </button>
-            </div>
-          </div>
-
-          {/* Teacher Tab 1: Daily Student Record Mark Entry */}
-          {teacherTab === 'daily_record' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-6 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
-              {/* Toolbar: Subject Selector, Student Search, Save Marks Button */}
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 pb-4 border-b border-[#E1E9FF]">
-                <div className="flex flex-wrap items-end gap-3">
+                {/* Assigned Subject Selector (strictly assigned subjects only) */}
+                {allowedSubjects.length > 1 ? (
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
                       {t.subject}
                     </label>
                     <select
-                      value={teacherSubject}
+                      value={scopedSubject}
                       onChange={(e) => {
                         setTeacherSubject(e.target.value);
                         setTeacherSavedNotice(false);
                       }}
                       className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3.5 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#0087A5] min-w-[170px]"
                     >
-                      {(allowedSubjects.length > 0
-                        ? allowedSubjects
-                        : (GRADE_CURRICULUM[staffGrade] || OFFICIAL_SUBJECTS).map((s) => s.name)
-                      ).map((subName) => (
+                      {allowedSubjects.map((subName) => (
                         <option key={subName} value={subName}>
                           {getTranslatedSubject(subName, language)}
                         </option>
                       ))}
                     </select>
                   </div>
-
+                ) : (
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
-                      {language === 'ku' ? 'گەڕان ل قوتابی' : language === 'ar' ? 'بحث عن طالب' : 'Search Student'}
+                      {t.subject}
                     </label>
-                    <div className="relative">
-                      <Search className={`w-3.5 h-3.5 text-[#8C90C2] absolute top-2.5 ${isRtl ? 'right-3' : 'left-3'}`} />
-                      <input
-                        type="text"
-                        value={staffSearchQuery}
-                        onChange={(e) => setStaffSearchQuery(e.target.value)}
-                        placeholder={language === 'ku' ? 'ناڤ یان کۆد...' : language === 'ar' ? 'الاسم أو الرقم...' : 'Name or ID...'}
-                        className={`py-2 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5] ${
-                          isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'
-                        }`}
-                      />
+                    <div className="inline-flex items-center gap-2 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3.5 py-2 text-xs font-black text-[#1A1D4E]">
+                      <span>{scopedSubject ? getTranslatedSubject(scopedSubject, language) : '—'}</span>
                     </div>
+                  </div>
+                )}
+
+                {/* Student Search within assigned class */}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'گەڕان ل قوتابی' : language === 'ar' ? 'بحث عن طالب' : 'Search Student'}
+                  </label>
+                  <div className="relative">
+                    <Search className={`w-3.5 h-3.5 text-[#8C90C2] absolute top-2.5 ${isRtl ? 'right-3' : 'left-3'}`} />
+                    <input
+                      type="text"
+                      value={staffSearchQuery}
+                      onChange={(e) => setStaffSearchQuery(e.target.value)}
+                      placeholder={language === 'ku' ? 'ناڤ یان کۆد...' : language === 'ar' ? 'الاسم أو الرقم...' : 'Name or ID...'}
+                      className={`py-2 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-44 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5] ${
+                        isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                {teacherSyncStatus === 'saving' && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F0F8FA] border border-[#C8E5EC] text-[#0087A5] text-xs font-bold">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>
+                      {language === 'ku'
+                        ? 'پاشەکەفتکرن ل ناڤ داتابەیسێ...'
+                        : language === 'ar'
+                        ? 'جاري الحفظ في قاعدة البيانات...'
+                        : 'Saving to Database...'}
+                    </span>
+                  </span>
+                )}
+                {(teacherSavedNotice || teacherSyncStatus === 'saved') && teacherSyncStatus !== 'saving' && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>
+                      {language === 'ku'
+                        ? 'نمرە ل ناڤ داتابەیسێ هاتنە تۆمارکرن'
+                        : language === 'ar'
+                        ? 'تم حفظ الدرجات في قاعدة البيانات'
+                        : `Saved to Database${teacherLastDbSyncAt ? ` (${new Date(teacherLastDbSyncAt).toLocaleTimeString()})` : ''}`}
+                    </span>
+                  </span>
+                )}
+                {teacherSyncStatus === 'error' && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold max-w-xs truncate" title={teacherSyncError}>
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span className="truncate">
+                      {teacherSyncError || 'Database sync error'}
+                    </span>
+                  </span>
+                )}
+                <button
+                  type="button"
+                  disabled={teacherSyncStatus === 'saving' || !scopedSubject}
+                  onClick={handleTeacherSaveAll}
+                  className="px-4 py-2.5 bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer"
+                >
+                  {teacherSyncStatus === 'saving' ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  <span>
+                    {language === 'ku' ? 'پاشەکەفتکرنا نمران' : language === 'ar' ? 'حفظ الدرجات' : 'Save Marks'}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Assigned Subject & Class Marks Table ONLY */}
+            {scopedSubject ? (() => {
+              const isPrimaryG13 = isGrade13(scopedGrade);
+              const rows: DailyRecordRowItem[] = scopedFilteredStudents.map((student) => ({
+                rowKey: student.id,
+                label: student.name,
+                subLabel: `${student.rollNumber} • ${student.id}`,
+                record: getEffectiveDailyRecord(student, scopedSubject, dailyRecords),
+              }));
+
+              return isPrimaryG13 ? (
+                <Grade13DailyRecordTable
+                  mode="teacher"
+                  language={language}
+                  isRtl={isRtl}
+                  gradeLabel={formatGradeLabel(scopedGrade, language)}
+                  sectionLabel={formatClassLabel(scopedClass, language)}
+                  subjectLabel={getTranslatedSubject(scopedSubject, language)}
+                  rows={rows}
+                  onChangeRecord={(studentId, updated) =>
+                    handleTeacherRecordChange(studentId, updated, scopedSubject)
+                  }
+                />
+              ) : (
+                <Grade49DailyRecordTable
+                  mode="teacher"
+                  language={language}
+                  isRtl={isRtl}
+                  gradeLabel={formatGradeLabel(scopedGrade, language)}
+                  sectionLabel={formatClassLabel(scopedClass, language)}
+                  subjectLabel={getTranslatedSubject(scopedSubject, language)}
+                  rows={rows}
+                  onChangeRecord={(studentId, updated) =>
+                    handleTeacherRecordChange(studentId, updated, scopedSubject)
+                  }
+                />
+              );
+            })() : (
+              <div className="p-6 text-center text-xs text-[#6B70A6] bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                No assigned subject configured for this class.
+              </div>
+            )}
+          </div>
+          )}
+
+          {/* MODE B: Class Mentor Behaviour Report Entry (ONLY for this Mentor's single assigned class) */}
+          {mentorClass && activeView === 'behaviour' && (
+          <div className="bg-white border border-[#E1E9FF] rounded-3xl p-4 sm:p-6 shadow-[0_6px_20px_rgba(91,53,168,0.06)] space-y-5">
+            {/* Locked Mentored Class Toolbar */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-4 border-b border-[#E1E9FF] print:hidden">
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'پۆلا تە وەک ڕابەر' : language === 'ar' ? 'صف الإرشاد المخصص' : 'Mentored Class'}
+                  </label>
+                  <div className="inline-flex items-center gap-2 bg-[#F3EEFF] border border-[#BB8FFF]/50 rounded-xl px-3.5 py-2 text-xs font-black text-[#5B35A8]">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>
+                      {mentorClass.classCode} — {formatGradeLabel(mentorClass.grade, language)} {formatClassLabel(mentorClass.section, language)} ({mentorStudents.length})
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2.5">
-                  {teacherSyncStatus === 'saving' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F0F8FA] border border-[#C8E5EC] text-[#0087A5] text-xs font-bold">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>
-                        {language === 'ku'
-                          ? 'پاشەکەفتکرن ل ناڤ داتابەیسێ...'
-                          : language === 'ar'
-                          ? 'جاري الحفظ في قاعدة البيانات...'
-                          : 'Saving to Database...'}
-                      </span>
-                    </span>
-                  )}
-                  {(teacherSavedNotice || teacherSyncStatus === 'saved') && teacherSyncStatus !== 'saving' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>
-                        {language === 'ku'
-                          ? 'نمرە ل ناڤ داتابەیسێ هاتنە تۆمارکرن'
-                          : language === 'ar'
-                          ? 'تم حفظ الدرجات في قاعدة البيانات'
-                          : `Saved to Database${teacherLastDbSyncAt ? ` (${new Date(teacherLastDbSyncAt).toLocaleTimeString()})` : ''}`}
-                      </span>
-                    </span>
-                  )}
-                  {teacherSyncStatus === 'error' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold max-w-xs truncate" title={teacherSyncError}>
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                      <span className="truncate">
-                        {teacherSyncError || 'Database sync error'}
-                      </span>
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    disabled={teacherSyncStatus === 'saving'}
-                    onClick={handleTeacherSaveAll}
-                    className="px-4 py-2.5 bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_12px_rgba(0,135,165,0.3)] flex items-center gap-2 cursor-pointer"
-                  >
-                    {teacherSyncStatus === 'saving' ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Save className="w-4 h-4" />
-                    )}
-                    <span>
-                      {language === 'ku' ? 'پاشەکەفتکرنا نمران' : language === 'ar' ? 'حفظ الدرجات' : 'Save Marks'}
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Official Daily Student Record Entry Table (1-3 or 4-9 matching PDFs) */}
-              {(() => {
-                const isPrimaryG13 = isGrade13(staffGrade);
-                const rows: DailyRecordRowItem[] = staffFilteredStudents.map((student) => ({
-                  rowKey: student.id,
-                  label: student.name,
-                  subLabel: `${student.rollNumber} • ${student.id}`,
-                  record: getEffectiveDailyRecord(student, teacherSubject, dailyRecords),
-                }));
-
-                return isPrimaryG13 ? (
-                  <Grade13DailyRecordTable
-                    mode="teacher"
-                    language={language}
-                    isRtl={isRtl}
-                    gradeLabel={formatGradeLabel(staffGrade, language)}
-                    sectionLabel={formatClassLabel(staffClass, language)}
-                    subjectLabel={getTranslatedSubject(teacherSubject, language)}
-                    rows={rows}
-                    onChangeRecord={handleTeacherRecordChange}
-                  />
-                ) : (
-                  <Grade49DailyRecordTable
-                    mode="teacher"
-                    language={language}
-                    isRtl={isRtl}
-                    gradeLabel={formatGradeLabel(staffGrade, language)}
-                    sectionLabel={formatClassLabel(staffClass, language)}
-                    subjectLabel={getTranslatedSubject(teacherSubject, language)}
-                    rows={rows}
-                    onChangeRecord={handleTeacherRecordChange}
-                  />
-                );
-              })()}
-            </div>
-          )}
-
-          {/* Teacher Tab 2: Class Roster & Individual Marksheets */}
-          {teacherTab === 'roster' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)] space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#E1E9FF] gap-3">
                 <div>
-                  <h3 className="text-base font-bold text-[#1A1D4E]">
-                    {formatGradeLabel(staffGrade, language)} - {formatClassLabel(staffClass, language)} ({staffAvailableStudents.length} Students)
-                  </h3>
-                  <p className="text-xs text-[#6B70A6]">
-                    {language === 'ku'
-                      ? 'کلیک ل سەر کەشف نمرەی بکە بۆ بینینا تۆمارا قوتابی بۆ بابەت و پۆلا تە یا دیارکری'
-                      : language === 'ar'
-                      ? 'اضغط على عرض الكشف لمعاينة سجل درجات الطالب لمادتك وصفك المخصص فقط'
-                      : 'Click View Marksheet to inspect any student’s Daily Student Record for your assigned subject & class'}
-                  </p>
-                </div>
-                <div className="relative">
-                  <Search className={`w-3.5 h-3.5 text-[#8C90C2] absolute top-2.5 ${isRtl ? 'right-3' : 'left-3'}`} />
-                  <input
-                    type="text"
-                    value={staffSearchQuery}
-                    onChange={(e) => setStaffSearchQuery(e.target.value)}
-                    placeholder={language === 'ku' ? 'گەڕان ل قوتابی...' : language === 'ar' ? 'بحث عن طالب...' : 'Search student...'}
-                    className={`py-1.5 bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl text-xs w-48 text-[#1A1D4E] placeholder:text-[#A9ABD2] focus:outline-none focus:ring-2 focus:ring-[#0087A5] ${
-                      isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <div className="border border-[#E1E9FF] rounded-2xl overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F5F6FF] border-b border-[#E1E9FF] font-bold text-[#1A1D4E]">
-                    <tr>
-                      <th className="py-3 px-3 text-center">#</th>
-                      <th className="py-3 px-3">{t.studentName}</th>
-                      <th className="py-3 px-3">{t.rollNumber}</th>
-                      <th className="py-3 px-3">{t.idNumber}</th>
-                      {(allowedSubjects.length > 0 ? allowedSubjects : [teacherSubject]).map((subName) => (
-                        <th key={subName} className="py-3 px-3">
-                          {getTranslatedSubject(subName, language)} ({isGrade13(staffGrade) ? '100' : '100%'})
-                        </th>
-                      ))}
-                      <th className="py-3 px-3 text-center">Marksheet</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E1E9FF]">
-                    {staffFilteredStudents.map((s, idx) => {
-                      const rosterSubjects = allowedSubjects.length > 0 ? allowedSubjects : [teacherSubject];
-
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'قوتابی' : language === 'ar' ? 'الطالب' : 'Student'}
+                  </label>
+                  <select
+                    value={activeMentorStudent?.id || ''}
+                    onChange={(e) => {
+                      setMentorBehStudentId(e.target.value);
+                      setMentorBehDraft(null);
+                      setMentorBehMessage(null);
+                    }}
+                    className="bg-[#F5F6FF] border border-[#E1E9FF] rounded-xl px-3 py-2 text-xs font-bold text-[#1A1D4E] focus:outline-none focus:ring-2 focus:ring-[#5B35A8] min-w-[220px]"
+                  >
+                    {mentorStudents.map((st) => {
+                      const hasSaved = Boolean(
+                        behaviourReports[makeBehaviourReportKey(st.id, mentorBehMonthKey)]
+                      );
                       return (
-                        <tr key={s.id} className="hover:bg-[#F5F6FF]/60 transition-colors">
-                          <td className="py-2.5 px-3 text-center font-mono text-[#8C90C2]">{idx + 1}</td>
-                          <td className="py-2.5 px-3 font-bold text-[#1A1D4E]">{s.name}</td>
-                          <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.rollNumber}</td>
-                          <td className="py-2.5 px-3 font-mono text-[#6B70A6]">{s.id}</td>
-                          {rosterSubjects.map((subName) => {
-                            const rec = getEffectiveDailyRecord(s, subName, dailyRecords);
-                            const grand =
-                              rec.kind === 'g13'
-                                ? calcGrade13GrandTotal(rec)
-                                : calcGrade49GrandTotal100(rec);
-                            return (
-                              <td key={subName} className="py-2.5 px-3 font-mono font-bold text-[#0087A5]">
-                                {typeof grand === 'number' ? grand : ''}
-                              </td>
-                            );
-                          })}
-                          <td className="py-2.5 px-3 text-center">
-                            <button
-                              onClick={() => setModalStudent(s)}
-                              className="px-3 py-1 bg-[#0087A5] hover:bg-[#00738D] text-white rounded-lg text-[11px] font-bold cursor-pointer transition-all shadow-xs"
-                            >
-                              {language === 'ku' ? 'کەشف نمرە' : language === 'ar' ? 'عرض الكشف' : 'View Marksheet'}
-                            </button>
-                          </td>
-                        </tr>
+                        <option key={st.id} value={st.id}>
+                          {hasSaved ? '✓ ' : ''}
+                          {st.name} ({st.rollNumber})
+                        </option>
                       );
                     })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+                  </select>
+                </div>
 
-          {/* Teacher Tab 3: Class Timetable */}
-          {teacherTab === 'timetable' && (
-            <div className="bg-white border border-[#E1E9FF] rounded-3xl p-6 sm:p-8 shadow-[0_6px_20px_rgba(0,135,165,0.05)]">
-              <h3 className="text-base font-bold text-[#1A1D4E] mb-4">
-                {t.timetableTitle} ({formatGradeLabel(staffGrade, language)} - {formatClassLabel(staffClass, language)})
-              </h3>
-              <div className="space-y-4">
-                {timetableSchedule.map(day => (
-                  <div key={day.key} className="border border-[#E1E9FF] rounded-2xl overflow-hidden shadow-2xs">
-                    <div className="bg-[#F5F6FF] px-4 py-2.5 font-bold text-xs text-[#1A1D4E] border-b border-[#E1E9FF]">
-                      {day.label}
-                    </div>
-                    <div className="divide-y divide-[#E1E9FF]">
-                      {day.periods.map(period => (
-                        <div key={period.period} className="p-3 flex items-center justify-between text-xs hover:bg-[#F5F6FF]/40">
-                          <span className="font-bold text-[#1A1D4E]">Period {period.period}: {period.subject}</span>
-                          <span className="text-[#6B70A6] font-mono">{period.time} • {period.teacher}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C90C2] mb-1">
+                    {language === 'ku' ? 'هەیڤ' : language === 'ar' ? 'الشهر' : 'Month'}
+                  </label>
+                  <select
+                    value={mentorBehMonthKey}
+                    onChange={(e) => {
+                      setMentorBehMonthKey(e.target.value);
+                      setMentorBehDraft(null);
+                      setMentorBehMessage(null);
+                    }}
+                    className="bg-[#F0F8FA] border border-[#C8E5EC] rounded-xl px-3 py-2 text-xs font-black text-[#0087A5] focus:outline-none focus:ring-2 focus:ring-[#0087A5]"
+                  >
+                    {BEHAVIOUR_MONTHS.map((m) => {
+                      const hasSaved = activeMentorStudent
+                        ? Boolean(
+                            behaviourReports[makeBehaviourReportKey(activeMentorStudent.id, m.key)]
+                          )
+                        : false;
+                      return (
+                        <option key={m.key} value={m.key}>
+                          {hasSaved ? '✓ ' : ''}
+                          {language === 'ku'
+                            ? m.labelKu
+                            : language === 'ar'
+                            ? m.labelAr
+                            : m.labelEn}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                {currentMentorReport && (
+                  <label className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F5F6FF] border border-[#E1E9FF] text-xs font-bold text-[#1A1D4E] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentMentorReport.published}
+                      onChange={(e) =>
+                        setMentorBehDraft({
+                          ...currentMentorReport,
+                          published: e.target.checked,
+                          updatedAt: new Date().toISOString(),
+                        })
+                      }
+                      className="rounded text-[#00A887] focus:ring-[#00A887]"
+                    />
+                    <span>
+                      {language === 'ku'
+                        ? 'بەردەستە بۆ سەرپەرشتیاران'
+                        : language === 'ar'
+                        ? 'منشور لأولياء الأمور'
+                        : 'Visible to Parents'}
+                    </span>
+                  </label>
+                )}
+
+                <button
+                  type="button"
+                  disabled={!activeMentorStudent || mentorBehDownloadingPdf}
+                  onClick={handleMentorDownloadBehaviourPdf}
+                  className="px-3.5 py-2 rounded-xl bg-[#0087A5] hover:bg-[#00738D] disabled:opacity-60 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  {mentorBehDownloadingPdf ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Download className="w-3.5 h-3.5" />
+                  )}
+                  <span>
+                    {mentorBehDownloadingPdf
+                      ? language === 'ku'
+                        ? 'دروستکرنا PDF...'
+                        : language === 'ar'
+                        ? 'جاري إنشاء PDF...'
+                        : 'Generating PDF...'
+                      : language === 'ku'
+                      ? 'داگرتنا PDF'
+                      : language === 'ar'
+                      ? 'حفظ PDF'
+                      : 'Save PDF'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!activeMentorStudent}
+                  onClick={() => printBehaviourReport('printable-behaviour')}
+                  className="px-3.5 py-2 rounded-xl bg-[#F5F6FF] hover:bg-[#E1E9FF] border border-[#E1E9FF] text-xs font-bold text-[#1A1D4E] flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#0087A5]" />
+                  <span>{language === 'ku' ? 'چاپکرنا A4' : language === 'ar' ? 'طباعة A4' : 'Print A4'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={mentorBehSaving || !currentMentorReport}
+                  onClick={handleMentorSaveBehaviourReport}
+                  className="px-4 py-2 rounded-xl bg-[#00A887] hover:bg-[#008E72] disabled:opacity-60 text-white text-xs font-extrabold flex items-center gap-2 shadow-sm cursor-pointer"
+                >
+                  {mentorBehSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  <span>
+                    {language === 'ku'
+                      ? 'پاشەکەفتکرنا راپۆرتا هەیڤانە'
+                      : language === 'ar'
+                      ? 'حفظ التقرير الشهري'
+                      : 'Save Monthly Report'}
+                  </span>
+                </button>
               </div>
             </div>
-          )}
-          {/* Teacher Tab 4: Official Exams Schedule */}
-          {teacherTab === 'exams' && (
-            <ExamsScheduleView
-              language={language}
-              isRtl={isRtl}
-              schoolLogoUrl={SCHOOL_LOGO_URL}
-              highlightGrade={staffGrade}
-              rows={examRows}
-            />
+
+            {mentorBehMessage && (
+              <div
+                className={`p-3 rounded-2xl text-xs font-bold flex items-center gap-2 border ${
+                  mentorBehMessage.ok
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                }`}
+              >
+                {mentorBehMessage.ok ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span>{mentorBehMessage.text}</span>
+              </div>
+            )}
+
+            {activeMentorStudent && currentMentorReport ? (
+              <BehaviourReportCard
+                mode="edit"
+                report={currentMentorReport}
+                studentName={activeMentorStudent.name}
+                gradeLabel={formatGradeLabel(activeMentorStudent.grade, language)}
+                sectionLabel={formatClassLabel(activeMentorStudent.section, language)}
+                schoolLogoUrl={SCHOOL_LOGO_URL}
+                language={language}
+                onChangeReport={(next) => {
+                  setMentorBehDraft(next);
+                  setMentorBehMessage(null);
+                }}
+              />
+            ) : (
+              <div className="p-8 text-center text-xs text-[#6B70A6] bg-[#F5F6FF] rounded-2xl border border-[#E1E9FF]">
+                No students found in {mentorClass.grade} — {mentorClass.section}.
+              </div>
+            )}
+          </div>
           )}
         </main>
         );
@@ -3634,6 +4129,7 @@ export default function App() {
           onUpdateExamCell={handleUpdateExamCell}
           onResetExamSchedule={handleResetExamSchedule}
           schoolLogoUrl={SCHOOL_LOGO_URL}
+          behaviourReports={behaviourReports}
           onExportStudentsCsv={handleExportCsv}
           onSignOut={handleSignOut}
         />

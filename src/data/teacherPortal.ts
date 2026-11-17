@@ -25,6 +25,38 @@ export interface TeacherAccount {
   assignedClasses: TeacherClassAssignment[];
 }
 
+export interface ClassMentorAssignment {
+  classCode: string;
+  grade: string;
+  section: string;
+  mentorShortName: string;
+  teacherId: string;
+}
+
+/**
+ * Official Class Mentors Mapping (1A - 9A)
+ * Matches MENTORS_______46ec4255.pdf
+ * Only each class's assigned Mentor can insert/edit Behaviour Reports for that class.
+ */
+export const CLASS_MENTORS: ClassMentorAssignment[] = [
+  { classCode: '1A', grade: 'Grade 1', section: 'Class A', mentorShortName: 'HIBA', teacherId: 'T-16' },
+  { classCode: '1B', grade: 'Grade 1', section: 'Class B', mentorShortName: 'HILBEEN', teacherId: 'T-13' },
+  { classCode: '1C', grade: 'Grade 1', section: 'Class C', mentorShortName: 'DIMAN', teacherId: 'T-04' },
+  { classCode: '2A', grade: 'Grade 2', section: 'Class A', mentorShortName: 'ASK', teacherId: 'T-05' },
+  { classCode: '2B', grade: 'Grade 2', section: 'Class B', mentorShortName: 'VAZHEEN', teacherId: 'T-10' },
+  { classCode: '2C', grade: 'Grade 2', section: 'Class C', mentorShortName: 'BHAR', teacherId: 'T-17' },
+  { classCode: '3A', grade: 'Grade 3', section: 'Class A', mentorShortName: 'WARVIN', teacherId: 'T-19' },
+  { classCode: '3B', grade: 'Grade 3', section: 'Class B', mentorShortName: 'DALIN', teacherId: 'T-12' },
+  { classCode: '4A', grade: 'Grade 4', section: 'Class A', mentorShortName: 'AZA', teacherId: 'T-09' },
+  { classCode: '4B', grade: 'Grade 4', section: 'Class B', mentorShortName: 'LARSA', teacherId: 'T-20' },
+  { classCode: '5A', grade: 'Grade 5', section: 'Class A', mentorShortName: 'SIZAR', teacherId: 'T-23' },
+  { classCode: '5B', grade: 'Grade 5', section: 'Class B', mentorShortName: 'HELZ', teacherId: 'T-07' },
+  { classCode: '6A', grade: 'Grade 6', section: 'Class A', mentorShortName: 'MANAR', teacherId: 'T-01' },
+  { classCode: '7A', grade: 'Grade 7', section: 'Class A', mentorShortName: 'SAMAH', teacherId: 'T-03' },
+  { classCode: '8A', grade: 'Grade 8', section: 'Class A', mentorShortName: 'HAKAR', teacherId: 'T-18' },
+  { classCode: '9A', grade: 'Grade 9', section: 'Class A', mentorShortName: 'SHARMEEN', teacherId: 'T-21' },
+];
+
 export function normalizePhone(value: string): string {
   return value.replace(/[\s\-().]+/g, '').trim();
 }
@@ -40,6 +72,35 @@ export function authenticateTeacher(emailInput: string, passwordInput: string): 
         t.email.trim().toLowerCase() === emailClean &&
         normalizePhone(t.phone) === phoneClean
     ) || null
+  );
+}
+
+export function getMentorAssignmentForTeacher(teacherId?: string | null): ClassMentorAssignment | null {
+  if (!teacherId) return null;
+  return CLASS_MENTORS.find((m) => m.teacherId === teacherId) || null;
+}
+
+export function getMentorForClass(
+  grade: string,
+  section: string
+): { assignment: ClassMentorAssignment; teacher: TeacherAccount } | null {
+  const assignment = CLASS_MENTORS.find(
+    (m) => m.grade === grade && m.section === section
+  );
+  if (!assignment) return null;
+  const teacher = TEACHER_ACCOUNTS.find((t) => t.id === assignment.teacherId);
+  if (!teacher) return null;
+  return { assignment, teacher };
+}
+
+export function isTeacherMentorOfClass(
+  teacherId: string | undefined | null,
+  grade: string,
+  section: string
+): boolean {
+  if (!teacherId) return false;
+  return CLASS_MENTORS.some(
+    (m) => m.teacherId === teacherId && m.grade === grade && m.section === section
   );
 }
 

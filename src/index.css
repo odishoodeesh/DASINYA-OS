@@ -28,33 +28,68 @@ html {
 }
 
 @media print {
-  body * {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body.dasinya-printing-behaviour > *:not(#dasinya-print-root) {
+    display: none !important;
+  }
+  body.dasinya-printing-behaviour #dasinya-print-root {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  body.dasinya-printing-behaviour #printable-behaviour-print-clone {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 8.5px !important;
+  }
+  body.dasinya-printing-behaviour #printable-behaviour-print-clone table {
+    font-size: 8.5px !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+  body.dasinya-printing-behaviour #printable-behaviour-print-clone td,
+  body.dasinya-printing-behaviour #printable-behaviour-print-clone th {
+    padding: 1.5px 4px !important;
+  }
+
+  body:not(.dasinya-printing-behaviour) * {
     visibility: hidden;
   }
-  #printable-marksheet, #printable-marksheet *,
-  #printable-timetable, #printable-timetable *,
-  #printable-behaviour, #printable-behaviour *,
-  #printable-calendar, #printable-calendar * {
+  body:not(.dasinya-printing-behaviour) #printable-marksheet,
+  body:not(.dasinya-printing-behaviour) #printable-marksheet *,
+  body:not(.dasinya-printing-behaviour) #printable-timetable,
+  body:not(.dasinya-printing-behaviour) #printable-timetable *,
+  body:not(.dasinya-printing-behaviour) #printable-behaviour,
+  body:not(.dasinya-printing-behaviour) #printable-behaviour *,
+  body:not(.dasinya-printing-behaviour) #printable-calendar,
+  body:not(.dasinya-printing-behaviour) #printable-calendar * {
     visibility: visible;
   }
-  #printable-marksheet,
-  #printable-timetable,
-  #printable-behaviour,
-  #printable-calendar {
+  body:not(.dasinya-printing-behaviour) #printable-marksheet,
+  body:not(.dasinya-printing-behaviour) #printable-timetable,
+  body:not(.dasinya-printing-behaviour) #printable-behaviour,
+  body:not(.dasinya-printing-behaviour) #printable-calendar {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     margin: 0;
-    padding: 20px;
+    padding: 14px;
     border: none !important;
     box-shadow: none !important;
     overflow: visible !important;
   }
-  #printable-marksheet table,
-  #printable-timetable table,
-  #printable-behaviour table,
-  #printable-calendar table {
+  body:not(.dasinya-printing-behaviour) #printable-marksheet table,
+  body:not(.dasinya-printing-behaviour) #printable-timetable table,
+  body:not(.dasinya-printing-behaviour) #printable-behaviour table,
+  body:not(.dasinya-printing-behaviour) #printable-calendar table {
     min-width: 100% !important;
     width: 100% !important;
   }
