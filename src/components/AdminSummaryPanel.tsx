@@ -29,6 +29,7 @@ import {
   Loader2,
   AlertCircle,
   FileText,
+  CalendarCheck2,
 } from 'lucide-react';
 import { StudentRecord } from '../data/importedStudents';
 import {
@@ -42,6 +43,11 @@ import { LiveBusState } from '../hooks/useBusTracking';
 import { LiveBusMap } from './LiveBusMap';
 import { ExamsScheduleView } from './ExamsScheduleView';
 import { BehaviourReportCard } from './BehaviourReportCard';
+import { AttendanceReportView } from './AttendanceReportView';
+import {
+  AttendanceCode,
+  AttendanceMonthRecord,
+} from '../data/attendanceReport';
 import { exportBehaviourReportPdf, printBehaviourReport } from '../lib/behaviourPdf';
 import {
   AdminExportDatasetKey,
@@ -101,6 +107,22 @@ interface AdminSummaryPanelProps {
   onResetExamSchedule: () => void;
   schoolLogoUrl: string;
   behaviourReports: Record<string, MonthlyBehaviourReport>;
+  attendanceRecords: Record<string, AttendanceMonthRecord>;
+  attendanceHolidays: Record<string, boolean>;
+  attendanceEnglishNames: Record<string, string>;
+  onUpdateAttendanceDay: (
+    studentId: string,
+    monthKey: string,
+    day: number,
+    code: AttendanceCode | ''
+  ) => void;
+  onBulkFillAttendanceDayPresent: (
+    classStudents: StudentRecord[],
+    monthKey: string,
+    day: number
+  ) => void;
+  onToggleAttendanceHoliday: (dateIso: string) => void;
+  onUpdateAttendanceEnglishName: (studentId: string, nameEn: string) => void;
   onExportStudentsCsv: () => void;
   onSignOut: () => void;
 }
@@ -172,10 +194,17 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
   onResetExamSchedule,
   schoolLogoUrl,
   behaviourReports,
+  attendanceRecords,
+  attendanceHolidays,
+  attendanceEnglishNames,
+  onUpdateAttendanceDay,
+  onBulkFillAttendanceDayPresent,
+  onToggleAttendanceHoliday,
+  onUpdateAttendanceEnglishName,
   onExportStudentsCsv,
   onSignOut,
 }) => {
-  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams' | 'behaviour' | 'export'>('summary');
+  const [adminTab, setAdminTab] = useState<'summary' | 'students' | 'teachers' | 'buses' | 'class_control' | 'exams' | 'behaviour' | 'attendance' | 'export'>('summary');
   const [selectedDriverId, setSelectedDriverId] = useState<string>('ALL');
   const [gradeFilter, setGradeFilter] = useState<string>('ALL');
   const [sectionFilter, setSectionFilter] = useState<string>('ALL');
@@ -185,6 +214,7 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
 
   // Export Center state
   const [exportGradeScope, setExportGradeScope] = useState<string>('ALL');
+  const [exportClassScope, setExportClassScope] = useState<string>('ALL');
   const [exportBusyKey, setExportBusyKey] = useState<string | null>(null);
   const [exportPdfProgress, setExportPdfProgress] = useState<ExportPdfProgress | null>(null);
   const [exportNotice, setExportNotice] = useState<{ ok: boolean; text: string } | null>(null);
@@ -728,6 +758,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 : language === 'ar'
                 ? 'تقرير السلوك الشهري'
                 : 'Behaviour Reports'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAdminTab('attendance')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              adminTab === 'attendance'
+                ? 'bg-[#0087A5] text-white shadow-xs'
+                : 'text-[#454A87] hover:bg-[#F5F6FF]'
+            }`}
+          >
+            <CalendarCheck2 className="w-4 h-4 text-[#00A887]" />
+            <span>
+              {language === 'ku'
+                ? 'ئامادەبوون ٢٠٢٦-٢٠٢٧'
+                : language === 'ar'
+                ? 'الحضور والغياب ٢٠٢٦-٢٠٢٧'
+                : 'Attendance Report'}
             </span>
           </button>
 
@@ -1884,18 +1933,53 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
       })()}
 
       {/* ======================================================== */}
-      {/* ADMIN TAB 8: EXPORT CENTER (EXCEL .XLSX & PDF)           */}
+      {/* ADMIN TAB 8: ATTENDANCE REPORT 2026–2027                 */}
+      {/* ======================================================== */}
+      {adminTab === 'attendance' && (
+        <AttendanceReportView
+          mode="admin"
+          students={students}
+          schoolStructure={schoolStructure}
+          attendanceRecords={attendanceRecords}
+          attendanceHolidays={attendanceHolidays}
+          customEnglishNames={attendanceEnglishNames}
+          onUpdateDayStatus={onUpdateAttendanceDay}
+          onBulkFillDayPresent={onBulkFillAttendanceDayPresent}
+          onToggleHoliday={onToggleAttendanceHoliday}
+          onUpdateEnglishName={onUpdateAttendanceEnglishName}
+          language={language}
+          exportSourceBase={{
+            dailyRecords,
+            gradeCurriculum,
+            liveBuses,
+            classSummaries,
+            officialSubjectNames: officialSubjects.map((s) => s.name),
+            behaviourReports,
+            examRows,
+            schoolLogoUrl,
+          }}
+        />
+      )}
+
+      {/* ======================================================== */}
+      {/* ADMIN TAB 9: EXPORT CENTER (EXCEL .XLSX & PDF)           */}
       {/* ======================================================== */}
       {adminTab === 'export' && (() => {
         const exportSource: AdminExportSourceData = {
           students,
+          dailyRecords,
+          gradeCurriculum,
           liveBuses,
           classSummaries,
           officialSubjectNames: officialSubjects.map((s) => s.name),
           behaviourReports,
+          attendanceRecords,
+          attendanceHolidays,
+          attendanceEnglishNames,
           examRows,
           schoolLogoUrl,
           gradeFilter: exportGradeScope,
+          classFilter: exportClassScope,
         };
 
         const runExcel = (key: AdminExportDatasetKey | 'ALL') => {
@@ -1908,10 +1992,10 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 ok: true,
                 text:
                   language === 'ku'
-                    ? 'هەمی داتا ب شێوێ فایلا Excel (7 شیت) هاتنە داگرتن'
+                    ? 'هەمی داتا ب شێوێ فایلا Excel (10 شیت) هاتنە داگرتن'
                     : language === 'ar'
-                    ? 'تم تنزيل ملف Excel الشامل لجميع البيانات (7 أوراق عمل)'
-                    : 'Master Excel workbook (.xlsx with all 7 sheets) downloaded successfully.',
+                    ? 'تم تنزيل ملف Excel الشامل لجميع البيانات (10 أوراق عمل)'
+                    : 'Master Excel workbook (.xlsx with all sheets including Full Classes Marks & All Marks) downloaded successfully.',
               });
             } else {
               exportDatasetToExcel(key, exportSource);
@@ -1975,10 +2059,25 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           }
         };
 
-        const scopedStudentCount =
-          exportGradeScope === 'ALL'
-            ? students.length
-            : students.filter((s) => s.grade === exportGradeScope).length;
+        const availableExportClasses = classSummaries.filter(
+          (c) => exportGradeScope === 'ALL' || c.grade === exportGradeScope
+        );
+
+        const scopedStudentCount = students.filter((s) => {
+          if (exportGradeScope !== 'ALL' && s.grade !== exportGradeScope) return false;
+          if (
+            exportClassScope !== 'ALL' &&
+            `${s.grade}::${s.section}` !== exportClassScope
+          ) {
+            return false;
+          }
+          return true;
+        }).length;
+
+        const scopedClassCount = availableExportClasses.filter(
+          (c) =>
+            exportClassScope === 'ALL' || `${c.grade}::${c.section}` === exportClassScope
+        ).length;
 
         const datasetCards: Array<{
           key: AdminExportDatasetKey;
@@ -1990,6 +2089,28 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
           icon: React.ReactNode;
           accentBg: string;
         }> = [
+          {
+            key: 'full_classes_marks',
+            title: 'Full Classes Marks with Summary',
+            titleKu: 'نمرێن تەمام یێن هەمی پۆلان دگەل پوختە',
+            titleAr: 'درجات الصفوف الكاملة مع الملخص',
+            countLabel: `${scopedClassCount} Classes • ${scopedStudentCount} Students`,
+            description:
+              'Complete student-by-student marksheets per class with subject columns, class averages, pass rates %, and graded counts (separate Excel sheet per class + PDF per class).',
+            icon: <Layers className="w-5 h-5 text-[#0087A5]" />,
+            accentBg: 'bg-[#E1F3F7]',
+          },
+          {
+            key: 'all_marks',
+            title: 'All Marks (Complete Marksheet)',
+            titleKu: 'هەمی نمرێن قوتابیان',
+            titleAr: 'جميع الدرجات (السجل الشامل)',
+            countLabel: `${scopedStudentCount} Students • ${globalStats.totalMarksEntered} Marks`,
+            description:
+              'Master marks matrix of all students & all subjects plus full detailed breakdown (Eval 1–4 /25, 1st & 2nd Half, Exams /20, 40% + 60% Final = /100).',
+            icon: <BookOpen className="w-5 h-5 text-[#FF7F2A]" />,
+            accentBg: 'bg-[#FFF2E8]',
+          },
           {
             key: 'teachers',
             title: 'Teachers List & Details',
@@ -2046,6 +2167,17 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
             accentBg: 'bg-[#E1F3F7]',
           },
           {
+            key: 'attendance',
+            title: 'Attendance Report 2026–2027',
+            titleKu: 'راپۆرتا ئامادەبوونێ ٢٠٢٦–٢٠٢٧',
+            titleAr: 'تقرير الحضور والغياب ٢٠٢٦–٢٠٢٧',
+            countLabel: `${scopedClassCount} Classes • Sep 2026 – Jul 2027`,
+            description:
+              'Class Summary, Student Report (A/L/P per month & year), Top 15 Absentees, HOW TO USE, and individual daily sheets for 1-A through 9-A.',
+            icon: <CalendarCheck2 className="w-5 h-5 text-[#00A887]" />,
+            accentBg: 'bg-[#E6FAF6]',
+          },
+          {
             key: 'behaviour',
             title: 'Monthly Behaviour Reports',
             titleKu: 'راپۆرتێن رەوشتی یێن هەیڤانە',
@@ -2094,10 +2226,10 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                   </h3>
                   <p className="text-xs text-white/85 max-w-2xl">
                     {language === 'ku'
-                      ? 'مامۆستا و ڕابەر، قوتابی و پاسوۆرد، جهێن قوتابیان، شوفێر، پۆل، سلوک و خشتەیێ ئەزموونان د ئێک فایلدا.'
+                      ? 'نمرێن تەمام یێن پۆلان دگەل پوختە، هەمی نمرە، مامۆستا، قوتابی، جە، شوفێر، رەوشت و ئەزموونان د ئێک فایلدا.'
                       : language === 'ar'
-                      ? 'قم بتنزيل ملف واحد شامل لجميع المعلمين والطلاب والمواقع والسائقين والدرجات والسلوك والامتحانات، أو قم بتنزيل كل قسم بشكل منفصل.'
-                      : 'Download a single master Excel workbook (7 separate sheets) or a complete multi-page Arabic/Kurdish-ready PDF containing all school records, or export any section individually below.'}
+                      ? 'قم بتنزيل ملف واحد شامل لجميع درجات الصفوف مع الملخص، كل الدرجات، المعلمين، الطلاب، المواقع، السائقين، السلوك والامتحانات.'
+                      : 'Download a single master Excel workbook (10 sheets including Full Classes Marks & All Marks) or a complete multi-page Arabic/Kurdish-ready PDF containing all school records, or export any section individually below.'}
                   </p>
                 </div>
 
@@ -2144,31 +2276,63 @@ export const AdminSummaryPanel: React.FC<AdminSummaryPanelProps> = ({
                 </div>
               </div>
 
-              {/* Optional Grade Scope Filter inside Export Center */}
+              {/* Optional Grade & Class Scope Filter inside Export Center */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/15">
-                <div className="flex items-center gap-2 text-xs">
-                  <Filter className="w-3.5 h-3.5 text-[#2AD4FF]" />
-                  <span className="font-bold text-white/90">
-                    {language === 'ku'
-                      ? 'فلتەرێ پۆلێ (قوتابی / جە / رەوشت):'
-                      : language === 'ar'
-                      ? 'نطاق التصدير حسب الصف:'
-                      : 'Grade Scope (applies to Students, Locations, Summary & Behaviour):'}
-                  </span>
-                  <select
-                    value={exportGradeScope}
-                    onChange={(e) => setExportGradeScope(e.target.value)}
-                    className="bg-white/15 border border-white/30 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none"
-                  >
-                    <option value="ALL" className="text-[#1A1D4E]">
-                      All Grades (1 – 9)
-                    </option>
-                    {gradeKeys.map((g) => (
-                      <option key={g} value={g} className="text-[#1A1D4E]">
-                        {formatGradeLabel(g, language)}
+                <div className="flex flex-wrap items-center gap-2.5 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-3.5 h-3.5 text-[#2AD4FF]" />
+                    <span className="font-bold text-white/90">
+                      {language === 'ku'
+                        ? 'فلتەرێ پۆلێ:'
+                        : language === 'ar'
+                        ? 'الصف:'
+                        : 'Grade Scope:'}
+                    </span>
+                    <select
+                      value={exportGradeScope}
+                      onChange={(e) => {
+                        setExportGradeScope(e.target.value);
+                        setExportClassScope('ALL');
+                      }}
+                      className="bg-white/15 border border-white/30 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none"
+                    >
+                      <option value="ALL" className="text-[#1A1D4E]">
+                        All Grades (1 – 9)
                       </option>
-                    ))}
-                  </select>
+                      {gradeKeys.map((g) => (
+                        <option key={g} value={g} className="text-[#1A1D4E]">
+                          {formatGradeLabel(g, language)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-white/90">
+                      {language === 'ku'
+                        ? 'شوبە:'
+                        : language === 'ar'
+                        ? 'الشعبة:'
+                        : 'Class:'}
+                    </span>
+                    <select
+                      value={exportClassScope}
+                      onChange={(e) => setExportClassScope(e.target.value)}
+                      className="bg-white/15 border border-white/30 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none"
+                    >
+                      <option value="ALL" className="text-[#1A1D4E]">
+                        All Classes ({availableExportClasses.length})
+                      </option>
+                      {availableExportClasses.map((c) => {
+                        const val = `${c.grade}::${c.section}`;
+                        return (
+                          <option key={val} value={val} className="text-[#1A1D4E]">
+                            {c.label} ({c.studentCount} students)
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
                 </div>
 
                 {exportPdfProgress && (

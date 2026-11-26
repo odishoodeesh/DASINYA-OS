@@ -55,15 +55,19 @@ import {
   Radio,
   MapPin,
   Navigation,
-  ClipboardList
+  ClipboardList,
+  CalendarCheck2
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
+  ATTENDANCE_RECORDS_TABLE,
   BEHAVIOUR_REPORTS_TABLE,
   DAILY_RECORDS_TABLE,
+  SupabaseAttendanceRow,
   SupabaseBehaviourReportRow,
   SupabaseDailyRecordRow,
+  fetchAttendanceRecordsFromSupabase,
   fetchBehaviourReportsFromSupabase,
   fetchDailyRecordsFromSupabase,
   fetchStudentsFromSupabase,
@@ -71,6 +75,8 @@ import {
   supabase,
   updateStudentClassInSupabase,
   upsertAllDailyRecordsToSupabase,
+  upsertAttendanceBatchToSupabase,
+  upsertAttendanceRecordToSupabase,
   upsertBehaviourReportToSupabase,
   upsertDailyRecordToSupabase,
 } from './lib/supabase';
@@ -123,6 +129,7 @@ import { LiveBusMap } from './components/LiveBusMap';
 import { ExamsScheduleView } from './components/ExamsScheduleView';
 import { FoodMenuView } from './components/FoodMenuView';
 import { BehaviourReportCard } from './components/BehaviourReportCard';
+import { AttendanceReportView } from './components/AttendanceReportView';
 import { exportBehaviourReportPdf, printBehaviourReport } from './lib/behaviourPdf';
 import {
   BEHAVIOUR_MONTHS,
@@ -133,6 +140,20 @@ import {
   makeBehaviourReportKey,
   saveStoredBehaviourReports,
 } from './data/behaviourReport';
+import {
+  ATTENDANCE_MONTHS,
+  AttendanceCode,
+  AttendanceMonthRecord,
+  calcStudentYearCounts,
+  isCountableAttendanceDay,
+  loadStoredAttendanceEnNames,
+  loadStoredAttendanceHolidays,
+  loadStoredAttendanceRecords,
+  makeAttendanceRecordKey,
+  saveStoredAttendanceEnNames,
+  saveStoredAttendanceHolidays,
+  saveStoredAttendanceRecords,
+} from './data/attendanceReport';
 import { 
   Language, 
   SUPPORTED_LANGUAGES, 
@@ -310,7 +331,7 @@ export interface ReportSubjectRow {
   remarks?: string;
 }
 
-export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | 'bus_tracking' | 'exams_schedule' | null;
+export type PortalTab = 'info' | 'marksheet' | 'food_menu' | 'timetable' | 'behaviour' | 'calendar' | 'bus_tracking' | 'exams_schedule' | 'attendance' | null;
 
 interface AuthenticatedGuardian {
   password: string;
@@ -468,8 +489,8 @@ export default function App() {
     getDefaultBehaviourMonthKey()
   );
 
-  // Mentor Behaviour Editor state (strictly accessible only by each class's assigned Mentor)
-  const [teacherPortalView, setTeacherPortalView] = useState<'marks' | 'behaviour'>('marks');
+  // Mentor Behaviour & Attendance Editor state (strictly accessible only by each class's assigned Mentor)
+  const [teacherPortalView, setTeacherPortalView] = useState<'marks' | 'behaviour' | 'attendance'>('marks');
   const [mentorBehMonthKey, setMentorBehMonthKey] = useState<string>(() =>
     getDefaultBehaviourMonthKey()
   );
@@ -480,6 +501,118 @@ export default function App() {
   const [mentorBehMessage, setMentorBehMessage] = useState<{ ok: boolean; text: string } | null>(
     null
   );
+
+  // Attendance Report 2026–2027 state (Supabase DB + localStorage cache)
+  const [attendanceRecords, setAttendanceRecords] = useState<Record<string, AttendanceMonthRecord>>(() =>
+    loadStoredAttendanceRecords()
+  );
+  const [attendanceHolidays, setAttendanceHolidays] = useState<Record<string, boolean>>(() =>
+    loadStoredAttendanceHolidays()
+  );
+  const [attendanceEnglishNames, setAttendanceEnglishNames] = useState<Record<string, string>>(() =>
+    loadStoredAttendanceEnNames()
+  );
+
+  const handleUpdateAttendanceDay = (
+    studentId: string,
+    monthKey: string,
+    day: number,
+    code: AttendanceCode | ''
+  ) => {
+    const key = makeAttendanceRecordKey(studentId, monthKey);
+    const updatedBy = authStaff?.email || authStaff?.name || 'Admin';
+    let nextRecord: AttendanceMonthRecord | null = null;
+
+    setAttendanceRecords((prev) => {
+      const existing = prev[key] || {
+        id: key,
+        studentId,
+        monthKey,
+        days: {},
+        updatedAt: new Date().toISOString(),
+      };
+      const nextDays = { ...(existing.days || {}) };
+      if (code === '') {
+        delete nextDays[String(day)];
+      } else {
+        nextDays[String(day)] = code;
+      }
+      nextRecord = {
+        ...existing,
+        days: nextDays,
+        updatedBy,
+        updatedAt: new Date().toISOString(),
+      };
+      const next = { ...prev, [key]: nextRecord };
+      saveStoredAttendanceRecords(next);
+      return next;
+    });
+
+    if (nextRecord) {
+      upsertAttendanceRecordToSupabase(nextRecord, updatedBy).catch(() => {});
+    }
+  };
+
+  const handleBulkFillAttendanceDayPresent = (
+    classStudents: StudentRecord[],
+    monthKey: string,
+    day: number
+  ) => {
+    if (!isCountableAttendanceDay(monthKey, day, attendanceHolidays)) return;
+    const updatedBy = authStaff?.email || authStaff?.name || 'Admin';
+    const changedRecords: AttendanceMonthRecord[] = [];
+
+    setAttendanceRecords((prev) => {
+      const next = { ...prev };
+      for (const st of classStudents) {
+        const key = makeAttendanceRecordKey(st.id, monthKey);
+        const existing = next[key] || {
+          id: key,
+          studentId: st.id,
+          monthKey,
+          days: {},
+          updatedAt: new Date().toISOString(),
+        };
+        if (!existing.days?.[String(day)]) {
+          const updated: AttendanceMonthRecord = {
+            ...existing,
+            days: { ...(existing.days || {}), [String(day)]: 'P' },
+            updatedBy,
+            updatedAt: new Date().toISOString(),
+          };
+          next[key] = updated;
+          changedRecords.push(updated);
+        }
+      }
+      saveStoredAttendanceRecords(next);
+      return next;
+    });
+
+    if (changedRecords.length > 0) {
+      upsertAttendanceBatchToSupabase(changedRecords, updatedBy).catch(() => {});
+    }
+  };
+
+  const handleToggleAttendanceHoliday = (dateIso: string) => {
+    setAttendanceHolidays((prev) => {
+      const next = { ...prev };
+      if (next[dateIso]) {
+        delete next[dateIso];
+      } else {
+        next[dateIso] = true;
+      }
+      saveStoredAttendanceHolidays(next);
+      return next;
+    });
+  };
+
+  const handleUpdateAttendanceEnglishName = (studentId: string, nameEn: string) => {
+    setAttendanceEnglishNames((prev) => {
+      const next = { ...prev, [studentId]: nameEn };
+      saveStoredAttendanceEnNames(next);
+      return next;
+    });
+  };
 
   const handleSaveBehaviourReport = async (
     report: MonthlyBehaviourReport
@@ -637,6 +770,17 @@ export default function App() {
       }
     });
 
+    fetchAttendanceRecordsFromSupabase().then((res) => {
+      if (!active || !res.ok) return;
+      if (Object.keys(res.records).length > 0) {
+        setAttendanceRecords((prev) => {
+          const merged = { ...prev, ...res.records };
+          saveStoredAttendanceRecords(merged);
+          return merged;
+        });
+      }
+    });
+
     const sb = supabase;
     if (!sb) {
       return () => {
@@ -703,6 +847,42 @@ export default function App() {
             setBehaviourReports((prev) => {
               const next = { ...prev, [repKey]: repVal };
               saveStoredBehaviourReports(next);
+              return next;
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: ATTENDANCE_RECORDS_TABLE },
+        (payload) => {
+          if (!active) return;
+          if (payload.eventType === 'DELETE') {
+            const oldId = (payload.old as Partial<SupabaseAttendanceRow> | undefined)?.id;
+            if (!oldId) return;
+            setAttendanceRecords((prev) => {
+              if (!(oldId in prev)) return prev;
+              const copy = { ...prev };
+              delete copy[oldId];
+              saveStoredAttendanceRecords(copy);
+              return copy;
+            });
+            return;
+          }
+          const row = payload.new as Partial<SupabaseAttendanceRow> | undefined;
+          if (row?.id && row.days && typeof row.days === 'object') {
+            const attKey = row.id;
+            const attVal: AttendanceMonthRecord = {
+              id: attKey,
+              studentId: row.student_id || attKey.split('__')[0],
+              monthKey: row.month_key || attKey.split('__')[1] || '2026-11',
+              days: row.days,
+              updatedBy: row.updated_by || undefined,
+              updatedAt: row.updated_at || new Date().toISOString(),
+            };
+            setAttendanceRecords((prev) => {
+              const next = { ...prev, [attKey]: attVal };
+              saveStoredAttendanceRecords(next);
               return next;
             });
           }
@@ -2144,6 +2324,33 @@ export default function App() {
                     </p>
                   </div>
                 </button>
+
+                {/* 9. ATTENDANCE REPORT 2026-2027 */}
+                <button
+                  onClick={() => setActivePortalTab('attendance')}
+                  className="group bg-white border-2 border-[#E1E9FF] hover:border-[#00A887] rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-[0_16px_36px_rgba(0,168,135,0.16)] cursor-pointer flex flex-col justify-between min-h-[170px] hover:-translate-y-1 shadow-[0_6px_20px_rgba(0,135,165,0.05)]"
+                >
+                  <div className="flex items-start justify-between w-full mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00A887] to-[#1A1D4E] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(0,168,135,0.35)] group-hover:scale-105 transition-transform">
+                      <CalendarCheck2 className="w-7 h-7" />
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#E6FAF6] text-[#00A887]">
+                      09
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-bold text-[#1A1D4E] group-hover:text-[#00A887] transition-colors mb-1">
+                      {language === 'ku' ? 'راپۆرتا ئامادەبوونێ' : language === 'ar' ? 'تقرير الحضور والغياب' : 'ATTENDANCE REPORT'}
+                    </h4>
+                    <p className="text-xs text-[#6B70A6] line-clamp-2">
+                      {language === 'ku'
+                        ? 'ئامارێن ئامادەبوون، نەهاتن (A)، مۆلەت (L) و رێژەیا دەوامێ ٢٠٢٦–٢٠٢٧'
+                        : language === 'ar'
+                        ? 'سجل الحضور (P) والغياب (A) والإجازات (L) الشهري والسنوي ٢٠٢٦–٢٠٢٧'
+                        : 'Monthly & whole-year Present (P), Absent (A), and Leave (L) attendance log'}
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
           )}
@@ -2228,6 +2435,14 @@ export default function App() {
                     }`}
                   >
                     {language === 'ku' ? 'خشتەیێ ئەزموونان' : language === 'ar' ? 'جدول الامتحانات' : 'Exams Schedule'}
+                  </button>
+                  <button
+                    onClick={() => setActivePortalTab('attendance')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      activePortalTab === 'attendance' ? 'bg-[#00A887] text-white shadow-xs' : 'text-[#454A87] hover:bg-[#E1E9FF]/60'
+                    }`}
+                  >
+                    {language === 'ku' ? 'ئامادەبوون' : language === 'ar' ? 'الحضور والغياب' : 'Attendance'}
                   </button>
                 </div>
               </div>
@@ -3318,6 +3533,113 @@ export default function App() {
                   isGeneratingPdf={isGeneratingPdf}
                 />
               )}
+
+              {/* ---------------------------------------------------- */}
+              {/* SECTION 9: STUDENT ATTENDANCE REPORT 2026–2027       */}
+              {/* ---------------------------------------------------- */}
+              {activePortalTab === 'attendance' && (() => {
+                const yrSum = calcStudentYearCounts(
+                  attendanceRecords,
+                  currentStudent.id,
+                  attendanceHolidays
+                );
+                return (
+                  <div className="bg-white border border-[#E1E9FF] rounded-3xl p-5 sm:p-8 shadow-[0_6px_24px_rgba(0,135,165,0.06)] space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E1E9FF] gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00A887] to-[#1A1D4E] text-white flex items-center justify-center shrink-0">
+                          <CalendarCheck2 className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-[#1A1D4E]">
+                            {language === 'ku'
+                              ? 'راپۆرتا ئامادەبوونێ ٢٠٢٦–٢٠٢٧'
+                              : language === 'ar'
+                              ? 'تقرير الحضور والغياب ٢٠٢٦–٢٠٢٧'
+                              : 'Attendance Report 2026–2027'}
+                          </h3>
+                          <p className="text-xs text-[#6B70A6]">
+                            {currentStudent.name} • {formatGradeLabel(currentStudent.grade, language)} —{' '}
+                            {formatClassLabel(currentStudent.section, language)}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="px-3.5 py-1.5 rounded-full bg-[#E6FAF6] text-[#00A887] text-xs font-mono font-black">
+                        Sep 20, 2026 – Jul 2027
+                      </span>
+                    </div>
+
+                    {/* KPI Cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+                        <div className="text-[11px] font-bold text-emerald-700">Present (P)</div>
+                        <div className="text-2xl font-black text-emerald-900 mt-1">{yrSum.totalP}</div>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200">
+                        <div className="text-[11px] font-bold text-rose-700">Absent (A)</div>
+                        <div className="text-2xl font-black text-rose-900 mt-1">{yrSum.totalA}</div>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+                        <div className="text-[11px] font-bold text-amber-700">Leave Permission (L)</div>
+                        <div className="text-2xl font-black text-amber-900 mt-1">{yrSum.totalL}</div>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-[#EEF0FF] border border-[#D8E1FF]">
+                        <div className="text-[11px] font-bold text-[#454A87]">Attendance Rate</div>
+                        <div className="text-2xl font-black text-[#1A1D4E] mt-1">
+                          {yrSum.attendanceRatePct !== null ? `${yrSum.attendanceRatePct}%` : '—'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Month-by-Month Breakdown Table */}
+                    <div className="overflow-x-auto border border-[#E1E9FF] rounded-2xl">
+                      <table className="w-full text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[#1A1D4E] text-white">
+                            <th className="px-4 py-2.5 text-left border-r border-white/15">Month</th>
+                            <th className="px-3 py-2.5 text-center bg-emerald-700 border-r border-white/15">
+                              Present (P)
+                            </th>
+                            <th className="px-3 py-2.5 text-center bg-rose-700 border-r border-white/15">
+                              Absent (A)
+                            </th>
+                            <th className="px-3 py-2.5 text-center bg-amber-600">
+                              Leave (L)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#E1E9FF]">
+                          {ATTENDANCE_MONTHS.map((m) => {
+                            const c = yrSum.byMonth[m.key] || { A: 0, L: 0, P: 0 };
+                            const monthLabel =
+                              language === 'ku'
+                                ? m.labelKu
+                                : language === 'ar'
+                                ? m.labelAr
+                                : m.labelEn;
+                            return (
+                              <tr key={m.key} className="hover:bg-[#F8FAFF]">
+                                <td className="px-4 py-2.5 font-bold text-[#1A1D4E] border-r border-[#E1E9FF]">
+                                  {monthLabel}
+                                </td>
+                                <td className="px-3 py-2.5 text-center font-mono font-black text-emerald-700 bg-emerald-50/50 border-r border-[#E1E9FF]">
+                                  {c.P}
+                                </td>
+                                <td className="px-3 py-2.5 text-center font-mono font-black text-rose-700 bg-rose-50/50 border-r border-[#E1E9FF]">
+                                  {c.A}
+                                </td>
+                                <td className="px-3 py-2.5 text-center font-mono font-black text-amber-700 bg-amber-50/50">
+                                  {c.L}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           )}
         </main>
@@ -3330,8 +3652,12 @@ export default function App() {
       {selectedPortal === 'teacher' && isPortalAuthenticated && authStaff && (() => {
         const teacherAssignments = authStaff.assignedClasses || [];
         const mentorClass = authStaff.mentorClass || null;
-        const activeView: 'marks' | 'behaviour' =
-          mentorClass && teacherPortalView === 'behaviour' ? 'behaviour' : 'marks';
+        const activeView: 'marks' | 'behaviour' | 'attendance' =
+          mentorClass && teacherPortalView === 'behaviour'
+            ? 'behaviour'
+            : mentorClass && teacherPortalView === 'attendance'
+            ? 'attendance'
+            : 'marks';
 
         const activeAssignment =
           teacherAssignments.find(
@@ -3537,6 +3863,25 @@ export default function App() {
                     : language === 'ar'
                     ? `تقرير السلوك الشهري — صف ${mentorClass.classCode}`
                     : `Mentor Behaviour Report (${mentorClass.classCode})`}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherPortalView('attendance')}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer border ${
+                  activeView === 'attendance'
+                    ? 'bg-[#00A887] text-white border-[#00A887] shadow-sm'
+                    : 'bg-white text-[#00A887] border-[#B6EADF] hover:bg-[#E6FAF6]'
+                }`}
+              >
+                <CalendarCheck2 className="w-4 h-4" />
+                <span>
+                  {language === 'ku'
+                    ? `ئامادەبوونا پۆلێ — ${mentorClass.classCode}`
+                    : language === 'ar'
+                    ? `الحضور والغياب — صف ${mentorClass.classCode}`
+                    : `Class Attendance (${mentorClass.classCode})`}
                 </span>
               </button>
             </div>
@@ -3939,6 +4284,51 @@ export default function App() {
             )}
           </div>
           )}
+
+          {/* MODE C: CLASS ATTENDANCE SHEET (Mentor Class Only) */}
+          {mentorClass && activeView === 'attendance' && (
+            <AttendanceReportView
+              mode="mentor"
+              students={students}
+              schoolStructure={SCHOOL_STRUCTURE}
+              attendanceRecords={attendanceRecords}
+              attendanceHolidays={attendanceHolidays}
+              customEnglishNames={attendanceEnglishNames}
+              onUpdateDayStatus={handleUpdateAttendanceDay}
+              onBulkFillDayPresent={handleBulkFillAttendanceDayPresent}
+              onToggleHoliday={handleToggleAttendanceHoliday}
+              onUpdateEnglishName={handleUpdateAttendanceEnglishName}
+              lockedClass={{
+                grade: mentorClass.grade,
+                section: mentorClass.section,
+                classCode: mentorClass.classCode,
+              }}
+              language={language}
+              exportSourceBase={{
+                dailyRecords,
+                gradeCurriculum: GRADE_CURRICULUM,
+                liveBuses,
+                classSummaries: [
+                  {
+                    grade: mentorClass.grade,
+                    section: mentorClass.section,
+                    label: mentorClass.classCode,
+                    studentCount: mentorStudents.length,
+                    outOf: isGrade13(mentorClass.grade) ? 25 : 20,
+                    passMark: isGrade13(mentorClass.grade) ? 12.5 : 10,
+                    classAvg: null,
+                    overallPassRate: null,
+                    totalGradedEntries: 0,
+                    subjects: {},
+                  },
+                ],
+                officialSubjectNames: OFFICIAL_SUBJECTS.map((s) => s.name),
+                behaviourReports,
+                examRows,
+                schoolLogoUrl: SCHOOL_LOGO_URL,
+              }}
+            />
+          )}
         </main>
         );
       })()}
@@ -4130,6 +4520,13 @@ export default function App() {
           onResetExamSchedule={handleResetExamSchedule}
           schoolLogoUrl={SCHOOL_LOGO_URL}
           behaviourReports={behaviourReports}
+          attendanceRecords={attendanceRecords}
+          attendanceHolidays={attendanceHolidays}
+          attendanceEnglishNames={attendanceEnglishNames}
+          onUpdateAttendanceDay={handleUpdateAttendanceDay}
+          onBulkFillAttendanceDayPresent={handleBulkFillAttendanceDayPresent}
+          onToggleAttendanceHoliday={handleToggleAttendanceHoliday}
+          onUpdateAttendanceEnglishName={handleUpdateAttendanceEnglishName}
           onExportStudentsCsv={handleExportCsv}
           onSignOut={handleSignOut}
         />
