@@ -382,7 +382,17 @@ export default function App() {
       const saved = localStorage.getItem('dasinya_students_roster_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const canonicalById = new Map(IMPORTED_STUDENTS.map((s) => [s.id, s]));
+          const synced = parsed.map((item: StudentRecord) => {
+            const canonical = canonicalById.get(item.id);
+            return canonical
+              ? { ...item, name: canonical.name, motherName: canonical.motherName ?? item.motherName }
+              : item;
+          });
+          localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(synced));
+          return synced;
+        }
       }
     } catch {}
     return IMPORTED_STUDENTS;
@@ -733,10 +743,16 @@ export default function App() {
             classById.set(row.id, { grade: row.grade, section: row.section });
           }
         }
+        const canonicalById = new Map(IMPORTED_STUDENTS.map((s) => [s.id, s]));
         setStudents((prev) => {
           const next = prev.map((s) => {
+            const canonical = canonicalById.get(s.id);
             const remote = classById.get(s.id);
-            return remote ? { ...s, grade: remote.grade, section: remote.section } : s;
+            return {
+              ...s,
+              ...(canonical ? { name: canonical.name, motherName: canonical.motherName ?? s.motherName } : {}),
+              ...(remote ? { grade: remote.grade, section: remote.section } : {}),
+            };
           });
           try {
             localStorage.setItem('dasinya_students_roster_v3', JSON.stringify(next));

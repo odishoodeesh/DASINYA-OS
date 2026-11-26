@@ -22,7 +22,7 @@ export const ATTENDANCE_SUPPLEMENTAL_STUDENTS: StudentRecord[] = [
   {
     serial: 1001,
     id: 'ATT-1C-DOSKY',
-    name: 'دوسکی رضزان حازم',
+    name: 'دۆسکی رێزان حازم',
     rollNumber: 'DPS-1C-01',
     grade: 'Grade 1',
     section: 'Class C',
@@ -34,7 +34,7 @@ export const ATTENDANCE_SUPPLEMENTAL_STUDENTS: StudentRecord[] = [
   {
     serial: 1002,
     id: 'ATT-3B-KHOSHWAR',
-    name: 'محمد خوشوار أمجد',
+    name: 'محمد خۆشوار أمجد',
     rollNumber: 'DPS-3B-13',
     grade: 'Grade 3',
     section: 'Class B',
@@ -46,7 +46,7 @@ export const ATTENDANCE_SUPPLEMENTAL_STUDENTS: StudentRecord[] = [
   {
     serial: 1003,
     id: 'ATT-4B-LAVIN-FARHAD',
-    name: 'لڤین فرھاد موسی',
+    name: 'لاڤین فەرهاد موسا',
     rollNumber: 'DPS-4B-13',
     grade: 'Grade 4',
     section: 'Class B',
@@ -70,7 +70,7 @@ export const ATTENDANCE_SUPPLEMENTAL_STUDENTS: StudentRecord[] = [
   {
     serial: 1005,
     id: 'ATT-8A-MUHAMMAD',
-    name: 'محمد اسماعیل ابراھیم',
+    name: 'محمد اسماعیل ابراهیم',
     rollNumber: 'DPS-8A-17',
     grade: 'Grade 8',
     section: 'Class A',

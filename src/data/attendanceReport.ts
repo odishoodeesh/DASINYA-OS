@@ -106,14 +106,17 @@ export function isCountableAttendanceDay(
 }
 
 /**
- * Standardizes Arabic letter forms to Kurdish/Persian presentation per spec:
- * Arabic ي ك ى → ی ک ی
+ * Standardizes Arabic & legacy font letter forms to clean Kurdish Unicode orthography:
+ * ي/ى → ی, ك → ک, ھ → ه, ׽ → ڵ, strips tatweel (ـ)
  */
 export function standardizeKurdishArabicLetters(name: string): string {
   return (name || '')
     .replace(/ي/g, 'ی')
     .replace(/ى/g, 'ی')
     .replace(/ك/g, 'ک')
+    .replace(/ھ/g, 'ه')
+    .replace(/׽/g, 'ڵ')
+    .replace(/ـ/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
